@@ -1,0 +1,72 @@
+Folder Structure 
+
+TourChain/
+├── backend/
+│   ├── contracts/          # Solidity contracts (TouristRegistry.sol etc.)
+│   ├── scripts/            # Hardhat deploy scripts
+│   ├── models/             # Mongoose schemas
+│   ├── controllers/        # Express business logic
+│   ├── routes/             # API routes
+│   ├── middlewares/        # JWT auth, validation
+│   ├── utils/              # blockchain.js, helpers
+│   ├── seed/               # dev seed data
+│   ├── index.js            # entry point
+│   └── .env.example
+│
+├── frontend/
+│   ├── tourist/            # Tourist UI (Sambhas)
+│   │     ├── index.html
+│   │     ├── style.css
+│   │     └── script.js
+│   │
+│   └── admin/              # Admin dashboard (Shreya)
+│         ├── index.html    # Main dashboard UI
+│         ├── login.html    # Admin login page
+│         ├── style.css     # Basic styling for dashboard
+│         ├── script.js     # Core JS (tourist list, verify, panic resolve)
+│         ├── api.js        # Helper functions for API calls
+│         ├── alerts.js     # Panic alerts handling (polling + socket)
+│         └── config.js     # API_BASE, SOCKET_URL constants
+│
+└── README.md
+
+
+When you paste the prompt in the new conversation I will produce a single, precise, copy-pasteable step-by-step for Shreya’s Admin Dashboard that is fully consistent with your repo rules and the corrected endpoints we agreed on.
+
+What I’ll deliver (exactly) when you paste the prompt:
+
+A short assumption header (prototype vs long-term) so reviewers know scope.
+
+Exact folder & file creation commands (where to put each file inside frontend/admin/).
+
+Complete HTML / JS / CSS files (copy-paste ready) that use only the endpoints in your repo (/api/admin/...), including:
+
+POST /api/admin/login
+
+GET /api/admin/tourists
+
+GET /api/admin/tourists/:id
+
+GET /api/admin/tourists/:id/analysis (optional/embed)
+
+PUT /api/admin/tourists/:id/verify
+
+GET /api/admin/panic
+
+PUT /api/admin/panic/:id/resolve
+
+Socket.io listener for panic:new + polling fallback
+
+A single config.js to change only API_BASE / SOCKET_URL (no further edits needed).
+
+Mock data and instructions to run the UI with http-server or Live Server.
+
+Commands to create a branch, commit, and push (example commit message).
+
+Small troubleshooting & QA checklist (CORS, auth, token handling, map blank, socket fail).
+
+Notes on where to change things if backend differs (one variable change only).
+
+Optional: brief React version or backend stubs if you want them (I’ll include if you ask).
+
+No contradictions — I’ll enforce the /api/admin/* routes and PUT /verify verb throughout.

@@ -100,7 +100,7 @@
     "diff": "^5.2.0",
     "difflib": "^0.2.4",
     "dir-glob": "^3.0.1",
-    "dotenv": "^17.2.1",
+    "dotenv": "^17.2.2",
     "dunder-proto": "^1.0.1",
     "eastasianwidth": "^0.2.0",
     "elliptic": "^6.6.1",

@@ -1,0 +1,1478 @@
+You are assisting the team working on **TourChain**, a Smart India Hackathon project.
+
+## 🔹 Repo structure
+Root: TourChain/
+  ├── backend/
+  │     ├── contracts/          # Solidity contracts (TouristRegistry.sol etc.)
+  │     ├── scripts/            # Hardhat deploy scripts
+  │     ├── models/             # Mongoose schemas
+  │     ├── controllers/        # Express business logic
+  │     ├── routes/             # API routes
+  │     ├── middlewares/        # JWT auth, validation
+  │     ├── utils/              # blockchain.js, helpers
+  │     ├── seed/               # dev seed data
+  │     ├── index.js            # entry point
+  │     └── .env.example
+  ├── frontend/
+  │     ├── tourist/            # Tourist UI (Sambhas)
+  │     └── admin/              # Admin dashboard (Shreya)
+  └── README.md
+
+## 🔹 Roles
+- **Anupam** → Database + Backend core
+- **You (Nitish)** → Blockchain + Backend bridge
+- **Sambhas** → Tourist frontend
+- **Shreya** → Admin dashboard
+- **Archana** → UI/UX polish
+
+## 🔹 Database models (Mongoose)
+- **Tourist**: { name, email, phone, walletAddress [unique], idType, idHash, photoUrl, verified, verificationTxHash, createdAt, updatedAt }
+- **PanicCall**: { tourist, location { lon,lat }, message, status, adminNotified, createdAt } (with geospatial index)
+- **Admin**: { name, email [unique], passwordHash, role }
+- **VerificationLog**: { tourist, admin, action, dataHash, txHash, createdAt }
+
+## 🔹 Endpoints (Express APIs, mounted under `/api`)
+### Tourist (frontend by Sambhas)
+- `POST /api/tourists/register` → register tourist, save to DB, hash IDs.
+- `GET /api/tourists/:id` or `/wallet/:walletAddress` → fetch profile.
+- `POST /api/panic` → raise panic, save to DB, emit socket event.
+
+### Admin (frontend by Shreya, JWT required)
+- `POST /api/admin/login` → returns JWT.
+- `GET /api/admin/tourists` → list tourists (filter verified/unverified).
+- `GET /api/admin/tourists/:id` → tourist details + logs.
+- `PUT /api/admin/tourists/:id/verify` → verify tourist:
+   1. Update DB (`verified: true`).
+   2. Call blockchain util (`recordVerification(dataHash)`).
+   3. Store txHash in tourist + VerificationLog.
+- `GET /api/admin/panic` → list panic calls.
+- `PUT /api/admin/panic/:id/resolve` → resolve panic.
+- `GET /api/stats/admin` → aggregation for dashboard widgets.
+
+### Real-time
+- Panic calls also emit `socket.io` event: `panic:new`.
+
+## 🔹 Blockchain (backend/utils/blockchain.js)
+- Uses ethers.js + Hardhat artifacts.
+- Function: `recordVerification(dataHash)` → calls smart contract, returns txHash.
+- Called only from **Admin verify endpoint** in prototype.
+
+## 🔹 Prototype rules (important!)
+- **DB = full source of data.**
+- **Blockchain = only verification proofs.**
+- **Panic calls = DB only.**
+- **AI safety score = off-chain, stored in DB.**
+
+## 🔹 Expectations for this AI session
+- Always respect this repo structure, endpoints, and contracts.
+- Never invent random folders or endpoints outside this spec.
+- When asked for code, generate files exactly where they belong.
+- Sync backend (Anupam/Nitish) with frontend (Sambhas/Shreya).
+- Always clarify whether the code is for prototype or long-term.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2ND  iteration
+
+Perfect 👍 I’ll extend your master prompt so that **Sambhas’ tourist frontend** is fully covered.
+I’ll add a **Frontend–Backend contract** section for Tourist flows (register, AI summary, panic), and edit your structure slightly so Sambhas has **no guesswork** about payloads and responses.
+
+Here’s the **edited master prompt** ⬇️
+
+---
+
+# 🔹 Master Prompt (Updated with Tourist Frontend)
+
+You are assisting the team working on **TourChain**, a Smart India Hackathon project.
+
+---
+
+## 🔹 Repo structure
+
+```
+Root: TourChain/
+  ├── backend/
+  │     ├── contracts/          # Solidity contracts (TouristRegistry.sol etc.)
+  │     ├── scripts/            # Hardhat deploy scripts
+  │     ├── models/             # Mongoose schemas
+  │     ├── controllers/        # Express business logic
+  │     ├── routes/             # API routes
+  │     ├── middlewares/        # JWT auth, validation
+  │     ├── utils/              # blockchain.js, helpers
+  │     ├── seed/               # dev seed data
+  │     ├── index.js            # entry point
+  │     └── .env.example
+  ├── frontend/
+  │     ├── tourist/            # Tourist UI (Sambhas)
+  │     └── admin/              # Admin dashboard (Shreya)
+  └── README.md
+```
+
+---
+
+## 🔹 Roles
+
+* **Anupam** → Database + Backend core
+* **You (Nitish)** → Blockchain + Backend bridge
+* **Sambhas** → Tourist frontend
+* **Shreya** → Admin dashboard
+* **Archana** → UI/UX polish
+
+---
+
+## 🔹 Database models (Mongoose)
+
+* **Tourist**: `{ name, email, phone, walletAddress [unique], idType, idHash, photoUrl, verified, verificationTxHash, createdAt, updatedAt }`
+* **PanicCall**: `{ tourist, location { lon,lat }, message, status, adminNotified, createdAt }` (with geospatial index)
+* **Admin**: `{ name, email [unique], passwordHash, role }`
+* **VerificationLog**: `{ tourist, admin, action, dataHash, txHash, createdAt }`
+
+---
+
+## 🔹 Endpoints (Express APIs, mounted under `/api`)
+
+### **Tourist (frontend by Sambhas)**
+
+* `POST /api/tourists/register`
+  → Register tourist, save to DB, hash IDs.
+* `GET /api/tourists/:id` or `/wallet/:walletAddress`
+  → Fetch profile.
+* `POST /api/panic`
+  → Raise panic, save to DB, emit socket event.
+* `POST /api/ai-summary`
+  → (Prototype only) Send itinerary & trip details → return AI safety score + summary (stored in DB).
+
+### **Admin (frontend by Shreya, JWT required)**
+
+* `POST /api/admin/login` → returns JWT.
+* `GET /api/admin/tourists` → list tourists (filter verified/unverified).
+* `GET /api/admin/tourists/:id` → tourist details + logs.
+* `PUT /api/admin/tourists/:id/verify` → verify tourist (DB + blockchain + log).
+* `GET /api/admin/panic` → list panic calls.
+* `PUT /api/admin/panic/:id/resolve` → resolve panic.
+* `GET /api/stats/admin` → aggregation for dashboard widgets.
+
+### **Real-time**
+
+* Panic calls also emit `socket.io` event: `panic:new`.
+
+---
+
+## 🔹 Blockchain (backend/utils/blockchain.js)
+
+* Uses **ethers.js** + Hardhat artifacts.
+* Function: `recordVerification(dataHash)` → calls smart contract, returns txHash.
+* Called only from **Admin verify endpoint** in prototype.
+* **Rule:** Only hashes go on-chain. All full data stays in DB.
+
+---
+
+## 🔹 Prototype rules (important!)
+
+* **DB = full source of data.**
+* **Blockchain = only verification proofs.**
+* **Panic calls = DB only.**
+* **AI safety score = off-chain, stored in DB.**
+
+---
+
+## 🔹 Tourist Frontend (Sambhas)
+
+### Tourist Registration Flow
+
+1. Tourist fills form (fields: `name, email, phone, walletAddress, idType, idFileUpload, itinerary, startDate, endDate, location {lat,lng}`).
+2. Frontend **hashes ID file** before sending (`idHash`). File may be uploaded → backend returns `photoUrl`.
+3. Frontend calls `/api/ai-summary` first:
+
+   ```json
+   POST /api/ai-summary
+   {
+     "itinerary": "Delhi → Jaipur → Agra",
+     "startDate": "2025-09-10",
+     "endDate": "2025-09-20",
+     "lat": 28.61,
+     "lng": 77.23
+   }
+   ```
+
+   **Response:**
+
+   ```json
+   {
+     "safetyScore": 82,
+     "summary": "Trip covers safe urban regions. Moderate crowding expected.",
+     "dataHash": "0xabc123..."
+   }
+   ```
+4. Frontend then calls `/api/tourists/register`:
+
+   ```json
+   POST /api/tourists/register
+   {
+     "name": "Alice",
+     "email": "alice@mail.com",
+     "phone": "+91xxxxxxxx",
+     "walletAddress": "0x1234...",
+     "idType": "Passport",
+     "idHash": "0xdeadbeef...",
+     "photoUrl": "/uploads/photo.png",
+     "aiSummary": "Trip covers safe urban regions...",
+     "safetyScore": 82,
+     "dataHash": "0xabc123..."
+   }
+   ```
+
+   **Response:**
+
+   ```json
+   {
+     "touristId": "64f123...",
+     "verified": false,
+     "createdAt": "2025-09-04T09:00:00Z"
+   }
+   ```
+
+### Panic Flow
+
+```json
+POST /api/panic
+{
+  "touristId": "64f123...",
+  "location": { "lat": 28.61, "lon": 77.23 },
+  "message": "Lost near Red Fort"
+}
+```
+
+**Response:**
+
+```json
+{
+  "panicId": "77a9...",
+  "status": "active",
+  "adminNotified": true
+}
+```
+
+---
+
+## 🔹 .env.example (minimum keys)
+
+```
+MONGO_URI=mongodb://localhost:27017/tourchain
+JWT_SECRET=your_jwt_secret
+BLOCKCHAIN_RPC=https://sepolia.infura.io/v3/...
+PRIVATE_KEY=0xabc123...
+AI_API_KEY=sk-xxxx
+```
+
+---
+
+✅ With this, Sambhas knows exactly:
+
+* What payloads to send,
+* Which endpoints exist,
+* What responses to expect.
+
+This eliminates inconsistencies between frontend ↔ backend.
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+3rd iteration
+
+
+Perfect — here’s the **merged master prompt** with **airtight contracts for both Sambhas (Tourist frontend)** and **Shreya (Admin frontend)**.
+I’ve slotted the **Admin Frontend section** right after the Tourist section, so the flow stays clean and symmetric.
+
+---
+
+# 🔹 Master Prompt (Updated with Tourist + Admin Frontend)
+
+You are assisting the team working on **TourChain**, a Smart India Hackathon project.
+
+---
+
+## 🔹 Repo structure
+
+```
+Root: TourChain/
+  ├── backend/
+  │     ├── contracts/          # Solidity contracts (TouristRegistry.sol etc.)
+  │     ├── scripts/            # Hardhat deploy scripts
+  │     ├── models/             # Mongoose schemas
+  │     ├── controllers/        # Express business logic
+  │     ├── routes/             # API routes
+  │     ├── middlewares/        # JWT auth, validation
+  │     ├── utils/              # blockchain.js, helpers
+  │     ├── seed/               # dev seed data
+  │     ├── index.js            # entry point
+  │     └── .env.example
+  ├── frontend/
+  │     ├── tourist/            # Tourist UI (Sambhas)
+  │     └── admin/              # Admin dashboard (Shreya)
+  └── README.md
+```
+
+---
+
+## 🔹 Roles
+
+* **Anupam** → Database + Backend core
+* **You (Nitish)** → Blockchain + Backend bridge
+* **Sambhas** → Tourist frontend
+* **Shreya** → Admin dashboard
+* **Archana** → UI/UX polish
+
+---
+
+## 🔹 Database models (Mongoose)
+
+* **Tourist**: `{ name, email, phone, walletAddress [unique], idType, idHash, photoUrl, verified, verificationTxHash, createdAt, updatedAt }`
+* **PanicCall**: `{ tourist, location { lon,lat }, message, status, adminNotified, createdAt }` (with geospatial index)
+* **Admin**: `{ name, email [unique], passwordHash, role }`
+* **VerificationLog**: `{ tourist, admin, action, dataHash, txHash, createdAt }`
+
+---
+
+## 🔹 Endpoints (Express APIs, mounted under `/api`)
+
+### **Tourist (frontend by Sambhas)**
+
+* `POST /api/tourists/register` → register tourist, save to DB, hash IDs.
+* `GET /api/tourists/:id` or `/wallet/:walletAddress` → fetch profile.
+* `POST /api/panic` → raise panic, save to DB, emit socket event.
+* `POST /api/ai-summary` → (prototype only) send itinerary & trip details → return AI safety score + summary (stored in DB).
+
+### **Admin (frontend by Shreya, JWT required)**
+
+* `POST /api/admin/login` → returns JWT.
+* `GET /api/admin/tourists` → list tourists (filter verified/unverified).
+* `GET /api/admin/tourists/:id` → tourist details + logs.
+* `PUT /api/admin/tourists/:id/verify` → verify tourist (DB + blockchain + log).
+* `GET /api/admin/panic` → list panic calls.
+* `PUT /api/admin/panic/:id/resolve` → resolve panic.
+* `GET /api/stats/admin` → aggregation for dashboard widgets.
+
+### **Real-time**
+
+* Panic calls also emit `socket.io` event: `panic:new`.
+
+---
+
+## 🔹 Blockchain (backend/utils/blockchain.js)
+
+* Uses **ethers.js** + Hardhat artifacts.
+* Function: `recordVerification(dataHash)` → calls smart contract, returns txHash.
+* Called only from **Admin verify endpoint** in prototype.
+* **Rule:** Only hashes go on-chain. All full data stays in DB.
+
+---
+
+## 🔹 Prototype rules (important!)
+
+* **DB = full source of data.**
+* **Blockchain = only verification proofs.**
+* **Panic calls = DB only.**
+* **AI safety score = off-chain, stored in DB.**
+
+---
+
+## 🔹 Tourist Frontend (Sambhas)
+
+### Tourist Registration Flow
+
+1. Tourist fills form (`name, email, phone, walletAddress, idType, idFileUpload, itinerary, startDate, endDate, location {lat,lng}`).
+2. Frontend hashes ID before sending (`idHash`). Backend stores file and returns `photoUrl`.
+3. Frontend calls `/api/ai-summary`:
+
+```json
+POST /api/ai-summary
+{
+  "itinerary": "Delhi → Jaipur → Agra",
+  "startDate": "2025-09-10",
+  "endDate": "2025-09-20",
+  "lat": 28.61,
+  "lng": 77.23
+}
+```
+
+**Response:**
+
+```json
+{
+  "safetyScore": 82,
+  "summary": "Trip covers safe urban regions. Moderate crowding expected.",
+  "dataHash": "0xabc123..."
+}
+```
+
+4. Then call `/api/tourists/register`:
+
+```json
+POST /api/tourists/register
+{
+  "name": "Alice",
+  "email": "alice@mail.com",
+  "phone": "+91xxxxxxxx",
+  "walletAddress": "0x1234...",
+  "idType": "Passport",
+  "idHash": "0xdeadbeef...",
+  "photoUrl": "/uploads/photo.png",
+  "aiSummary": "Trip covers safe urban regions...",
+  "safetyScore": 82,
+  "dataHash": "0xabc123..."
+}
+```
+
+**Response:**
+
+```json
+{
+  "touristId": "64f123...",
+  "verified": false,
+  "createdAt": "2025-09-04T09:00:00Z"
+}
+```
+
+---
+
+### Panic Flow
+
+```json
+POST /api/panic
+{
+  "touristId": "64f123...",
+  "location": { "lat": 28.61, "lon": 77.23 },
+  "message": "Lost near Red Fort"
+}
+```
+
+**Response:**
+
+```json
+{
+  "panicId": "77a9...",
+  "status": "active",
+  "adminNotified": true
+}
+```
+
+---
+
+## 🔹 Admin Frontend (Shreya)
+
+### 1. Login
+
+```json
+POST /api/admin/login
+{
+  "email": "shreya@tourchain.gov",
+  "password": "mypassword"
+}
+```
+
+**Response:**
+
+```json
+{
+  "token": "eyJhbGciOiJIUzI1...",
+  "admin": { "id": "adm123", "name": "Shreya", "role": "superadmin" }
+}
+```
+
+➡️ Store `token` in localStorage, send as `Authorization: Bearer <token>`.
+
+---
+
+### 2. List Tourists
+
+```http
+GET /api/admin/tourists
+```
+
+**Response:**
+
+```json
+[
+  {
+    "id": "64f123...",
+    "name": "Alice",
+    "email": "alice@mail.com",
+    "phone": "+91xxxxxxxx",
+    "walletAddress": "0x1234...",
+    "verified": false,
+    "safetyScore": 82,
+    "aiSummary": "Trip covers safe urban regions...",
+    "createdAt": "2025-09-04T09:00:00Z"
+  }
+]
+```
+
+---
+
+### 3. Get Tourist Details
+
+```http
+GET /api/admin/tourists/:id
+```
+
+**Response:**
+
+```json
+{
+  "id": "64f123...",
+  "name": "Alice",
+  "email": "alice@mail.com",
+  "phone": "+91xxxxxxxx",
+  "walletAddress": "0x1234...",
+  "verified": false,
+  "photoUrl": "/uploads/alice.png",
+  "aiSummary": "Trip covers safe urban regions...",
+  "safetyScore": 82,
+  "verificationLogs": [
+    {
+      "admin": "Anupam",
+      "action": "verify",
+      "txHash": "0xabc123...",
+      "timestamp": "2025-09-04T10:00:00Z"
+    }
+  ]
+}
+```
+
+---
+
+### 4. Verify Tourist
+
+```http
+PUT /api/admin/tourists/:id/verify
+{
+  "adminId": "adm123"
+}
+```
+
+**Response:**
+
+```json
+{
+  "id": "64f123...",
+  "verified": true,
+  "verificationTxHash": "0xabc123...",
+  "updatedAt": "2025-09-04T10:05:00Z"
+}
+```
+
+---
+
+### 5. List Panic Calls
+
+```http
+GET /api/admin/panic
+```
+
+**Response:**
+
+```json
+[
+  {
+    "panicId": "77a9...",
+    "tourist": { "id": "64f123...", "name": "Alice" },
+    "location": { "lat": 28.61, "lon": 77.23 },
+    "message": "Lost near Red Fort",
+    "status": "active",
+    "createdAt": "2025-09-04T09:30:00Z"
+  }
+]
+```
+
+---
+
+### 6. Resolve Panic
+
+```http
+PUT /api/admin/panic/:id/resolve
+```
+
+**Response:**
+
+```json
+{
+  "panicId": "77a9...",
+  "status": "resolved",
+  "updatedAt": "2025-09-04T09:45:00Z"
+}
+```
+
+---
+
+### 7. Dashboard Stats
+
+```http
+GET /api/stats/admin
+```
+
+**Response:**
+
+```json
+{
+  "totalTourists": 120,
+  "verifiedTourists": 85,
+  "activePanics": 3,
+  "avgSafetyScore": 74
+}
+```
+
+---
+
+### 8. Real-time Panic Alerts
+
+**Socket.io event:**
+`panic:new`
+
+**Payload:**
+
+```json
+{
+  "panicId": "77a9...",
+  "tourist": { "id": "64f123...", "name": "Alice" },
+  "location": { "lat": 28.61, "lon": 77.23 },
+  "message": "Lost near Red Fort",
+  "status": "active",
+  "createdAt": "2025-09-04T09:30:00Z"
+}
+```
+
+➡️ Rule: use socket listener first; fallback: poll `/api/admin/panic` every 30s.
+
+---
+
+## 🔹 .env.example (minimum keys)
+
+```
+MONGO_URI=mongodb://localhost:27017/tourchain
+JWT_SECRET=your_jwt_secret
+BLOCKCHAIN_RPC=https://sepolia.infura.io/v3/...
+PRIVATE_KEY=0xabc123...
+AI_API_KEY=sk-xxxx
+```
+
+---
+
+✅ Now both **Sambhas (Tourist)** and **Shreya (Admin)** have airtight contracts, payloads, responses, and real-time flows.
+No guesswork across the team → fully consistent repo.
+
+---
+
+Would you like me to also add a **Frontend folder structure breakdown** (showing exactly what files Sambhas and Shreya should have in their respective folders) so this becomes *truly plug & play*?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Final Iteration
+
+
+Perfect 👌 Got it. I’ll rewrite the **Master Prompt** into its **final, consistent version**, fixing all the contradictions and adding your preferences:
+
+* **No MetaMask** → use Aadhaar / Passport number instead of wallet.
+* **Admin login** → seeded with email + password in DB.
+* **Itinerary** → supports multiple places (array).
+* **JWT** → explained as session pass.
+* **No sockets** → use polling.
+* **Blockchain write** → happens when tourist *starts journey*, valid until *end date*.
+* **Backend recomputes hashes** (never trusts client).
+* **Checkpoints postponed** (not needed in Round-1).
+
+Here’s the final:
+
+---
+
+# 🔹 Final Master Prompt (TourChain Prototype)
+
+You are assisting the team working on **TourChain**, a Smart India Hackathon project.
+This prompt ensures **zero contradictions** across frontend, backend, blockchain, and AI.
+
+---
+
+## 🔹 Repo structure
+
+```
+Root: TourChain/
+  ├── backend/
+  │     ├── contracts/          # Solidity contracts (TouristRegistry.sol etc.)
+  │     ├── scripts/            # Hardhat deploy scripts
+  │     ├── models/             # Mongoose schemas
+  │     ├── controllers/        # Express business logic
+  │     ├── routes/             # API routes
+  │     ├── middlewares/        # JWT auth, validation
+  │     ├── utils/              # blockchain.js, helpers
+  │     ├── seed/               # dev seed data (admins)
+  │     ├── index.js            # entry point
+  │     └── .env.example
+  ├── frontend/
+  │     ├── tourist/            # Tourist UI (Sambhas)
+  │     └── admin/
+        ├── pages/
+  │     ├── Login.jsx            # Admin login page
+  │     ├── Dashboard.jsx        # Stats (total tourists, active journeys, panic count)
+  │     ├── Tourists.jsx         # List of tourists
+  │     ├── TouristDetails.jsx   # Tourist details page
+  │     ├── Panics.jsx           # List of panic alerts
+  │     └── PanicDetails.jsx     # Individual panic view + resolve button
+  ├── components/
+  │     ├── Sidebar.jsx
+  │     ├── Navbar.jsx
+  │     ├── CardWidget.jsx       # Small dashboard cards
+  │     └── Table.jsx            # Reusable table
+  ├── services/
+  │     └── api.js
+  ├── App.jsx
+  └── index.js
+
+  └── README.md
+```
+
+---
+
+## 🔹 Roles
+
+* **Anupam** → Database + Backend core
+* **You (Nitish)** → Blockchain + Backend bridge
+* **Sambhas** → Tourist frontend
+* **Shreya** → Admin dashboard
+* **Archana** → UI/UX polish
+
+---
+
+## 🔹 Database models (Mongoose)
+
+* **Tourist**:
+
+  ```js
+  { 
+    name, 
+    email, 
+    phone, 
+    idType,            // Aadhaar / Passport
+    idNumberHash,      // hash of Aadhaar/Passport
+    photoUrl, 
+    itinerary: [String], 
+    startDate, 
+    endDate, 
+    verified, 
+    verificationTxHash, 
+    createdAt, 
+    updatedAt 
+  }
+  ```
+
+* **PanicCall**:
+
+  ```js
+  { 
+    tourist, 
+    location { lon,lat }, 
+    message, 
+    status, 
+    adminNotified, 
+    createdAt 
+  }
+  ```
+
+* **Admin**:
+
+  ```js
+  { name, email [unique], passwordHash, role }
+  ```
+
+  (Seeded in DB, e.g. Shreya’s account)
+
+* **VerificationLog**:
+
+  ```js
+  { tourist, admin, action, dataHash, txHash, createdAt }
+  ```
+
+---
+
+## 🔹 Endpoints (Express APIs, mounted under `/api`)
+
+### **Tourist (frontend by Sambhas)**
+
+* `POST /api/tourists/register`
+  → register tourist, save to DB, recompute ID hash on backend.
+
+* `GET /api/tourists/:id`
+  → fetch profile.
+
+* `POST /api/panic`
+  → raise panic, save to DB.
+
+* `POST /api/tourists/:id/startJourney`
+  → tourist clicks “Start Journey”, backend writes a blockchain record with `{ idHash, startDate, endDate }`.
+
+* `POST /api/ai-summary` (Round-1 only)
+  → AI safety score & summary triggered **after save** (frontend stays simple).
+
+---
+
+### **Admin (frontend by Shreya, JWT required)**
+
+* `POST /api/admin/login` → login with email + password, return JWT.
+* `GET /api/admin/tourists` → list all tourists.
+* `GET /api/admin/tourists/:id` → tourist details + journey + logs.
+* `PUT /api/admin/tourists/:id/verify` → (future) verify tourist, record on blockchain.
+* `GET /api/admin/panic` → list panic calls.
+* `PUT /api/admin/panic/:id/resolve` → resolve panic.
+* `GET /api/stats/admin` → simple dashboard stats.
+
+---
+
+## 🔹 Blockchain (backend/utils/blockchain.js)
+
+* Uses **ethers.js** + Hardhat.
+* Function: `recordJourney(idHash, startDate, endDate)` → writes hash + validity period on-chain.
+* Backend **always recomputes** `idHash` before sending to blockchain.
+* Blockchain = only for **journey proofs** (no personal data).
+
+---
+
+## 🔹 Prototype rules (Round-1)
+
+* **DB = main source** of all data.
+* **Blockchain = only journey proofs** (idHash + dates).
+* **Panic calls = DB only.**
+* **AI score = off-chain, stored in DB.**
+* **No sockets** → use polling for panic alerts.
+* **Checkpoints postponed.**
+
+---
+
+## 🔹 Tourist Frontend (Sambhas)
+
+### Tourist Registration Flow
+
+1. Tourist fills form:
+
+   ```
+   name, email, phone, idType, idNumber, idFileUpload, itinerary[], 
+   startDate, endDate, location {lat,lng}
+   ```
+
+   (Itinerary supports multiple places via “+ Add Place” button).
+
+2. Frontend **sends plain data**. Backend computes `idNumberHash`, stores file, returns `photoUrl`.
+
+3. Backend auto-triggers `/api/ai-summary` after save.
+
+---
+
+### Panic Flow
+
+```json
+POST /api/panic
+{
+  "touristId": "64f123...",
+  "location": { "lat": 28.61, "lon": 77.23 },
+  "message": "Lost near Red Fort"
+}
+```
+
+---
+
+### Start Journey Flow (Blockchain write)
+
+```http
+POST /api/tourists/:id/startJourney
+```
+
+**Response:**
+
+```json
+{
+  "touristId": "64f123...",
+  "journeyStatus": "active",
+  "verificationTxHash": "0xabc123...",
+  "validUntil": "2025-09-20"
+}
+```
+
+---
+
+## 🔹 Admin Frontend (Shreya)
+
+### Login
+
+```json
+POST /api/admin/login
+{
+  "email": "shreya@tourchain.gov",
+  "password": "mypassword"
+}
+```
+
+Response = JWT token (digital session pass).
+
+---
+
+### Tourist Management
+
+* List tourists → `/api/admin/tourists`
+* Get details → `/api/admin/tourists/:id`
+* See journeys (startDate–endDate, blockchain txHash).
+
+---
+
+### Panic Management
+
+* List panics → `/api/admin/panic`
+* Resolve → `/api/admin/panic/:id/resolve`
+
+---
+
+### Dashboard Stats
+
+```json
+{
+  "totalTourists": 120,
+  "activeJourneys": 40,
+  "activePanics": 3,
+  "avgSafetyScore": 74
+}
+```
+
+---
+
+## 🔹 .env.example
+
+```
+MONGO_URI=mongodb://localhost:27017/tourchain
+JWT_SECRET=your_jwt_secret
+BLOCKCHAIN_RPC=https://sepolia.infura.io/v3/...
+PRIVATE_KEY=0xabc123...
+AI_API_KEY=sk-xxxx
+```
+
+---
+
+✅ Now:
+
+* Tourists identified by **Aadhaar/Passport** (hashed).
+* Admins login with **email + password**.
+* Blockchain only for **journey proof (start–end dates)**.
+* AI runs **in backend after save**.
+* No sockets, polling only.
+* Frontend has clear flows with **itinerary array input**.
+
+---
+
+Do you want me to also add a **Frontend folder breakdown** (showing what Sambhas & Shreya must create: pages, components, forms, etc.), so nobody in your team guesses folder structure?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1st Round Ultimate Prompt [in Use]
+Perfect ✅
+Let me now rewrite the **Master Prompt (Lightweight Version)** so your team can build the **Round-1 prototype hassle-free**.
+
+---
+
+# 🔹 Final Lightweight Master Prompt (TourChain Prototype – HTML/JS Frontend)
+
+You are assisting the team working on **TourChain**, a Smart India Hackathon project.
+This version keeps the frontend **simple HTML + CSS + JavaScript** (no React), while backend + blockchain remain Node/Express/Mongo.
+
+---
+
+## 🔹 Repo structure
+
+```
+Root: TourChain/
+  ├── backend/
+  │     ├── contracts/          # Solidity contracts (TouristRegistry.sol etc.)
+  │     ├── scripts/            # Hardhat deploy scripts
+  │     ├── models/             # Mongoose schemas
+  │     ├── controllers/        # Express business logic
+  │     ├── routes/             # API routes
+  │     ├── middlewares/        # JWT auth, validation
+  │     ├── utils/              # blockchain.js, helpers
+  │     ├── seed/               # dev seed data (admins)
+  │     ├── index.js            # entry point
+  │     └── .env.example
+  ├── frontend/
+  │     ├── tourist/
+  │     │     ├── index.html        # Registration form
+  │     │     ├── journey.html      # Start Journey page
+  │     │     ├── panic.html        # Panic button page
+  │     │     ├── style.css
+  │     │     └── app.js            # fetch() calls to backend
+  │     └── admin/
+  │           ├── login.html        # Admin login
+  │           ├── dashboard.html    # Stats (counts)
+  │           ├── tourists.html     # List of tourists
+  │           ├── tourist.html      # Single tourist details
+  │           ├── panics.html       # List of panic alerts
+  │           ├── style.css
+  │           └── app.js            # handles JWT + fetch() calls
+  └── README.md
+```
+
+---
+
+## 🔹 Roles
+
+* **Anupam** → Database + Backend core
+* **Nitish** → Blockchain + Backend bridge
+* **Sambhas** → Tourist frontend (HTML/JS)
+* **Shreya** → Admin dashboard (HTML/JS)
+* **Archana** → UI/UX polish (CSS, layout)
+
+---
+
+## 🔹 Database models (Mongoose)
+
+**Tourist**
+
+```js
+{ 
+  name, 
+  email, 
+  phone, 
+  idType,            // Aadhaar / Passport
+  idNumberHash,      // hashed securely
+  photoUrl, 
+  itinerary: [String], 
+  startDate, 
+  endDate, 
+  verified, 
+  verificationTxHash, 
+  createdAt, 
+  updatedAt 
+}
+```
+
+**PanicCall**
+
+```js
+{ 
+  tourist, 
+  location: { lon, lat }, 
+  message, 
+  status, 
+  adminNotified, 
+  createdAt 
+}
+```
+
+**Admin**
+
+```js
+{ name, email [unique], passwordHash, role }
+```
+
+(Seed at least 1 admin: Shreya)
+
+**VerificationLog**
+
+```js
+{ tourist, admin, action, dataHash, txHash, createdAt }
+```
+
+---
+
+## 🔹 Endpoints (Express APIs under `/api`)
+
+### Tourist (Sambhas frontend)
+
+* `POST /api/tourists/register` → register tourist.
+* `GET /api/tourists/:id` → get profile.
+* `POST /api/panic` → raise panic.
+* `POST /api/tourists/:id/startJourney` → start journey → blockchain write.
+* `POST /api/ai-summary` → AI score (auto-triggered by backend).
+
+### Admin (Shreya frontend, JWT required)
+
+* `POST /api/admin/login` → login (email + password).
+* `GET /api/admin/tourists` → list tourists.
+* `GET /api/admin/tourists/:id` → tourist details.
+* `PUT /api/admin/tourists/:id/verify` → (future) verify.
+* `GET /api/admin/panic` → list panic calls.
+* `PUT /api/admin/panic/:id/resolve` → resolve panic.
+* `GET /api/stats/admin` → dashboard counts.
+
+---
+
+## 🔹 Blockchain (backend/utils/blockchain.js)
+
+* Uses **ethers.js + Hardhat**.
+* `recordJourney(idHash, startDate, endDate)` → writes to chain.
+* Backend **always recomputes hash**, never trusts client.
+* Blockchain stores only **journey proof (idHash + dates)**.
+
+---
+
+## 🔹 Prototype rules (Round-1)
+
+* **DB = main source of truth**.
+* **Blockchain = only journey proof (start & end dates)**.
+* **AI = off-chain, stored in DB, triggered by backend**.
+* **Panic calls = DB only**.
+* **No sockets → use polling every 10s**.
+* **Checkpoints postponed**.
+
+---
+
+## 🔹 Tourist Frontend (HTML/JS by Sambhas)
+
+**Registration Page (`index.html`)**
+
+* Fields: name, email, phone, Aadhaar/Passport, upload photo, startDate, endDate.
+* Button “+ Add Place” → JS adds more inputs → itinerary array.
+* On submit → `fetch('/api/tourists/register', { method:'POST', body:JSON.stringify(formData) })`.
+
+**Start Journey (`journey.html`)**
+
+* Button → calls `/api/tourists/:id/startJourney`.
+* Shows blockchain txHash + validUntil.
+
+**Panic Page (`panic.html`)**
+
+* Big red button → `POST /api/panic` with location + message.
+
+---
+
+## 🔹 Admin Frontend (HTML/JS by Shreya)
+
+**Login (`login.html`)**
+
+* Form with email + password.
+* On success, store JWT in `localStorage`.
+
+**Dashboard (`dashboard.html`)**
+
+* Fetch `/api/stats/admin`.
+* Show counts: totalTourists, activeJourneys, activePanics.
+
+**Tourist List (`tourists.html`)**
+
+* Fetch `/api/admin/tourists`.
+* Display in `<table>`.
+
+**Tourist Details (`tourist.html`)**
+
+* Fetch `/api/admin/tourists/:id`.
+* Show info + journeys + blockchain tx.
+
+**Panics (`panics.html`)**
+
+* Fetch `/api/admin/panic`.
+* List all active panics with “Resolve” button → `PUT /api/admin/panic/:id/resolve`.
+
+---
+
+## 🔹 .env.example
+
+```
+MONGO_URI=mongodb://localhost:27017/tourchain
+JWT_SECRET=your_jwt_secret
+BLOCKCHAIN_RPC=https://sepolia.infura.io/v3/...
+PRIVATE_KEY=0xabc123...
+AI_API_KEY=sk-xxxx
+```
+
+---
+
+✅ Now your Round-1 demo stack is:
+
+* **Backend:** Node.js (Express + MongoDB + Hardhat)
+* **Frontend:** HTML + CSS + Vanilla JS (fetch API)
+* **Blockchain:** Only for journey proof (start → end).
+* **AI:** Triggered by backend after save.
+
+---
+
+
+
+awit
+
+(await (await (new (require("ethers").Contract)("0x249E7Ef8d2983D19509e8c4b7F5556e974EBCdb9", ["function recordJourney(bytes32,uint64,uint64) external"], new (require("ethers").Wallet)("0xc9bfecb656df73252960208c134d26d6eafbaf51ba6fcb4b42f9f4c0be3fb71e", new (require("ethers").JsonRpcProvider)("http://127.0.0.1:8545")))).recordJourney(require("ethers").keccak256(require("ethers").toUtf8Bytes("aadhaar-1234")), Math.floor(new Date("2025-09-01").getTime()/1000), Math.floor(new Date("2025-09-10").getTime()/1000))).wait()).blockNumber
+

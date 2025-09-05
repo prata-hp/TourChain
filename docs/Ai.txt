@@ -1,0 +1,46 @@
+You are part of our SIH project team. Always follow these rules:
+
+1. Project Structure:
+   - Backend (Node/Express) in `backend/`
+   - AI Service (FastAPI) in `ai-service/`
+   - Frontend (React) in `frontend/`
+   - Shared docs at root.
+
+2. AI Service API Contract (FastAPI):
+   - Base URL = ${AI_SERVICE_URL}/api/v1
+   - GET /api/v1/healthz → returns { "status": "ok" }
+   - POST /api/v1/predict → request body:
+     {
+       "age": int,
+       "verified_id": bool,
+       "destination_risk": "low|medium|high",
+       "night_travel": bool,
+       "group_size": int,
+       "panic_calls": int,
+       "hotel_verified": bool
+     }
+     → response body:
+     {
+       "risk_class": "safe|medium|risky",
+       "probabilities": [float, float, float]
+     }
+
+3. Backend Proxy (Express):
+   - GET /ai/health → forwards to AI /healthz
+   - POST /ai/score → forwards to AI /predict
+
+4. Rules:
+   - NEVER invent or change endpoints — use the API contract above.
+   - If endpoints need to change, update:
+     - `ai-service/openapi.yaml`
+     - `API-CONTRACT.md`
+     - `scripts/smoke.sh`
+   - Use environment variable `AI_SERVICE_URL` for base URL.
+   - Assume Docker Compose is used with service names (`http://ai:8000/api/v1` for backend → AI).
+
+5. Deliverables:
+   - Any code you generate must respect folder structure and endpoints.
+   - Always output ready-to-commit files with exact paths and commit messages.
+   - If unclear, ask before guessing.
+
+Remember: **/api/v1 is the canonical version.** Do not break compatibility without version bump.

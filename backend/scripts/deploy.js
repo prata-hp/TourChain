@@ -1,38 +1,14 @@
 const hre = require("hardhat");
-const fs = require("fs");
-const path = require("path");
 
 async function main() {
-  const TouristRegistry = await hre.ethers.getContractFactory("TouristRegistry");
-  const touristRegistry = await TouristRegistry.deploy();
-
-  // ✅ new style in Hardhat v3
-  await touristRegistry.waitForDeployment();
-
-  console.log("TouristRegistry deployed to:", await touristRegistry.getAddress());
-
-  // write to .env
-  const envPath = path.join(__dirname, "..", ".env");
-  const addr = await touristRegistry.getAddress();
-  const line = `TOURIST_CONTRACT_ADDRESS=${addr}`;
-
-  let envContent = "";
-  if (fs.existsSync(envPath)) {
-    envContent = fs.readFileSync(envPath, "utf8")
-      .split(/\r?\n/)
-      .filter(Boolean)
-      .filter(l => !l.startsWith("TOURIST_CONTRACT_ADDRESS="))
-      .join("\n");
-    envContent = envContent ? envContent + "\n" + line + "\n" : line + "\n";
-  } else {
-    envContent = line + "\n";
-  }
-
-  fs.writeFileSync(envPath, envContent, "utf8");
-  console.log(".env file updated with TOURIST_CONTRACT_ADDRESS.");
+  const Factory = await hre.ethers.getContractFactory("TouristRegistry");
+  const contract = await Factory.deploy();
+  await contract.waitForDeployment();
+  const addr = await contract.getAddress();
+  console.log("TouristRegistry deployed to:", addr);
 }
 
-main().catch((error) => {
-  console.error(error);
+main().catch((err) => {
+  console.error(err);
   process.exit(1);
 });
