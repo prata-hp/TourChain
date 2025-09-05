@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Tourist Portal</title>
+  <link rel="stylesheet" href="sih.css">
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- Tourist Registration -->
+    <div class="box">
+      <h2>Tourist Registration</h2>
+      <form id="registrationForm">
+        <label>Name <input id="name" name="name"></label>
+        <label>Email <input id="email" type="email" name="email"></label>
+        <label>Phone <input id="phone" name="phone"></label>
+        <label>ID Type
+          <select id="idType" name="idType">
+            <option>Aadhaar</option>
+            <option>Passport</option>
+          </select>
+        </label>
+        <label>ID Number <input id="idNumber" name="idNumber"></label>
+        <label>Photo <input id="photo" type="file" name="photo"></label>
+        <label>Start Date <input id="startDate" type="date" name="startDate"></label>
+        <label>End Date <input id="endDate" type="date" name="endDate"></label>
+        <label style="grid-column: span 2;">Itinerary <input id="itinerary" name="place" placeholder="Enter planned places"></label>
+        <button type="submit" style="grid-column: span 2;">Register</button>
+      </form>
+    </div>
+
+    <!-- Start Journey -->
+    <div class="box center-box">
+      <h2>Start Journey</h2>
+      <p>Confirm your journey details before starting.</p>
+      <label>End Date: <input id="journeyEnd" type="date"></label><br>
+      <button id="startJourneyBtn">Start Journey</button>
+    </div>
+
+    <!-- Panic Alert -->
+    <div class="box center-box" style="grid-column: span 2;">
+      <h2>Panic Alert</h2>
+      <p>If you are in danger, press the panic button to alert authorities with your location.</p>
+      <label>Message: <input id="panicMessage" placeholder="Optional note"></label><br><br>
+      <button class="panic-btn" id="panicBtn">🚨 PANIC</button>
+    </div>
+
+  </div>
+
+ 
+
+  <script src="sih.js"></script>
+</body>
+</html>

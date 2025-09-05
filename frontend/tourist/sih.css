@@ -1,0 +1,127 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f6f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.container {
+  width: 100%;
+  max-width: 1100px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+.box {
+  background: #fff;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+}
+.box:hover {
+  transform: translateY(-4px);
+}
+
+h2 {
+  margin-top: 0;
+  font-size: 22px;
+  color: #2c3e50;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px 20px;
+}
+form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  color: #555;
+}
+form input, form select {
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+button {
+  padding: 10px 15px;
+  background: #0077ff;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+button:hover {
+  background: #005bcc;
+}
+
+/* Special styling for Start Journey & Panic Alert */
+.center-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  flex-direction: column;
+}
+.panic-btn {
+  background: #e74c3c;
+  font-size: 18px;
+  font-weight: bold;
+}
+.panic-btn:hover {
+  background: #c0392b;
+}
+
+@media(max-width: 900px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+  form {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+/* Panic button blinking + pulsing */
+.panic-btn {
+  background: #d32f2f;
+  color: #fff;
+  font-weight: bold;
+  font-size: 20px;
+  padding: 16px 24px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  animation: blink 1s infinite, pulse 1.5s infinite;
+  box-shadow: 0 0 15px rgba(211, 47, 47, 0.7);
+  transition: transform 0.2s;
+}
+
+.panic-btn:hover {
+  transform: scale(1.1);
+}
+
+@keyframes blink {
+  0%, 50%, 100% { background: #d32f2f; }
+  25%, 75% { background: #ff4d4d; }
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 10px rgba(211,47,47,0.8); }
+  50% { box-shadow: 0 0 30px rgba(255,0,0,1); }
+  100% { box-shadow: 0 0 10px rgba(211,47,47,0.8); }
+}
