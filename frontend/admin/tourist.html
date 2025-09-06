@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Tourist Details</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header><h1>Tourist Details</h1><a href="tourists.html">Back</a></header>
+  <main>
+    <section id="details"></section>
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      ensureAuth();
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+      if (!id) return document.getElementById('details').textContent = 'No id provided';
+      await loadTouristDetails(id);
+    });
+  </script>
+</body>
+</html>

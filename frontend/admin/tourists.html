@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Admin Dashboard - TourChain</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Dashboard</h1>
+    <button id="logout">Logout</button>
+  </header>
+  <main>
+    <div class="stats">
+      <div class="stat"><h2 id="totalTourists">—</h2><p>Total Tourists</p></div>
+      <div class="stat"><h2 id="activeJourneys">—</h2><p>Active Journeys</p></div>
+      <div class="stat"><h2 id="activePanics">—</h2><p>Active Panics</p></div>
+    </div>
+
+    <nav>
+      <a href="tourists.html">Tourists</a> |
+      <a href="panics.html">Panics</a>
+    </nav>
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    document.getElementById('logout').addEventListener('click', () => { adminLogout(); });
+    // load stats on page load
+    document.addEventListener('DOMContentLoaded', () => { ensureAuth(); loadStats(); });
+  </script>
+</body>
+</html>
