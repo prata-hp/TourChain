@@ -1,0 +1,28 @@
+2025-09-07 01:44:04 [ERROR]: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+2025-09-07 01:45:35 [ERROR]: ❌ Could not start journey (id=<TOURIST_ID>): Cast to ObjectId failed for value "<TOURIST_ID>" (type string) at path "_id" for model "Tourist"
+2025-09-07 01:46:37 [ERROR]: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+2025-09-07 01:51:53 [ERROR]: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+2025-09-07 02:04:55 [ERROR]: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+2025-09-07 23:55:51 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:56:13 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:56:19 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:56:42 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:57:09 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:58:28 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:58:29 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:58:30 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:58:30 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:58:30 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:58:31 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:58:31 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:58:31 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:58:31 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:58:32 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:58:32 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:58:32 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:58:33 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-08 00:49:40 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-08 00:49:41 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-08 00:58:52 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-08 22:00:20 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-08 22:26:37 [ERROR]: ❌ Could not start journey (id=68bf0a6f1ea5e4acd7d0524a): invalid BytesLike value (argument="value", value="f98c52615393188b6578927ef22bb4cf9f147b0fbf2f0842a358306b52052ce5", code=INVALID_ARGUMENT, version=6.15.0)
