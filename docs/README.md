@@ -1,12 +1,3 @@
-Got it 🚀 Let’s prepare a clean **README.md** for your `TourChain/` repo.
-It will explain the **folder structure, installations, and all basic commands** so your team can get started without confusion.
-
----
-
-# 📖 README.md (Starter)
-
-```markdown
-# TourChain
 
 TourChain is a blockchain + web application for managing tourist and admin operations.  
 This repo contains both **backend (Node.js, MongoDB, Hardhat)** and **frontend (React, Vite)** projects.
@@ -60,146 +51,167 @@ git --version
 
 ---
 
-## 🛠 Setup Instructions
+Excellent! Since your project also depends on a local blockchain using Hardhat, you need to restart that too after the computer shut down. Below is a complete, step-by-step tutorial covering **MongoDB**, **Backend server**, **Frontend**, and **Blockchain (Hardhat)**.
 
-### 1. Clone the Repo
+---
 
-```bash
-git clone <repo-url>
-cd TourChain
+## ✅ **Complete Restart Guide After Shutdown**
+
+---
+
+### 📦 **1. MongoDB – Start Database**
+
+1. Open **PowerShell or Command Prompt as Administrator**.
+
+2. If MongoDB is installed as a service:
+
+   ```bash
+   net start MongoDB
+   ```
+
+   * If you get an error, start it manually as below.
+
+3. To start manually:
+
+   ```bash
+   "C:\Program Files\MongoDB\Server\<version>\bin\mongod.exe" --dbpath "C:\data\db"
+   ```
+
+   Replace `<version>` with your version number.
+
+4. In a new terminal, connect to MongoDB to ensure it’s running:
+
+   ```bash
+   mongosh
+   ```
+
+   If you connect without issues, MongoDB is up.
+
+---
+
+### ⛓ **2. Blockchain (Hardhat) – Start Local Node**
+
+1. Open a terminal.
+
+2. Navigate to your Hardhat project folder:
+
+   ```bash
+   cd C:\Users\nilus\Desktop\project\TourChain
+   ```
+
+3. Start the Hardhat node:
+
+   ```bash
+   npx hardhat node
+   ```
+
+   This will start the local blockchain at `http://127.0.0.1:8545` and show funded accounts with private keys.
+
+4. Keep this terminal open while you work.
+
+---
+
+### 📂 **3. Backend Server – Start Express API**
+
+1. Open a **new terminal**.
+
+2. Navigate to the backend folder:
+
+   ```bash
+   cd C:\Users\nilus\Desktop\project\TourChain\backend
+   ```
+
+3. Install dependencies if needed:
+
+   ```bash
+   npm install
+   ```
+
+4. Start the server:
+
+   ```bash
+   npm start
+   ```
+
+   or
+
+   ```bash
+   npm run dev
+   ```
+
+5. Check the logs for:
+
+   ```
+   ✅ MongoDB connected
+   Server running on port 5000
+   ```
+
+---
+
+### 📂 **4. Frontend – Open in Browser**
+
+1. Navigate to the folder containing `sih.html` (maybe in `tourist` folder or elsewhere).
+
+2. Either:
+
+   * Right-click `sih.html` and open with your browser, or
+   * Use a development server like `live-server` if installed:
+
+     ```bash
+     live-server
+     ```
+
+   This should open the browser at `http://127.0.0.1:8080` or another port.
+
+3. Fill in the form and test registration.
+
+---
+
+### ✅ **5. Verify All Connections**
+
+* **Hardhat Node running on port 8545?**
+  Check the terminal shows account addresses.
+
+* **Backend connected to MongoDB?**
+  Look for `✅ MongoDB connected` in the logs.
+
+* **Frontend making requests to backend?**
+  Open the browser console (F12 → Console tab) and check for errors or network requests.
+
+---
+
+### ⚙ **6. Environment Variables Check**
+
+In `backend/.env`, ensure:
+
 ```
-
-### 2. Backend Setup
-
-```bash
-cd backend
-
-# copy env template
-cp .env.example .env
-
-# install dependencies
-npm install
-
-# run server
-npm start
-```
-
-For development with auto-reload:
-
-```bash
-npm run dev
-```
-
-### 3. Frontend Setup
-
-```bash
-cd ../frontend
-
-# copy env template
-cp .env.example .env
-
-# install dependencies
-npm install
-
-# run frontend
-npm run dev
+MONGO_URI=mongodb://127.0.0.1:27017/tourchain
+PORT=5000
+BLOCKCHAIN_RPC=http://127.0.0.1:8545
+PRIVATE_KEY=0x...  # copy from Hardhat node output
+CONTRACT_ADDRESS=0x...  # deployed contract address if applicable
+ETHERSCAN_API_KEY=  # leave empty if not used
+ID_PEPPER=optional-static-pepper
 ```
 
 ---
 
-## ⛓ Hardhat (Blockchain)
+### 📌 Notes
 
-Install Hardhat (already in backend `package.json`):
-
-```bash
-cd backend
-npm install --save-dev hardhat
-```
-
-Run Hardhat commands:
-
-```bash
-# compile contracts
-npx hardhat compile
-
-# run tests
-npx hardhat test
-
-# deploy contract
-npx hardhat run scripts/deploy.js --network sepolia
-```
+* Keep MongoDB, Hardhat node, and backend running in separate terminals.
+* The frontend doesn’t need installation but must point to the correct backend URL.
+* If you restart the computer, Hardhat’s blockchain state will reset unless you configure persistent accounts.
 
 ---
 
-## 📦 Useful Commands
+### ✅ Summary Workflow
 
-### Backend
-
-```bash
-npm start        # run server
-npm run dev      # run server with nodemon (auto-restart)
-```
-
-### Frontend
-
-```bash
-npm run dev      # run development server
-npm run build    # build production files
-npm run preview  # preview production build
-```
-
-### Git
-
-```bash
-git status
-git add .
-git commit -m "message"
-git push origin main
-```
+1. ✅ Start MongoDB.
+2. ✅ Start the Hardhat node.
+3. ✅ Start the backend server.
+4. ✅ Open the frontend in the browser.
+5. ✅ Fill the form → check the backend logs → check if data is saved in MongoDB.
+6. ✅ Ensure Hardhat, backend, and frontend are talking through the correct URLs.
 
 ---
 
-## 🔑 Environment Variables
-
-Fill these before running:
-
-### backend/.env
-
-```
-PORT=4000
-MONGO_URI=mongodb://localhost:27017/tourchain
-JWT_SECRET=your-secret-key
-PRIVATE_KEY=your-wallet-private-key
-RPC_URL=https://sepolia.infura.io/v3/YOUR_PROJECT_ID
-CONTRACT_ADDRESS=0xYourContractAddressHere
-```
-
-### frontend/.env
-
-```
-VITE_API_URL=http://localhost:4000
-VITE_CONTRACT_ADDRESS=0xYourContractAddressHere
-```
-
----
-
-## 🗓 Suggested Timeline
-
-| Day   | Task                              |
-| ----- | --------------------------------- |
-| Day 1 | Repo setup + env config           |
-| Day 2 | Backend server + MongoDB connect  |
-| Day 3 | Frontend scaffold (tourist/admin) |
-| Day 4 | Routes + Models                   |
-| Day 5 | Hardhat setup + contract deploy   |
-| Day 6 | Seed + Integration                |
-| Day 7 | End-to-end testing                |
-
----
-
-```
-
----
-
-👉 Do you want me to also create a **docs/INSTALLATION.md** with just the installation commands (copy-paste friendly), so the main README stays clean?
-```

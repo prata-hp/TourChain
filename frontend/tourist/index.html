@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Tourist Registration | TourChain</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body data-page="register">
+
+  <div class="container">
+    <h1>Tourist Registration</h1>
+    <form id="registrationForm" enctype="multipart/form-data">
+      
+      <!-- Basic Info -->
+      <label>Name
+        <input type="text" name="name" required />
+      </label>
+
+      <label>Email
+        <input type="email" name="email" required />
+      </label>
+
+      <label>Phone
+        <input type="tel" name="phone" required />
+      </label>
+
+      <!-- ID Info -->
+      <label>ID Type
+        <select name="idType" required>
+          <option value="Aadhaar">Aadhaar</option>
+          <option value="Passport">Passport</option>
+        </select>
+      </label>
+
+      <label>ID Number
+        <input type="text" name="idNumber" required />
+      </label>
+
+      <label>Photo Upload
+        <input type="file" name="photo" accept="image/*" required />
+      </label>
+
+      <!-- Dates -->
+      <label>Start Date
+        <input type="date" name="startDate" required />
+      </label>
+
+      <label>End Date
+        <input type="date" name="endDate" required />
+      </label>
+
+      <!-- Dynamic Itinerary -->
+      <div id="itineraryContainer">
+        <label>Destination 1
+          <div style="display:flex; gap:8px; align-items:center;">
+            <input type="text" name="itinerary[]" placeholder="Enter place" required style="flex:1;" />
+            <button type="button" class="remove-itinerary" title="Remove">✕</button>
+          </div>
+        </label>
+      </div>
+
+      <button type="button" id="addPlaceBtn">+ Add Place</button>
+
+      <!-- Submit -->
+      <button type="submit">Register</button>
+    </form>
+  </div>
+
+  <!-- Scripts -->
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
+

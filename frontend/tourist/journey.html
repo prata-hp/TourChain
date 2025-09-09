@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Start Journey | TourChain</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body data-page="journey">
+
+  <div class="container">
+    <h1>Start Your Journey</h1>
+
+    <!-- Tourist Info -->
+    <div id="touristInfo" class="info-box">
+      <p><strong>Name:</strong> <span id="touristName">Loading...</span></p>
+      <p><strong>Email:</strong> <span id="touristEmail">Loading...</span></p>
+      <p><strong>Phone:</strong> <span id="touristPhone">Loading...</span></p>
+      <p><strong>Start Date:</strong> <span id="touristStart">Loading...</span></p>
+      <p><strong>End Date:</strong> <span id="touristEnd">Loading...</span></p>
+    </div>
+
+    <!-- Start Journey Button -->
+    <button id="startJourneyBtn">🚀 Start Journey</button>
+
+    <!-- Response Box -->
+    <div id="journeyResponse" class="response-box" style="display:none;">
+      <p><strong>Blockchain TxHash:</strong> <span id="txHash"></span></p>
+      <!--<p><strong>Journey Valid Until:</strong> <span id="validUntil"></span></p> -->
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

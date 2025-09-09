@@ -1,3 +1,6 @@
+const API_URL = import.meta.env.VITE_API_URL;
+const CONTRACT_ADDRESS = import.meta.env.VITE_CONTRACT_ADDRESS;
+
 document.addEventListener("DOMContentLoaded", () => {
   initRegister();
   initJourney();
@@ -13,19 +16,18 @@ function initRegister() {
     e.preventDefault();
 
     const formData = new FormData(form);
-    // add itinerary field (since your HTML has just one input)
     const itinerary = document.getElementById("itinerary").value;
     formData.append("itinerary[]", itinerary);
 
-    const response = await fetch("/api/tourists/register", {
+    const response = await fetch(`${API_URL}/api/tourists/register`, {
       method: "POST",
       body: formData
     });
 
     const data = await response.json();
-    alert("Registered! Tourist ID: " + data._id);
+    alert("Registered! Tourist ID: " + data.tourist._id);
 
-    localStorage.setItem("touristId", data._id);
+    localStorage.setItem("touristId", data.tourist._id);
   });
 }
 
@@ -38,7 +40,7 @@ function initJourney() {
     const touristId = localStorage.getItem("touristId");
     if (!touristId) return alert("No Tourist ID found. Register first!");
 
-    const response = await fetch(`/api/tourists/${touristId}/startJourney`, {
+    const response = await fetch(`${API_URL}/api/tourists/${touristId}/startJourney`, {
       method: "POST"
     });
 
@@ -67,7 +69,7 @@ function initPanic() {
         }
       };
 
-      const res = await fetch("/api/panic", {
+      const res = await fetch(`${API_URL}/api/panic`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body)

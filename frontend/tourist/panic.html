@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Panic Alert | TourChain</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body data-page="panic">
+
+  <div class="container">
+    <h1>🚨 Panic Alert</h1>
+    <p>If you are in danger, press the panic button below. Your location and message will be sent to authorities immediately.</p>
+
+    <!-- Optional Message -->
+    <label for="panicMessage">Message (optional):</label>
+    <input type="text" id="panicMessage" placeholder="Enter a short note" />
+
+    <!-- Panic Button -->
+    <button id="panicBtn" class="panic-btn">🚨 SEND PANIC ALERT</button>
+
+    <!-- Response Box -->
+    <div id="panicResponse" class="response-box" style="display:none;">
+      <p><strong>Status:</strong> <span id="panicStatus"></span></p>
+      <p><strong>Message Sent:</strong> <span id="panicMsg"></span></p>
+      <p><strong>Location:</strong> <span id="panicLoc"></span></p>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
