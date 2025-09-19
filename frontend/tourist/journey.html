@@ -3,33 +3,70 @@
 <head>
   <meta charset="utf-8" />
   <title>Start Journey | TourChain</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body data-page="journey">
-
-  <div class="container">
-    <h1>Start Your Journey</h1>
-
-    <!-- Tourist Info -->
-    <div id="touristInfo" class="info-box">
-      <p><strong>Name:</strong> <span id="touristName">Loading...</span></p>
-      <p><strong>Email:</strong> <span id="touristEmail">Loading...</span></p>
-      <p><strong>Phone:</strong> <span id="touristPhone">Loading...</span></p>
-      <p><strong>Start Date:</strong> <span id="touristStart">Loading...</span></p>
-      <p><strong>End Date:</strong> <span id="touristEnd">Loading...</span></p>
+  <header class="site-header">
+    <div class="wrap">
+      <div class="brand">
+        <div class="logo">🧭</div>
+        <div class="brand-text">
+          <div class="product">TourChain</div>
+          <div class="tag muted">Journey proof</div>
+        </div>
+      </div>
+      <nav class="nav">
+        <a class="nav-link" href="index.html">Register</a>
+        <a class="nav-link active" href="journey.html">Journey</a>
+      </nav>
     </div>
+  </header>
 
-    <!-- Start Journey Button -->
-    <button id="startJourneyBtn">🚀 Start Journey</button>
+  <main class="page">
+    <section class="wrap">
+      <div class="card card-lg">
+        <h1 class="page-title">Start Your Journey</h1>
 
-    <!-- Response Box -->
-    <div id="journeyResponse" class="response-box" style="display:none;">
-      <p><strong>Blockchain TxHash:</strong> <span id="txHash"></span></p>
-      <!--<p><strong>Journey Valid Until:</strong> <span id="validUntil"></span></p> -->
-    </div>
-  </div>
+        <div id="touristInfo" class="info-grid">
+          <div class="info-card">
+            <div class="info-label">Name</div>
+            <div class="info-value" id="touristName">Loading...</div>
+          </div>
+          <div class="info-card">
+            <div class="info-label">Email</div>
+            <div class="info-value" id="touristEmail">Loading...</div>
+          </div>
+          <div class="info-card">
+            <div class="info-label">Phone</div>
+            <div class="info-value" id="touristPhone">Loading...</div>
+          </div>
+          <div class="info-card">
+            <div class="info-label">Start Date</div>
+            <div class="info-value" id="touristStart">Loading...</div>
+          </div>
+          <div class="info-card">
+            <div class="info-label">End Date</div>
+            <div class="info-value" id="touristEnd">Loading...</div>
+          </div>
+        </div>
 
-  <!-- Scripts -->
+        <div class="actions">
+          <button id="startJourneyBtn" class="btn btn-primary large">🚀 Start Journey</button>
+        </div>
+
+        <div id="journeyResponse" class="response-box" style="display:none;">
+          <div class="response-row"><strong>Blockchain TxHash:</strong> <span id="txHash"></span></div>
+          <div class="response-row"><strong>Journey Valid Until:</strong> <span id="validUntil"></span></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap muted small">TourChain • Demo prototype</div>
+  </footer>
+
   <script src="config.js"></script>
   <script src="app.js"></script>
 </body>

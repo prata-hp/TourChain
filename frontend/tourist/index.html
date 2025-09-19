@@ -3,72 +3,106 @@
 <head>
   <meta charset="utf-8" />
   <title>Tourist Registration | TourChain</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body data-page="register">
-
-  <div class="container">
-    <h1>Tourist Registration</h1>
-    <form id="registrationForm" enctype="multipart/form-data">
-      
-      <!-- Basic Info -->
-      <label>Name
-        <input type="text" name="name" required />
-      </label>
-
-      <label>Email
-        <input type="email" name="email" required />
-      </label>
-
-      <label>Phone
-        <input type="tel" name="phone" required />
-      </label>
-
-      <!-- ID Info -->
-      <label>ID Type
-        <select name="idType" required>
-          <option value="Aadhaar">Aadhaar</option>
-          <option value="Passport">Passport</option>
-        </select>
-      </label>
-
-      <label>ID Number
-        <input type="text" name="idNumber" required />
-      </label>
-
-      <label>Photo Upload
-        <input type="file" name="photo" accept="image/*" required />
-      </label>
-
-      <!-- Dates -->
-      <label>Start Date
-        <input type="date" name="startDate" required />
-      </label>
-
-      <label>End Date
-        <input type="date" name="endDate" required />
-      </label>
-
-      <!-- Dynamic Itinerary -->
-      <div id="itineraryContainer">
-        <label>Destination 1
-          <div style="display:flex; gap:8px; align-items:center;">
-            <input type="text" name="itinerary[]" placeholder="Enter place" required style="flex:1;" />
-            <button type="button" class="remove-itinerary" title="Remove">✕</button>
-          </div>
-        </label>
+  <header class="site-header">
+    <div class="wrap">
+      <div class="brand">
+        <div class="logo">🧭</div>
+        <div class="brand-text">
+          <div class="product">TourChain</div>
+          <div class="tag muted">Secure travel proofs</div>
+        </div>
       </div>
+      <nav class="nav">
+        <a class="nav-link" href="index.html">Register</a>
+        <a class="nav-link" href="journey.html">Journey</a>
+      </nav>
+    </div>
+  </header>
 
-      <button type="button" id="addPlaceBtn">+ Add Place</button>
+  <main class="page">
+    <section class="wrap">
+      <div class="card card-lg">
+        <h1 class="page-title">Tourist Registration</h1>
 
-      <!-- Submit -->
-      <button type="submit">Register</button>
-    </form>
-  </div>
+        <form id="registrationForm" enctype="multipart/form-data" class="form-grid" autocomplete="off">
+          <!-- Basic Info -->
+          <div class="form-control">
+            <label class="label">Name</label>
+            <input class="input" type="text" name="name" required />
+          </div>
 
-  <!-- Scripts -->
+          <div class="form-control">
+            <label class="label">Email</label>
+            <input class="input" type="email" name="email" required />
+          </div>
+
+          <div class="form-control">
+            <label class="label">Phone</label>
+            <input class="input" type="tel" name="phone" required />
+          </div>
+
+          <!-- ID Info -->
+          <div class="form-control">
+            <label class="label">ID Type</label>
+            <select class="input" name="idType" required>
+              <option value="Aadhaar">Aadhaar</option>
+              <option value="Passport">Passport</option>
+            </select>
+          </div>
+
+          <div class="form-control">
+            <label class="label">ID Number</label>
+            <input class="input" type="text" name="idNumber" required />
+          </div>
+
+          <div class="form-control">
+            <label class="label">Photo</label>
+            <input class="input" type="file" name="photo" accept="image/*" required />
+            <div class="muted small">We store a secure hash — photo used only for verification.</div>
+          </div>
+
+          <!-- Dates -->
+          <div class="form-control">
+            <label class="label">Start Date</label>
+            <input class="input" type="date" name="startDate" required />
+          </div>
+
+          <div class="form-control">
+            <label class="label">End Date</label>
+            <input class="input" type="date" name="endDate" required />
+          </div>
+
+          <!-- Dynamic Itinerary -->
+          <div id="itineraryContainer" class="itinerary-area" style="grid-column:1 / -1;">
+            <label class="label">Itinerary</label>
+            <div class="itinerary-list">
+              <div class="itinerary-item">
+                <input class="input" type="text" name="itinerary[]" placeholder="Start destination" required />
+                <button type="button" class="btn btn-ghost remove-itinerary" title="Remove">✕</button>
+              </div>
+            </div>
+            <div class="muted small">Add planned stops. You can add more with + Add Place.</div>
+          </div>
+
+          <div style="grid-column:1 / -1; display:flex; gap:12px; align-items:center;">
+            <button type="button" id="addPlaceBtn" class="btn btn-outline">+ Add Place</button>
+            <div class="spacer"></div>
+            <button type="submit" class="btn btn-primary">Register</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap muted small">TourChain • Demo prototype</div>
+  </footer>
+
   <script src="config.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
-
