@@ -1,108 +1,1028 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" class="dark">
 <head>
-  <meta charset="utf-8" />
-  <title>Tourist Registration | TourChain</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>TourChain - Tourist Safety App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            'dark': '#0f3d35',
+                            'light': '#00a78e',
+                        },
+                        background: {
+                            'light': '#fcfaf5',
+                            'dark': '#0f172a',
+                        },
+                        neutral: {
+                            'text': '#525252'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            background-color: #e5e7eb;
+        }
+        .dark body {
+            background-color: #1f2937;
+        }
+        #app-container {
+            border-radius: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+            position: relative;
+            border: 8px solid #000;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #a8a8a8; border-radius: 3px;}
+        .dark ::-webkit-scrollbar-track { background: #1f2937; }
+        .dark ::-webkit-scrollbar-thumb { background: #4b5563; }
+        .animate-fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .animate-slide-up { animation: slideUp 0.5s ease-in-out; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .tab-button.active {
+            background-color: #00a78e;
+            color: white;
+        }
+        .panic-button-active {
+            background-color: #ef4444;
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 1);
+            animation: pulse-red 2s infinite;
+        }
+        @keyframes pulse-red {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+    </style>
 </head>
-<body data-page="register">
-  <header class="site-header">
-    <div class="wrap">
-      <div class="brand">
-        <div class="logo">🧭</div>
-        <div class="brand-text">
-          <div class="product">TourChain</div>
-          <div class="tag muted">Secure travel proofs</div>
-        </div>
-      </div>
-      <nav class="nav">
-        <a class="nav-link" href="index.html">Register</a>
-        <a class="nav-link" href="journey.html">Journey</a>
-      </nav>
-    </div>
-  </header>
+<body class="bg-background-light dark:bg-background-dark transition-colors duration-300">
+    <div id="app-container" class="h-screen w-full mx-auto max-w-lg flex flex-col bg-background-light dark:bg-background-dark"></div>
+    <div id="bottom-nav-container"></div>
 
-  <main class="page">
-    <section class="wrap">
-      <div class="card card-lg">
-        <h1 class="page-title">Tourist Registration</h1>
-
-        <form id="registrationForm" enctype="multipart/form-data" class="form-grid" autocomplete="off">
-          <!-- Basic Info -->
-          <div class="form-control">
-            <label class="label">Name</label>
-            <input class="input" type="text" name="name" required />
-          </div>
-
-          <div class="form-control">
-            <label class="label">Email</label>
-            <input class="input" type="email" name="email" required />
-          </div>
-
-          <div class="form-control">
-            <label class="label">Phone</label>
-            <input class="input" type="tel" name="phone" required />
-          </div>
-
-          <!-- ID Info -->
-          <div class="form-control">
-            <label class="label">ID Type</label>
-            <select class="input" name="idType" required>
-              <option value="Aadhaar">Aadhaar</option>
-              <option value="Passport">Passport</option>
-            </select>
-          </div>
-
-          <div class="form-control">
-            <label class="label">ID Number</label>
-            <input class="input" type="text" name="idNumber" required />
-          </div>
-
-          <div class="form-control">
-            <label class="label">Photo</label>
-            <input class="input" type="file" name="photo" accept="image/*" required />
-            <div class="muted small">We store a secure hash — photo used only for verification.</div>
-          </div>
-
-          <!-- Dates -->
-          <div class="form-control">
-            <label class="label">Start Date</label>
-            <input class="input" type="date" name="startDate" required />
-          </div>
-
-          <div class="form-control">
-            <label class="label">End Date</label>
-            <input class="input" type="date" name="endDate" required />
-          </div>
-
-          <!-- Dynamic Itinerary -->
-          <div id="itineraryContainer" class="itinerary-area" style="grid-column:1 / -1;">
-            <label class="label">Itinerary</label>
-            <div class="itinerary-list">
-              <div class="itinerary-item">
-                <input class="input" type="text" name="itinerary[]" placeholder="Start destination" required />
-                <button type="button" class="btn btn-ghost remove-itinerary" title="Remove">✕</button>
-              </div>
+    <div id="qr-modal" class="fixed inset-0 bg-black/80 z-50 flex-col items-center justify-center hidden">
+        <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-2xl text-center animate-fade-in w-11/12 max-w-sm">
+            <h2 id="qr-modal-title" class="text-2xl font-bold text-gray-800 dark:text-white mb-2"></h2>
+            <p id="qr-modal-subtitle" class="text-neutral-text dark:text-gray-300 mb-6"></p>
+            <div id="qr-code-container" class="p-4 bg-white rounded-lg inline-block">
+                <canvas id="qr-canvas"></canvas>
             </div>
-            <div class="muted small">Add planned stops. You can add more with + Add Place.</div>
-          </div>
+            <p id="qr-modal-tx-label" class="text-sm text-gray-500 mt-4"></p>
+            <p id="qr-modal-tx-hash" class="text-xs text-primary-light font-mono break-all mt-1"></p>
+            <button onclick="hideQrModal()" class="mt-8 w-full bg-primary-light text-white font-bold py-3 px-4 rounded-lg hover:opacity-90 transition-opacity">
+                Close
+            </button>
+        </div>
+    </div>
 
-          <div style="grid-column:1 / -1; display:flex; gap:12px; align-items:center;">
-            <button type="button" id="addPlaceBtn" class="btn btn-outline">+ Add Place</button>
-            <div class="spacer"></div>
-            <button type="submit" class="btn btn-primary">Register</button>
-          </div>
-        </form>
-      </div>
-    </section>
-  </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
 
-  <footer class="site-footer">
-    <div class="wrap muted small">TourChain • Demo prototype</div>
-  </footer>
+    <script>
+    // -------------------------------------------------------------------------
+    // --- 1. CONFIGURATION & STATE MANAGEMENT
+    // -------------------------------------------------------------------------
+    const API_URL = "http://localhost:5000/api"; // Your real backend URL
+    const ADMIN_APP_URL = "http://your-admin-app-url.com/login"; // Admin Redirect URL
 
-  <script src="config.js"></script>
-  <script src="app.js"></script>
+    let destinationCount = 1;
+
+    let state = {
+        currentPage: 'splash',
+        language: 'en',
+        isDarkMode: true,
+        currentUser: null,
+        activeJourney: null,
+        activeJourneyData: null, // Stores QR token and Tx Hash
+        itineraryDrafts: [],
+        profile: null,
+    };
+
+    // -------------------------------------------------------------------------
+    // --- 2. MULTI-LANGUAGE SUPPORT
+    // -------------------------------------------------------------------------
+    const translations = {
+        en: { appName: "TourChain", welcome: "Welcome", tagline: "Your Safety, Our Priority", selectLanguage: "Select Language", login: "Login", signup: "Sign Up", phone: "Phone Number", password: "Password", home: "Home", plan: "Plan", active: "Active Trip", account: "Account", panic: "PANIC", planNewTrip: "Plan New Trip", myTripDrafts: "My Trip Drafts", safetyScore: "Safety Score", startJourney: "Start Planned Journey", endJourney: "End Current Journey", activeJourney: "Active Journey", nextStop: "Next Stop", updateItinerary: "Update Itinerary", shareLocation: "Share Location", profileDetails: "Profile Details", familyMembers: "Family Members", addMember: "Add Member", emergencyContacts: "Emergency Contacts", settings: "Settings", voiceActivation: "Voice Activation", journeyActivation: "Journey Activation", selectDraft: "Select an Itinerary Draft", setDates: "Set Journey Dates", from: "From", to: "To", selectMembers: "Select Members", activateTrip: "Activate Trip", showQrCode: "Show Verification QR Code", qrCodeTitle: "Journey Activated!", qrCodeSubtitle: "Show this QR code to authorities for verification.", txHash: "Blockchain Transaction Hash", close: "Close", createNewTrip: "Create New Trip Plan", notifications: "Notifications", role: "I am a:" },
+        hi: { appName: "टूरचेन", welcome: "स्वागत है", tagline: "आपकी सुरक्षा, हमारी प्राथमिकता", selectLanguage: "भाषा चुने", login: "लॉग इन करें", signup: "साइन अप करें", phone: "फोन नंबर", password: "पासवर्ड", home: "होम", plan: "योजना", active: "सक्रिय यात्रा", account: "अकाउंट", panic: "घबड़ाहट", planNewTrip: "नई यात्रा की योजना बनाएं", myTripDrafts: "मेरी यात्रा के ड्राफ्ट", safetyScore: "सुरक्षा स्कोर", startJourney: "नियोजित यात्रा शुरू करें", endJourney: "वर्तमान यात्रा समाप्त करें", activeJourney: "सक्रिय यात्रा", nextStop: "अगला पड़ाव", updateItinerary: "यात्रा कार्यक्रम अपडेट करें", shareLocation: "स्थान साझा करें", profileDetails: "प्रोफ़ाइल विवरण", familyMembers: "परिवार के सदस्य", addMember: "सदस्य जोड़ें", emergencyContacts: "आपातकालीन संपर्क", settings: "सेटिंग्स", voiceActivation: "आवाज सक्रियण", journeyActivation: "यात्रा सक्रियण", selectDraft: "एक यात्रा कार्यक्रम ड्राफ्ट चुनें", setDates: "यात्रा की तिथियां निर्धारित करें", from: "से", to: "तक", selectMembers: "सदस्य चुनें", activateTrip: "यात्रा सक्रिय करें", showQrCode: "सत्यापन QR कोड दिखाएं", qrCodeTitle: "यात्रा सक्रिय!", qrCodeSubtitle: "सत्यापन के लिए यह QR कोड अधिकारियों को दिखाएं।", txHash: "ब्लॉकचेन लेनदेन हैश", close: "बंद करे", createNewTrip: "नई यात्रा योजना बनाएं", notifications: "सूचनाएं", role: "मैं हूँ:" },
+        bn: { appName: "ট্যুরচেন", welcome: "স্বাগতম", tagline: "আপনার সুরক্ষা, আমাদের অগ্রাধিকার", selectLanguage: "ভাষা নির্বাচন করুন", login: "লগইন", signup: "সাইন আপ", phone: "ফোন নম্বর", password: "পাসওয়ার্ড", home: "হোম", plan: "পরিকল্পনা", active: "সক্রিয় ট্রিপ", account: "অ্যাকাউন্ট", panic: "আতঙ্ক", planNewTrip: "নতুন ট্রিপ পরিকল্পনা করুন", myTripDrafts: "আমার ট্রিপ ড্রাফ্ট", safetyScore: "সুরক্ষা স্কোর", startJourney: "পরিকল্পিত যাত্রা শুরু করুন", endJourney: "বর্তমান যাত্রা শেষ করুন", activeJourney: "সক্রিয় ট্রিপ", nextStop: "পরবর্তী স্টপ", updateItinerary: "ভ্রমণপথ আপডেট করুন", shareLocation: "লোকেশন শেয়ার করুন", profileDetails: "প্রোফাইলের বিবরণ", familyMembers: "পরিবারের সদস্য", addMember: "সদস্য যোগ করুন", emergencyContacts: "জরুরী যোগাযোগ", settings: "সেটিংস", voiceActivation: "ভয়েস অ্যাক্টিভেশন", journeyActivation: "যাত্রা অ্যাক্টিভেশন", selectDraft: "একটি ভ্রমণপথের খসড়া নির্বাচন করুন", setDates: "যাত্রার তারিখ সেট করুন", from: "থেকে", to: "পর্যন্ত", selectMembers: "সদস্য নির্বাচন করুন", activateTrip: "ট্রিপ সক্রিয় করুন", showQrCode: "সত্যাপন QR কোড দেখান", qrCodeTitle: "যাত্রা সক্রিয়!", qrCodeSubtitle: "যাচাইয়ের জন্য কর্তৃপক্ষকে এই QR কোডটি দেখান।", txHash: "ব্লকচেন লেনদেন হ্যাশ", close: "বন্ধ করুন", createNewTrip: "নতুন ট্রিপ প্ল্যান তৈরি করুন", notifications: "বিজ্ঞপ্তি", role: "আমি একজন:" },
+        as: { appName: "টুৰচেইন", welcome: "স্বাগতম", tagline: "আপোনাৰ সুৰক্ষা, আমাৰ অগ্ৰাধিকাৰ", selectLanguage: "ভাষা নিৰ্বাচন কৰক", login: "লগইন কৰক", signup: "চাইন আপ কৰক", phone: "ফোন নম্বৰ", password: "পাছৱৰ্ড", home: "হোম", plan: "পৰিকল্পনা", active: "সক্ৰিয় যাত্ৰা", account: "একাউণ্ট", panic: "আতংক", planNewTrip: "নতুন যাত্ৰাৰ পৰিকল্পনা কৰক", myTripDrafts: "মোৰ যাত্ৰাৰ খচৰা", safetyScore: "সুৰক্ষা স্কোৰ", startJourney: "পরিকল্পিত যাত্রা শুরু কৰক", endJourney: "বৰ্তমান যাত্ৰা শেষ কৰক", activeJourney: "সক্ৰিয় যাত্ৰা", nextStop: "পৰৱৰ্তী ৰৈ যোৱা স্থান", updateItinerary: "যাত্ৰাপথ আপডেট কৰক", shareLocation: "অৱস্থান শ্বেয়াৰ কৰক", profileDetails: "প্ৰফাইলৰ বিৱৰণ", familyMembers: "পৰিয়ালৰ সদস্য", addMember: "সদস্য যোগ দিয়ক", emergencyContacts: "জৰুৰীকালীন যোগাযোগ", settings: "ছেটিংছ", voiceActivation: "ভইচ এক্টিভেচন", journeyActivation: "যাত্ৰা সক্ৰিয়কৰণ", selectDraft: "এটা যাত্ৰাপথৰ খচৰা নিৰ্বাচন কৰক", setDates: "যাত্ৰাৰ তাৰিখ ছেট কৰক", from: "পৰা", to: "লৈ", selectMembers: "সদস্য নিৰ্বাচন কৰক", activateTrip: "যাত্ৰা সক্ৰিয় কৰক", showQrCode: "সত্যাপন QR ক'ড দেখুৱাওক", qrCodeTitle: "যাত্ৰা সক্ৰিয়!", qrCodeSubtitle: "প্ৰমাণীকৰণৰ বাবে কৰ্তৃপক্ষক এই QR ক'ড দেখুৱাওক।", txHash: "ব্লকচেইন লেনদেন হেছ", close: "বন্ধ কৰক", createNewTrip: "নতুন যাত্ৰা পৰিকল্পনা সৃষ্টি কৰক", notifications: "জাননী", role: "মই এজন:" },
+        mni: { appName: "ꯇꯨꯔꯆꯦꯟ", welcome: "ꯇꯔꯥꯝꯅꯥ ꯑꯣꯏꯔꯕꯤꯌꯨ", tagline: "ꯅꯍꯥꯛꯀꯤ ꯁꯦꯐꯇꯤ, ꯑꯩꯈꯣꯌꯒꯤ ꯄ꯭ꯔꯥꯏꯑꯣꯔꯤꯇꯤ", selectLanguage: "ꯂꯣꯟ ꯈꯜꯂꯨ", login: "ꯂꯣꯒ ꯟ", signup: "ꯁꯥꯏꯟ ꯑꯞ", phone: "ꯐꯣꯟ ꯅꯝꯕꯔ", password: "ꯄꯥꯁꯋꯥꯔᱰ", home: "ꯍꯣꯝ", plan: "ꯄ꯭ꯂꯥꯟ", active: "ꯑꯦꯛꯇꯤꯚ ꯇ꯭ꯔꯤꯞ", account: "ꯑꯦꯀꯥꯎꯟꯇ", panic: "ꯄꯦꯅꯤꯛ", planNewTrip: "ꯑꯅꯧꯕꯥ ꯇ꯭ꯔꯤꯞ ꯄ꯭ꯂꯥꯟ ꯇꯧꯕꯤꯌꯨ", myTripDrafts: "ꯑꯩꯒꯤ ꯇ꯭ꯔꯤꯞ ꯗ꯭ꯔꯥꯐꯇꯁꯤꯡ", safetyScore: "ꯁꯦꯐꯇꯤ ꯁ꯭ꯀꯣꯔ", startJourney: "ꯄ꯭ꯂꯥꯟ ꯇꯧꯔꯕꯥ ꯌꯥꯊꯪ ꯍꯧꯕꯤꯌꯨ", endJourney: "ꯑꯦꯛꯇꯤꯚ ꯖꯔꯅꯤ ꯂꯣꯏꯁꯤꯟꯅꯨ", activeJourney: "ꯑꯦꯛꯇꯤꯚ ꯖꯔꯅꯤ", nextStop: "ꯃꯊꯪꯒꯤ ꯂꯦꯞꯐꯝ", updateItinerary: "ꯏꯇꯤꯅꯦꯔꯤ ꯑꯄꯗꯦꯠ ꯇꯧꯕꯤꯌꯨ", shareLocation: "ꯂꯣꯀꯦꯁꯟ ꯁꯦꯌꯔ ꯇꯧꯕꯤꯌꯨ", profileDetails: "ꯄ꯭ꯔꯣꯐꯥꯏꯜ ꯗꯤꯇꯦꯜꯁ", familyMembers: "ꯏꯃꯨꯡ ꯃꯅꯨꯡ", addMember: "ꯃꯤ ꯍꯥꯞꯆꯤꯜꯂꯨ", emergencyContacts: "ꯏꯃꯔꯖꯦꯟꯁꯤ ꯀꯟꯇꯦꯛꯇꯁꯤꯡ", settings: "ꯁꯦꯇꯤꯡꯁ", voiceActivation: "ꯚꯣꯏꯁ ꯑꯦꯛꯇꯤꯚꯦꯁꯟ", journeyActivation: "ꯖꯔꯅꯤ ꯑꯦꯛꯇꯤꯚꯦꯁꯟ", selectDraft: "ꯏꯇꯤꯅꯦꯔꯤ ꯗ꯭ꯔꯥꯐꯇ ꯑꯃꯥ ꯈꯜꯂꯨ", setDates: "ꯖꯔꯅꯤꯒꯤ ꯗꯦꯠꯁꯤꯡ ꯁꯦꯠ ꯇꯧꯕꯤꯌꯨ", from: "ꯗꯒꯤ", to: "ꯐꯥꯎꯕꯥ", selectMembers: "ꯃꯦꯝꯕꯔꯁꯤꯡ ꯈꯜꯂꯨ", activateTrip: "ꯇ꯭ꯔꯤꯞ ꯑꯦꯛꯇꯤꯚꯦꯠ ꯇꯧꯕꯤꯌꯨ", showQrCode: "ꯁꯦꯐꯇꯤ QR ꯀꯣꯗ ꯎꯠꯄꯤꯌꯨ", qrCodeTitle: "ꯖꯔꯅꯤ ꯑꯦꯛꯇꯤꯚꯦꯠ ꯇꯧꯈ꯭ꯔꯦ!", qrCodeSubtitle: "ꯚꯦꯔꯤꯐꯤꯀꯦꯁꯟꯒꯤꯗꯃꯛ ꯑꯣꯊꯣꯔꯤꯇꯤꯁꯤꯡꯗꯥ QR ꯀꯣꯗ ꯑꯁꯤ ꯎꯠꯄꯤꯌꯨ", txHash: "ꯕ꯭ꯂꯣꯛꯆꯦꯟ ꯇ꯭ꯔꯥꯟꯖꯦꯛꯁꯟ ꯍꯦꯁ", close: "ꯊꯤꯡꯖꯤꯜꯂꯨ", createNewTrip: "ꯑꯅꯧꯕꯥ ꯇ꯭ꯔꯤꯞ ꯄ꯭ꯂꯥꯟ ꯁꯦꯃꯃꯨ", notifications: "ꯑꯔꯣꯟꯕꯥ", role: "ꯑꯩ ꯑꯁꯤ:" },
+    };
+
+    // -------------------------------------------------------------------------
+    // --- 3. API & UTILITY FUNCTIONS
+    // -------------------------------------------------------------------------
+    const appContainer = document.getElementById('app-container');
+    const navContainer = document.getElementById('bottom-nav-container');
+    const getT = () => translations[state.language] || translations['en'];
+
+    async function apiRequest(endpoint, method = "GET", body = null) {
+    try {
+        const options = { method, headers: { "Content-Type": "application/json" } };
+        if (state.currentUser && state.currentUser.token) {
+            options.headers['Authorization'] = `Bearer ${state.currentUser.token}`;
+        }
+        if (body) options.body = JSON.stringify(body);
+        const res = await fetch(`${API_URL}${endpoint}`, options);
+        if (!res.ok) throw new Error(await res.text() || 'API Error');
+
+        const text = await res.text();
+        return text ? JSON.parse(text) : {}; // Safely handles empty responses
+
+    } catch (err) {
+        console.error('API Request Failed:', err);
+        throw err;
+    }
+}
+
+    function showQrModal(journeyData) {
+        const t = getT();
+        document.getElementById('qr-modal-title').innerText = t.qrCodeTitle;
+        document.getElementById('qr-modal-subtitle').innerText = t.qrCodeSubtitle;
+        document.getElementById('qr-modal-tx-label').innerText = t.txHash;
+        document.getElementById('qr-modal-tx-hash').innerText = journeyData.txHash;
+        document.querySelector('#qr-modal button').innerText = t.close;
+
+        const qrCanvas = document.getElementById('qr-canvas');
+        new QRious({
+            element: qrCanvas,
+            value: `${window.location.origin}/verify?token=${journeyData.qrCodeToken}`,
+            size: 200,
+            padding: 10,
+        });
+
+        const modal = document.getElementById('qr-modal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function hideQrModal() {
+        const modal = document.getElementById('qr-modal');
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
+    }
+
+    // -------------------------------------------------------------------------
+    // --- 4. PAGE RENDERING FUNCTIONS (No changes in this section)
+    // -------------------------------------------------------------------------
+
+    function renderBottomNav() {
+        if (!state.currentUser) {
+            navContainer.innerHTML = '';
+            return;
+        }
+        const t = getT();
+        const navItems = [
+            { id: 'home', icon: 'home', label: t.home },
+            { id: 'plan', icon: 'map', label: t.plan },
+            { id: 'active', icon: 'play-circle', label: t.active },
+            { id: 'account', icon: 'user', label: t.account },
+        ];
+
+        const panicButton = `
+            <div class="absolute bottom-4 left-1/2 -translate-x-1/2">
+                <button
+                    id="panic-button"
+                    onclick="handlePanic()"
+                    title="${t.panic}"
+                    class="w-16 h-16 bg-red-300 dark:bg-red-800 text-white font-bold rounded-full flex items-center justify-center transition-all duration-300 transform active:scale-90 disabled:opacity-50
+                    ${state.activeJourney ? 'panic-button-active bg-red-500' : ''}"
+                    ${!state.activeJourney ? 'disabled' : ''}
+                >
+                    <i data-lucide="alert-triangle" class="w-8 h-8"></i>
+                </button>
+            </div>
+        `;
+
+        navContainer.innerHTML = `
+            <div class="fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-black/80 backdrop-blur-sm border-t border-gray-200 dark:border-gray-700 flex justify-around items-center max-w-lg mx-auto z-20 p-2 gap-2">
+                ${navItems.map(item => `
+                    <button
+                        onclick="showPage('${item.id}')"
+                        class="flex flex-col items-center justify-center flex-grow h-16 w-1/4 rounded-2xl transition-all duration-200 transform active:scale-90 tab-button ${state.currentPage === item.id ? 'active' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}"
+                    >
+                        <i data-lucide="${item.icon}" class="w-6 h-6"></i>
+                        <span class="text-xs mt-1 font-medium">${item.label}</span>
+                    </button>
+                `).join('')}
+                ${panicButton}
+            </div>
+        `;
+        lucide.createIcons();
+    }
+
+    function renderSplashPage() {
+        const t = getT();
+        appContainer.innerHTML = `
+            <div class="flex flex-col items-center justify-center h-full animate-fade-in p-8 text-center">
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-primary-light mb-4">
+                    <path d="M12 2L2 7V17L12 22L22 17V7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2 7L12 12L22 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 12V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <h1 class="text-4xl font-extrabold text-primary-dark dark:text-white">${t.appName}</h1>
+                <p class="text-neutral-text dark:text-gray-300 mt-2">${t.tagline}</p>
+            </div>
+        `;
+        navContainer.innerHTML = '';
+    }
+
+    function renderLanguageSelectPage() {
+        const t = getT();
+         appContainer.innerHTML = `
+            <div class="flex flex-col items-center justify-center h-full p-8 animate-fade-in">
+                <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">${t.selectLanguage}</h1>
+                <div class="space-y-4 w-full max-w-xs">
+                    <button onclick="setLanguage('en')" class="w-full text-lg font-semibold py-3 px-4 rounded-lg border-2 border-primary-light text-primary-light hover:bg-primary-light hover:text-white transition-all">English</button>
+                    <button onclick="setLanguage('hi')" class="w-full text-lg font-semibold py-3 px-4 rounded-lg border-2 border-primary-light text-primary-light hover:bg-primary-light hover:text-white transition-all">हिन्दी</button>
+                    <button onclick="setLanguage('bn')" class="w-full text-lg font-semibold py-3 px-4 rounded-lg border-2 border-primary-light text-primary-light hover:bg-primary-light hover:text-white transition-all">বাংলা</button>
+                    <button onclick="setLanguage('as')" class="w-full text-lg font-semibold py-3 px-4 rounded-lg border-2 border-primary-light text-primary-light hover:bg-primary-light hover:text-white transition-all">অসমীয়া</button>
+                    <button onclick="setLanguage('mni')" class="w-full text-lg font-semibold py-3 px-4 rounded-lg border-2 border-primary-light text-primary-light hover:bg-primary-light hover:text-white transition-all">ꯃꯩꯇꯩꯂꯣꯟ</button>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderAuthPage() {
+        const t = getT();
+        appContainer.innerHTML = `
+            <div class="flex-grow flex flex-col justify-center p-6 animate-fade-in">
+                <h1 class="text-3xl font-bold text-center text-primary-dark dark:text-white">${t.welcome}</h1>
+                <p class="text-center text-neutral-text dark:text-gray-400 mb-8">${t.tagline}</p>
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-sm font-medium text-neutral-text dark:text-gray-300">${t.role}</label>
+                        <select id="role-select" class="w-full mt-1 p-3 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light">
+                            <option value="Tourist">Tourist</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="text-sm font-medium text-neutral-text dark:text-gray-300">${t.phone}</label>
+                        <input id="login-phone" type="tel" class="w-full mt-1 p-3 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light" placeholder="+91 12345 67890">
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-neutral-text dark:text-gray-300">${t.password}</label>
+                        <input id="login-password" type="password" class="w-full mt-1 p-3 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light" placeholder="••••••••">
+                    </div>
+                    <button onclick="handleLogin()" class="w-full bg-primary-light text-white font-bold py-3 px-4 rounded-lg hover:opacity-90 transition-opacity">${t.login}</button>
+                </div>
+            </div>
+        `;
+    }
+
+    async function renderHomePage() {
+        const t = getT();
+        const isActive = state.activeJourney;
+
+        const mainActionButton = isActive
+            ? `<button onclick="handleEndJourney()" class="w-full bg-orange-500 text-white font-bold py-4 px-4 rounded-xl text-lg hover:opacity-90 transition-opacity transform active:scale-95">${t.endJourney}</button>`
+            : `<button onclick="showPage('active')" class="w-full bg-primary-light text-white font-bold py-4 px-4 rounded-xl text-lg hover:opacity-90 transition-opacity transform active:scale-95">${t.startJourney}</button>`;
+
+        appContainer.innerHTML = `
+            <div class="flex flex-col h-full overflow-y-auto pb-20">
+                <header class="p-4 flex justify-between items-center sticky top-0 bg-background-light dark:bg-background-dark z-10 border-b border-gray-200 dark:border-gray-700">
+                    <h1 class="text-xl font-bold text-primary-dark dark:text-white">${t.home}</h1>
+                    <button onclick="alert('${t.notifications} Placeholder')" class="text-gray-500 dark:text-gray-300 hover:text-primary-light">
+                        <i data-lucide="bell" class="w-6 h-6"></i>
+                    </button>
+                </header>
+
+                <div class="flex-shrink-0 w-full h-64 bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-center text-gray-500 dark:text-gray-400 font-medium">
+                    <div class="p-4">
+                        <i data-lucide="map-pin" class="w-8 h-8 mx-auto mb-2"></i>
+                        ${isActive
+                            ? `<p>Live Map: Route & Location Tracking Active (Geofenced Alert Running)</p>`
+                            : `<p>Start a journey to see your live map.</p>`
+                        }
+                    </div>
+                </div>
+
+                <div class="p-4 flex-grow space-y-4">
+                    ${mainActionButton}
+
+                    ${isActive
+                        ? `
+                        <div class="bg-primary-dark p-4 rounded-xl text-white shadow-lg">
+                            <p class="text-sm opacity-80">${t.nextStop}</p>
+                            <h3 class="text-lg font-bold">${state.activeJourney.itinerary.destinations[0].places[0]}</h3>
+                            <p class="text-xs opacity-70 mt-1">Trip: ${state.activeJourney.itinerary.name}</p>
+                        </div>
+                        `
+                        : `
+                        <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-xl text-center text-neutral-text dark:text-gray-400 shadow-md">
+                            <i data-lucide="info" class="w-5 h-5 mx-auto mb-2"></i>
+                            <p>No active journey. Plan your next safe adventure now!</p>
+                        </div>
+                        `
+                    }
+
+                    <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md border-l-4 border-yellow-500">
+                        <h3 class="font-bold text-sm text-gray-800 dark:text-white flex items-center mb-1">
+                            <i data-lucide="zap" class="w-4 h-4 text-yellow-500 mr-2"></i>
+                            Alert: Heavy rain expected in Gangtok today.
+                        </h3>
+                        <p class="text-xs text-neutral-text dark:text-gray-400">Be aware of potential roadblocks on NH10.</p>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
+                        <h3 class="font-bold text-sm text-primary-light mb-2">Local Emergency Numbers (Current City: Gangtok)</h3>
+                        <div class="flex justify-around text-center">
+                            <p>Police: <strong>100</strong></p>
+                            <p>Ambulance: <strong>102</strong></p>
+                            <p>Fire: <strong>101</strong></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        lucide.createIcons();
+    }
+
+    
+
+    function renderPlanActivationPage() {
+        const t = getT();
+        const members = state.profile?.familyMembers || [];
+
+        if (state.itineraryDrafts.length === 0) {
+             appContainer.innerHTML = `
+                <div class="flex flex-col items-center justify-center h-full p-8 text-center">
+                    <i data-lucide="clipboard-list" class="w-12 h-12 text-gray-400 mb-4"></i>
+                    <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-2">No Trip Plans Found</h2>
+                    <p class="text-neutral-text dark:text-gray-400 mb-6">Go to the Plan tab and create a new itinerary draft before starting a journey.</p>
+                    <button onclick="showPage('plan')" class="bg-primary-light text-white font-bold py-3 px-6 rounded-lg">${t.plan}</button>
+                </div>
+            `;
+            return;
+        }
+
+        appContainer.innerHTML = `
+            <div class="flex-grow p-4 overflow-y-auto">
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">${t.journeyActivation}</h2>
+
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg space-y-5">
+                    <div>
+                        <label for="draft-select" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">${t.selectDraft}</label>
+                        <select id="draft-select" class="w-full p-3 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-primary-light focus:border-primary-light">
+                            ${state.itineraryDrafts.map(draft =>
+                                `<option value="${draft._id}">${draft.name} (${draft.destinations.length} Stops)</option>`
+                            ).join('')}
+                        </select>
+                    </div>
+
+                    <div class="flex space-x-4">
+                        <div class="flex-1">
+                            <label for="start-date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">${t.from}</label>
+                            <input type="date" id="start-date" value="${new Date().toISOString().substring(0, 10)}" class="w-full p-3 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg">
+                        </div>
+                        <div class="flex-1">
+                            <label for="end-date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">${t.to}</label>
+                            <input type="date" id="end-date" value="${new Date(Date.now() + 86400000 * 7).toISOString().substring(0, 10)}" class="w-full p-3 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">${t.selectMembers}</label>
+                        <div class="space-y-2 max-h-40 overflow-y-auto p-2 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="member-self" name="member-self" checked disabled class="w-4 h-4 text-primary-light rounded border-gray-300 dark:border-gray-600">
+                                <label for="member-self" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-200">${state.profile?.fullName || 'Me (Tourist)'}</label>
+                            </div>
+                            ${members.map(member => `
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="member-${member._id}" name="member-${member._id}" class="w-4 h-4 text-primary-light rounded border-gray-300 dark:border-gray-600">
+                                    <label for="member-${member._id}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-200">${member.name}</label>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <button onclick="handleActivateTrip()" class="w-full bg-primary-light text-white font-bold py-4 px-4 rounded-lg text-lg hover:opacity-90 transition-opacity transform active:scale-95">
+                        ${t.activateTrip}
+                    </button>
+                </div>
+            </div>
+        `;
+        lucide.createIcons();
+    }
+
+    let placeCounts = {};
+    function addDestinationBlock() {
+    destinationCount++;
+    const container = document.getElementById('destinations-container');
+    container.insertAdjacentHTML('beforeend', renderDestinationBlock(destinationCount));
+    lucide.createIcons();
+}
+
+// In your index.html
+
+function renderDestinationBlock(id) {
+    return `
+        <div id="destination-${id}" class="p-4 border border-gray-200 dark:border-gray-700 rounded-lg space-y-3 bg-gray-50 dark:bg-gray-900/50">
+            <div class="flex justify-between items-center">
+                <label class="text-md font-semibold text-primary-light">Destination City #${id}</label>
+                ${id > 1 ? `<button type="button" onclick="this.parentElement.parentElement.remove()" class="text-red-500"><i data-lucide="x" class="w-5 h-5"></i></button>` : ''}
+            </div>
+            
+            <input type="text" placeholder="Enter Destination City (e.g., Delhi)" class="destination-city-input w-full p-2 bg-white dark:bg-gray-700 rounded-md">
+            
+            <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-300 pt-2">Places to Visit in this City</h4>
+            <div class="places-container space-y-2">
+                ${addPlaceBlock(id, true)}
+            </div>
+            <button type="button" onclick="addPlaceToUI(${id})" class="w-full text-sm bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-300 font-semibold py-1.5 px-3 rounded-md">
+                Add another place
+            </button>
+        </div>
+    `;
+}
+
+function addPlaceBlock(destinationId, isFirst = false) {
+    const placeHTML = `
+        <div class="flex items-center space-x-2">
+            <input type="text" placeholder="Place Name" class="place-name-input flex-grow min-w-0 p-2 bg-white dark:bg-gray-700 rounded-md">
+            <input type="text" placeholder="Notes (Optional)" class="place-notes-input flex-grow min-w-0 p-2 bg-white dark:bg-gray-700 rounded-md">
+            ${!isFirst ? `<button type="button" onclick="this.parentElement.remove()" class="p-2 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/50 rounded-full"><i data-lucide="minus-circle" class="w-5 h-5"></i></button>` : '<div class="w-9 h-9"></div>'}
+        </div>
+    `;
+    return placeHTML;
+}
+
+function addPlaceToUI(destinationId) {
+    const placesContainer = document.querySelector(`#destination-${destinationId} .places-container`);
+    const newPlaceHTML = addPlaceBlock(destinationId, false);
+    placesContainer.insertAdjacentHTML('beforeend', newPlaceHTML);
+    lucide.createIcons(); // Re-render icons to include the new one
+}
+
+
+    function removeDestinationBlock(id) {
+        document.getElementById(`destination-${id}`).remove();
+    }
+
+    function renderNewItineraryPlanPage() {
+    const t = getT();
+    destinationCount = 1; // Reset count
+    appContainer.innerHTML = `
+        <div class="flex-grow p-4 overflow-y-auto pb-20">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">${t.createNewTrip}</h2>
+            <div id="itinerary-form" class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg space-y-4">
+                
+                <div>
+                    <label for="trip-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Trip Name</label>
+                    <input type="text" id="trip-name" placeholder="E.g., Golden Triangle Tour" class="w-full p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                </div>
+
+                <div>
+                    <label for="starting-city" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Your Current City</label>
+                    <input type="text" id="starting-city" placeholder="E.g., Kolkata" class="w-full p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                </div>
+                
+                <h3 class="font-bold text-lg text-primary-dark dark:text-white pt-2">Destination Cities</h3>
+                <div id="destinations-container" class="space-y-4">
+                    ${renderDestinationBlock(1)}
+                </div>
+
+                <button onclick="addDestinationBlock()" class="w-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-bold py-2 px-4 rounded-lg flex items-center justify-center">
+                    <i data-lucide="map-pin" class="w-5 h-5 mr-2"></i>
+                    Add Another Destination City
+                </button>
+                
+                <button onclick="handleSaveItinerary()" class="w-full bg-primary-light text-white font-bold py-3 px-4 rounded-lg mt-6">
+                    Save Itinerary Draft
+                </button>
+            </div>
+        </div>
+
+    `;
+    lucide.createIcons();
+}
+
+    async function renderPlanPage() {
+        const t = getT();
+        // Fetch drafts every time the page is shown to ensure it's up to date
+        try {
+            const draftsData = await apiRequest('/itineraries');
+            state.itineraryDrafts = draftsData.drafts || [];
+        } catch (err) {
+            console.error("Could not fetch itineraries", err);
+            state.itineraryDrafts = []; // Reset on failure
+        }
+
+
+        appContainer.innerHTML = `
+            <div class="flex-grow p-4 overflow-y-auto">
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">${t.myTripDrafts}</h2>
+
+                <button onclick="showPage('newItinerary')" class="w-full bg-green-600 text-white font-bold py-3 px-4 rounded-xl mb-6 flex items-center justify-center hover:bg-green-700 transition-colors">
+                    <i data-lucide="plus" class="w-5 h-5 mr-2"></i>
+                    ${t.createNewTrip}
+                </button>
+
+                <div class="space-y-4">
+                ${state.itineraryDrafts.length > 0 ? state.itineraryDrafts.map(draft => `
+                    <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md border-l-4 border-primary-light">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="text-lg font-bold text-primary-dark dark:text-white">${draft.name}</h3>
+                                <p class="text-sm text-neutral-text dark:text-gray-400">${draft.destinations.map(d => d.city).join(', ')}</p>
+                            </div>
+                            <div class="text-right flex items-center space-x-2">
+                                <div class="text-center">
+                                    <p class="text-xs text-neutral-text dark:text-gray-400">${t.safetyScore}</p>
+                                    <p class="text-xl font-bold text-primary-light">${draft.safetyScore || 'N/A'}</p>
+                                </div>
+                                <button onclick="renderEditItineraryPage('${draft._id}')" class="text-gray-400 hover:text-primary-light p-1 rounded-full bg-gray-100 dark:bg-gray-700">
+                                    <i data-lucide="edit" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('') : '<p class="text-center text-neutral-text dark:text-gray-400">You have no trip drafts.</p>'}
+                </div>
+            </div>
+        `;
+        lucide.createIcons();
+    }
+
+    function renderActivePage() {
+        const t = getT();
+
+        if (!state.activeJourney) {
+            renderPlanActivationPage();
+            return;
+        }
+
+        const journey = state.activeJourney;
+
+        appContainer.innerHTML = `
+            <div class="flex-grow p-4 overflow-y-auto">
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">${t.activeJourney}</h2>
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-6">
+                    <div>
+                        <p class="text-sm text-neutral-text dark:text-gray-400">Trip Name</p>
+                        <h3 class="text-xl font-bold text-primary-dark dark:text-white">${journey.itinerary.name}</h3>
+                    </div>
+                    <div>
+                        <p class="text-sm text-neutral-text dark:text-gray-400">Destinations</p>
+                        <p class="text-gray-800 dark:text-gray-200">${journey.itinerary.destinations.map(d => d.city).join(' → ')}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-neutral-text dark:text-gray-400">Fellow Travelers</p>
+                        <p class="text-gray-800 dark:text-gray-200">${state.profile.fullName} (+${state.profile.familyMembers.length} Family Members)</p>
+                    </div>
+
+                    <button onclick="showQrModal(state.activeJourneyData)" class="w-full bg-primary-light text-white font-bold py-4 px-4 rounded-lg mt-6 text-lg flex items-center justify-center">
+                        <i data-lucide="scan-line" class="w-6 h-6 mr-2"></i>
+                        ${t.showQrCode}
+                    </button>
+
+                    <button onclick="handleCheckIn()" class="w-full bg-indigo-500 text-white font-bold py-3 px-4 rounded-lg mt-4 flex items-center justify-center hover:bg-indigo-600">
+                        <i data-lucide="heart-handshake" class="w-5 h-5 mr-2"></i>
+                        I'm Safe Check-in
+                    </button>
+
+                    <div class="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg text-sm text-center">
+                        <p class="text-gray-700 dark:text-gray-300">Smartwatch Panic Activation: **Active**</p>
+                    </div>
+                </div>
+            </div>
+        `;
+        lucide.createIcons();
+    }
+
+    
+
+    // In index.html, replace the entire function
+
+async function renderAccountPage() {
+    const t = getT();
+    
+    // Dynamically create the list of family members with a delete button for each
+    const familyMembersHTML = state.profile?.familyMembers.map(m => `
+        <div class="flex justify-between items-center bg-gray-50 dark:bg-gray-700 p-2 rounded-lg">
+            <p>${m.fullName} (Age: ${m.age})</p>
+            <button onclick="handleRemoveFamilyMember('${m._id}')" class="p-1 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/50 rounded-full">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+        </div>
+    `).join('') || '<p class="text-sm text-neutral-text dark:text-gray-400">No family members added yet.</p>';
+
+    appContainer.innerHTML = `
+        <div class="flex-grow p-4 overflow-y-auto pb-20">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">${t.account}</h2>
+            <div class="space-y-6">
+                <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
+                    <h3 class="font-bold text-lg mb-2 text-primary-dark dark:text-white">${t.profileDetails}</h3>
+                    <p><strong>Name:</strong> ${state.profile?.fullName || 'N/A'}</p>
+                    <p><strong>Email:</strong> ${state.profile?.email || 'N/A'}</p>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md space-y-3">
+                    <h3 class="font-bold text-lg text-primary-dark dark:text-white">${t.familyMembers}</h3>
+                    <div class="space-y-2">${familyMembersHTML}</div>
+                    
+                    <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+                        <h4 class="font-semibold text-gray-700 dark:text-gray-200 mb-2">Add New Member</h4>
+                        <div class="space-y-2">
+                            <input id="new-member-name" type="text" placeholder="Full Name" class="w-full p-2 bg-gray-100 dark:bg-gray-700 rounded-md">
+                            <input id="new-member-age" type="number" placeholder="Age" class="w-full p-2 bg-gray-100 dark:bg-gray-700 rounded-md">
+                            <button onclick="handleAddFamilyMember()" class="w-full bg-indigo-500 text-white font-semibold py-2 rounded-lg hover:bg-indigo-600">
+                                Add Member
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    lucide.createIcons();
+}
+
+    async function renderEditItineraryPage(itineraryId) {
+    try {
+        // 1. Fetch the specific itinerary data from the backend
+        const itineraryToEdit = await apiRequest(`/itineraries/${itineraryId}`);
+
+        // 2. Render the "Create New Trip Plan" page
+        renderNewItineraryPlanPage();
+
+        // 3. Wait a tiny moment for the HTML to be in the DOM
+        await new Promise(resolve => setTimeout(resolve, 0));
+
+        // 4. Populate the form with the fetched data
+        document.getElementById('trip-name').value = itineraryToEdit.name;
+        document.getElementById('starting-city').value = itineraryToEdit.startingCity;
+        // ... you would also need to loop through destinations and places to create and fill those inputs
+
+        // 5. Change the "Save" button to an "Update" button
+        const saveButton = document.querySelector('#itinerary-form button[onclick^="handleSave"]');
+        saveButton.innerText = 'Update Itinerary Draft';
+        saveButton.onclick = () => handleUpdateItinerary(itineraryId);
+
+    } catch (err) {
+        alert("Could not load itinerary for editing.");
+    }
+}
+
+  async function handleUpdateItinerary(itineraryId) {
+    try {
+        // This logic is now complete and correctly gathers all data from the form
+        const tripName = document.getElementById('trip-name').value;
+        const startingCity = document.getElementById('starting-city').value;
+        
+        const destinationElements = document.querySelectorAll('#destinations-container > div');
+        const destinations = Array.from(destinationElements).map(destEl => {
+            const city = destEl.querySelector('.destination-city-input').value;
+            const placeElements = destEl.querySelectorAll('.places-container .flex');
+            
+            const places = Array.from(placeElements).map(placeEl => ({
+                name: placeEl.querySelector('.place-name-input').value,
+                notes: placeEl.querySelector('.place-notes-input').value
+            })).filter(p => p.name); // Only include places that have a name
+
+            return { city, places };
+        }).filter(d => d.city); // Only include destinations that have a city name
+
+        const updatedDraftData = {
+            name: tripName,
+            startingCity,
+            destinations
+        };
+
+        // It sends a PUT request to the specific itinerary's URL
+        await apiRequest(`/itineraries/${itineraryId}`, 'PUT', updatedDraftData);
+        
+        alert("Itinerary updated successfully!");
+        showPage('plan'); // Go back to the list of plans
+
+    } catch (err) {
+        alert("Failed to update itinerary. Please check the console for details.");
+        console.error("Update Itinerary Failed:", err);
+    }
+}
+
+    // -------------------------------------------------------------------------
+    // --- 5. EVENT HANDLERS & ROUTING
+    // -------------------------------------------------------------------------
+
+    function setLanguage(langCode) {
+        state.language = langCode;
+        localStorage.setItem('tourchain-lang', langCode);
+        showPage('auth');
+    }
+
+    // In your index.html
+
+
+ async function handleAddFamilyMember() {
+    const nameInput = document.getElementById('new-member-name');
+    const ageInput = document.getElementById('new-member-age');
+    
+    const fullName = nameInput.value;
+    const age = ageInput.value;
+
+    if (!fullName || !age) {
+        alert("Please provide both a name and an age.");
+        return;
+    }
+
+    try {
+        const newMemberData = { fullName, age: parseInt(age) };
+        await apiRequest('/profile/members', 'POST', newMemberData);
+        
+        // Refresh the profile data from the server to show the new member
+        const updatedProfile = await apiRequest('/profile/me');
+        state.profile = updatedProfile.profile;
+        
+        // Re-render the account page with the updated list
+        renderAccountPage();
+        
+    } catch (err) {
+        alert("Failed to add family member.");
+        console.error(err);
+    }
+}
+
+async function handleRemoveFamilyMember(memberId) {
+    if (confirm("Are you sure you want to remove this family member?")) {
+        try {
+            await apiRequest(`/profile/members/${memberId}`, 'DELETE');
+            
+            // Optimistically remove the member from the local state
+            state.profile.familyMembers = state.profile.familyMembers.filter(m => m._id !== memberId);
+            
+            // Re-render the page to reflect the change
+            renderAccountPage();
+
+        } catch (err) {
+            alert("Failed to remove family member.");
+            console.error(err);
+        }
+    }
+}    
+
+// In index.html
+async function initializeAppState() {
+    try {
+        const [profileData, draftsData] = await Promise.all([
+            apiRequest('/profile/me'),
+            apiRequest('/itineraries')
+        ]);
+
+        // --- THIS IS THE FIX ---
+        // The backend sends the profile directly, not nested.
+        state.profile = profileData; 
+        state.itineraryDrafts = draftsData.drafts || [];
+        
+        try {
+            const journeyData = await apiRequest('/journeys/active');
+            if (journeyData && journeyData.journey) {
+                state.activeJourney = journeyData.journey;
+                state.activeJourneyData = {
+                    qrCodeToken: journeyData.journey.qrCodeToken,
+                    txHash: journeyData.journey.blockchainTxHashes.start
+                };
+            }
+        } catch (journeyError) {
+            console.log("No active journey found, which is normal.");
+            state.activeJourney = null;
+        }
+        
+        showPage('home');
+
+    } catch (error) {
+        console.error("Critical session error, clearing session.", error);
+        localStorage.removeItem('tourchain-user');
+        state.currentUser = null;
+        showPage('auth');
+    }
+}
+
+    async function handleLogin() {
+    const role = document.getElementById('role-select').value;
+    const phone = document.getElementById('login-phone').value;
+    const password = document.getElementById('login-password').value;
+
+    if (role === 'Admin') {
+        window.location.href = ADMIN_APP_URL;
+        return;
+    }
+
+    if (!phone || !password) {
+        alert('Please enter phone and password.');
+        return;
+    }
+
+    try {
+        // 'data' will be the exact object your controller sends: { _id, phone, role, token }
+        const data = await apiRequest('/auth/login', 'POST', { phone, password });
+
+        // We assign this entire object to state.currentUser
+        state.currentUser = data;
+        localStorage.setItem('tourchain-user', JSON.stringify(data));
+
+        // Now, initializeAppState() will be able to find state.currentUser.token
+        await initializeAppState();
+
+    } catch (err) {
+        alert('Login failed. Please check your credentials.');
+    }
+}
+
+    async function handleActivateTrip() {
+        const draftId = document.getElementById('draft-select').value;
+        const startDate = document.getElementById('start-date').value;
+        const endDate = document.getElementById('end-date').value;
+
+        if (!draftId || !startDate || !endDate) {
+            alert('Please select a draft and set both start and end dates.');
+            return;
+        }
+
+        try {
+            const journeyData = await apiRequest('/journeys/start', 'POST', {
+                itineraryId: draftId, 
+                startDate, 
+                endDate, 
+                members: [], // Placeholder for member selection
+            });
+
+            // The backend returns the full active journey object
+            state.activeJourney = journeyData.journey;
+            
+            // We need to store QR and TxHash separately for the modal
+            state.activeJourneyData = {
+                qrCodeToken: journeyData.journey.qrCodeToken,
+                txHash: journeyData.journey.blockchainTxHashes.start
+            };
+
+            showQrModal(state.activeJourneyData);
+            showPage('home');
+        } catch (err) {
+            alert('Failed to activate trip. Please try again.');
+        }
+    }
+    
+    async function handleEndJourney() {
+        if (confirm("Are you sure you want to end the current journey?")) {
+            try {
+                await apiRequest(`/journeys/${state.activeJourney._id}/end`, 'POST');
+                state.activeJourney = null;
+                state.activeJourneyData = null;
+                alert("Journey successfully ended.");
+                showPage('home');
+            } catch (err) {
+                alert('Failed to end journey. Please try again.');
+            }
+        }
+    }
+
+    async function handlePanic() {
+        if (!state.activeJourney) {
+            alert("Cannot trigger panic: No active journey is registered.");
+            return;
+        }
+        if (confirm("🚨 WARNING: This will send an alert to authorities. Proceed?")) {
+            try {
+                await apiRequest(`/journeys/${state.activeJourney._id}/panic`, 'POST');
+                alert("Panic alert sent! Help is on the way.");
+                // Optionally update UI to show panic state
+                showPage('home');
+            } catch (err) {
+                alert('Failed to send panic alert. Please try again.');
+            }
+        }
+    }
+
+    async function handleCheckIn() {
+        try {
+            // Note: In a real app, you would get real GPS data here.
+            const mockLocationData = {
+                locations: [
+                    { lat: 22.5726, lon: 88.3639, timestamp: new Date().toISOString() }
+                ]
+            };
+            await apiRequest('/journeys/check-in', 'POST', mockLocationData);
+            alert("I'm Safe Check-in sent! Your location has been shared.");
+        } catch (err) {
+            alert('Failed to send check-in. Please check your connection.');
+        }
+    }
+
+    async function handleSaveItinerary() {
+    try {
+        // --- THIS IS THE FIX ---
+        // The IDs now correctly match the HTML input fields.
+        const tripName = document.getElementById('trip-name').value;
+        const startingCity = document.getElementById('starting-city').value;
+
+        if (!tripName || !startingCity) {
+            alert("Please provide a Trip Name and a Starting City.");
+            return;
+        }
+
+        const destinationElements = document.querySelectorAll('#destinations-container > div');
+        const destinations = Array.from(destinationElements).map(destEl => {
+            const city = destEl.querySelector('.destination-city-input').value;
+            const placeElements = destEl.querySelectorAll('.places-container .flex');
+            
+            const places = Array.from(placeElements).map(placeEl => {
+                return {
+                    name: placeEl.querySelector('.place-name-input').value,
+                    notes: placeEl.querySelector('.place-notes-input').value
+                };
+            }).filter(p => p.name);
+
+            return { city, places };
+        }).filter(d => d.city);
+
+        const newDraftData = {
+            name: tripName,
+            startingCity,
+            destinations
+        };
+
+        await apiRequest('/itineraries', 'POST', newDraftData);
+        alert(`Itinerary Draft "${tripName}" saved successfully!`);
+        showPage('plan');
+
+    } catch (err) {
+        alert('Failed to save itinerary. Please check the console for details.');
+        console.error("Save Itinerary Failed:", err);
+    }
+}
+
+
+    const pageRenderers = {
+        splash: renderSplashPage,
+        languageSelect: renderLanguageSelectPage,
+        auth: renderAuthPage,
+        home: renderHomePage,
+        plan: renderPlanPage,
+        active: renderActivePage,
+        account: renderAccountPage,
+        newItinerary: renderNewItineraryPlanPage
+    };
+
+    function showPage(pageId) {
+        state.currentPage = pageId;
+        const renderFunction = pageRenderers[pageId];
+        if (renderFunction) {
+            appContainer.innerHTML = '<div class="flex items-center justify-center h-full"><i data-lucide="loader-2" class="w-12 h-12 animate-spin text-primary-light"></i></div>';
+            setTimeout(async () => {
+                await renderFunction();
+                lucide.createIcons();
+            }, 100);
+        }
+        renderBottomNav();
+    }
+
+    // -------------------------------------------------------------------------
+    // --- 6. APP INITIALIZATION
+    // -------------------------------------------------------------------------
+    function init() {
+    const savedLang = localStorage.getItem('tourchain-lang');
+    if (savedLang) state.language = savedLang;
+
+    const savedUser = localStorage.getItem('tourchain-user');
+    
+    // This check now prevents the crash
+    if (savedUser && savedUser !== 'undefined') {
+        state.currentUser = JSON.parse(savedUser);
+        initializeAppState();
+    } else {
+        // If no user or bad data, clear it and start fresh
+        localStorage.removeItem('tourchain-user');
+        showPage('splash');
+        setTimeout(() => showPage('languageSelect'), 2000);
+    }
+
+    if(state.isDarkMode) document.documentElement.classList.add('dark');
+    lucide.createIcons();
+}
+
+    init();
+    </script>
 </body>
 </html>

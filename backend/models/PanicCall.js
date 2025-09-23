@@ -1,14 +1,15 @@
 const mongoose = require('mongoose');
+const panicCallSchema = new mongoose.Schema({
+    journeyId: { type: mongoose.Schema.Types.ObjectId, ref: 'ActiveJourney', required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    location: { lat: Number, lng: Number },
+    timestamp: { type: Date, default: Date.now },
 
-const PanicCallSchema = new mongoose.Schema({
-  tourist: { type: mongoose.Schema.Types.ObjectId, ref: 'Tourist', required: true },
-  location: {
-    lon: { type: Number, required: true },
-    lat: { type: Number, required: true },
-  },
-  message: { type: String, default: '' },
-  status: { type: String, enum: ['OPEN', 'RESOLVED'], default: 'OPEN' },
-  adminNotified: { type: Boolean, default: false },
-}, { timestamps: { createdAt: true, updatedAt: false } });
+    // --- ADD/UPDATE THESE FIELDS ---
+    type: { type: String, enum: ['Manual', 'AI-Anomaly'], required: true, default: 'Manual' },
+    status: { type: String, enum: ['Active', 'Acknowledged', 'Resolved'], default: 'Active' },
+    assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'Officer' }, // ref points to the new model
+    resolvedNotes: String
 
-module.exports = mongoose.model('PanicCall', PanicCallSchema);
+}, { timestamps: true });
+module.exports = mongoose.model('PanicCall', panicCallSchema);

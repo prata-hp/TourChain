@@ -1,32 +1,24 @@
-const User = require('../models/User');
-const ActiveJourney = require('../models/ActiveJourney');
-const PanicCall = require('../models/PanicCall');
+// You need to import the models from the TOURIST backend.
+// This requires careful path management. For local dev, you can use relative paths.
+// In production, you might publish these models as a shared private NPM package.
+const User = require('../../backend/models/User');
+const Profile = require('../../backend/models/Profile');
+const ActiveJourney = require('../../backend/models/ActiveJourney');
+const PanicCall = require('../../backend/models/PanicCall');
+const LocationHistory = require('../models/LocationHistory');
 
-/**
- * @desc    Get key statistics for the admin dashboard
- * @route   GET /api/admin/stats
- */
 exports.getDashboardStats = async (req, res) => {
     try {
         const totalTourists = await User.countDocuments({ role: 'Tourist' });
         const activeJourneys = await ActiveJourney.countDocuments({ status: { $in: ['Active', 'Panic'] } });
         const activePanics = await PanicCall.countDocuments({ status: 'Active' });
-
-        res.json({
-            totalTourists,
-            activeJourneys,
-            activePanics
-        });
+        res.json({ totalTourists, activeJourneys, activePanics });
     } catch (error) {
         console.error(error.message);
         res.status(500).send('Server Error');
     }
 };
 
-/**
- * @desc    Get a list of all tourists
- * @route   GET /api/admin/tourists
- */
 exports.getAllTourists = async (req, res) => {
     try {
         // Find all users with the 'Tourist' role and join their profile data
@@ -38,10 +30,6 @@ exports.getAllTourists = async (req, res) => {
     }
 };
 
-/**
- * @desc    Get all panic calls (active and resolved)
- * @route   GET /api/admin/panic-calls
- */
 exports.getPanicCalls = async (req, res) => {
     try {
         // Find all panic calls and sort by most recent
@@ -53,10 +41,6 @@ exports.getPanicCalls = async (req, res) => {
     }
 };
 
-/**
- * @desc    Update a panic call's status
- * @route   PUT /api/admin/panic-calls/:id/status
- */
 exports.updatePanicCallStatus = async (req, res) => {
     const { status } = req.body; // Expects "Acknowledged" or "Resolved"
 
@@ -74,6 +58,19 @@ exports.updatePanicCallStatus = async (req, res) => {
             return res.status(404).json({ message: 'Panic call not found.' });
         }
         res.json(panicCall);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send('Server Error');
+    }
+};
+
+exports.getJourneyLiveTrack = async (req, res) => {
+    try {
+        const history = await LocationHistory.findOne({ journeyId: req.params.journeyId });
+        if (!history) {
+            return res.status(404).json({ message: 'No location history found for this journey.' });
+        }
+        res.json(history.locations);
     } catch (error) {
         console.error(error.message);
         res.status(500).send('Server Error');

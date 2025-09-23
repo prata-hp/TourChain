@@ -12,3 +12,9 @@ artifacts
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Ignore all files and folders inside the data directory...
+data/*
+
+# ...but DO NOT ignore the .gitkeep placeholder file.
+!data/.gitkeep

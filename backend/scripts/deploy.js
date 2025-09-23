@@ -1,14 +1,22 @@
-const hre = require("hardhat");
-
 async function main() {
-  const Factory = await hre.ethers.getContractFactory("TouristRegistry");
-  const contract = await Factory.deploy();
-  await contract.waitForDeployment();
-  const addr = await contract.getAddress();
-  console.log("TouristRegistry deployed to:", addr);
+  // 1. Get the contract to deploy
+  const TourChainLedger = await ethers.getContractFactory("TourChainLedger");
+  console.log("Deploying TourChainLedger...");
+
+  // 2. Deploy it
+  const ledger = await TourChainLedger.deploy();
+  await ledger.waitForDeployment(); // Wait for the transaction to be mined
+
+  // 3. Print the address and block number
+  const address = await ledger.getAddress();
+  const block = await ethers.provider.getBlockNumber();
+  console.log(`✅ TourChainLedger deployed to: ${address}`);
+  console.log(`✅ Deployed in block number: ${block}`);
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
