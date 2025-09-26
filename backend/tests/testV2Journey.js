@@ -20,8 +20,6 @@ async function runJourneyTest() {
             headers: { Authorization: `Bearer ${authToken}` }
         });
         
-        // --- THIS IS THE FIX ---
-        // Find the itinerary by 'name' instead of 'draftName'
         const testItinerary = itineraryResponse.data.drafts.find(draft => draft.name === ITINERARY_TO_TEST);
 
         if (!testItinerary) throw new Error(`Could not find the test itinerary named "${ITINERARY_TO_TEST}"`);
@@ -33,10 +31,9 @@ async function runJourneyTest() {
         const startDate = new Date().toISOString();
         const endDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString();
 
-        // --- THIS IS THE FIX ---
-        // Send 'itineraryId' instead of 'draftId'
+        // The property name is now 'draftId' to match the backend controller
         const startJourneyResponse = await axios.post(`${API_BASE_URL}/journeys/start`, 
-            { itineraryId: itineraryId, startDate, endDate, memberIds: [] }, 
+            { draftId: itineraryId, startDate, endDate, memberIds: [] }, 
             { headers: { Authorization: `Bearer ${authToken}` } }
         );
         

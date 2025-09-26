@@ -1,10 +1,10 @@
 // You need to import the models from the TOURIST backend.
 // This requires careful path management. For local dev, you can use relative paths.
 // In production, you might publish these models as a shared private NPM package.
-const User = require('../../backend/models/User');
-const Profile = require('../../backend/models/Profile');
-const ActiveJourney = require('../../backend/models/ActiveJourney');
-const PanicCall = require('../../backend/models/PanicCall');
+const User = require('../models/User'); // Correct path
+const Profile = require('../models/Profile');
+const ActiveJourney = require('../models/ActiveJourney');
+const PanicCall = require('../models/PanicCall');
 const LocationHistory = require('../models/LocationHistory');
 
 exports.getDashboardStats = async (req, res) => {

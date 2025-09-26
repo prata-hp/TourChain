@@ -12,11 +12,14 @@ const TEST_USER_DATA = {
     fullName: 'Test Tourist'
 };
 
-// --- THIS IS THE FIX ---
-// The data structure now matches your new ItineraryDraft model
+const FAMILY_MEMBER_DATA = {
+    fullName: 'Test Family Member',
+    age: 30
+};
+
 const ITINERARY_DATA = {
-    name: "Kolkata Heritage Tour", // Changed from draftName to name
-    startingCity: "Kolkata",      // Added startingCity
+    name: "Kolkata Heritage Tour",
+    startingCity: "Kolkata",
     destinations: [
         { city: "Kolkata", places: [{ name: "Victoria Memorial", notes: "Visit in the morning." }] },
         { city: "Kolkata", places: [{ name: "St. Paul's Cathedral", notes: "Walk from Victoria Memorial." }] }
@@ -31,10 +34,10 @@ async function seedDatabase() {
 
         await mongoose.connection.collection('users').deleteMany({ phone: TEST_USER_DATA.phone });
         await mongoose.connection.collection('profiles').deleteMany({ fullName: TEST_USER_DATA.fullName });
-        await mongoose.connection.collection('itinerarydrafts').deleteMany({ name: ITINERARY_DATA.name }); // Changed to search by name
+        await mongoose.connection.collection('itinerarydrafts').deleteMany({ name: ITINERARY_DATA.name });
         console.log('🧼 Cleaned up old test data.');
         
-        console.log('\n[1/2] Registering test user via API...');
+        console.log('\n[1/3] Registering test user via API...');
         await axios.post(`${API_BASE_URL}/auth/register`, TEST_USER_DATA);
         console.log(`✅ User '${TEST_USER_DATA.fullName}' registered successfully.`);
 
@@ -42,7 +45,13 @@ async function seedDatabase() {
         const authToken = loginResponse.data.token;
         console.log('✅ Logged in to get auth token.');
 
-        console.log('\n[2/2] Creating test itinerary via API...');
+        console.log('\n[2/3] Adding family member to profile via API...');
+        await axios.post(`${API_BASE_URL}/profile/members`, FAMILY_MEMBER_DATA, {
+            headers: { Authorization: `Bearer ${authToken}` }
+        });
+        console.log(`✅ Family member '${FAMILY_MEMBER_DATA.fullName}' added to profile.`);
+
+        console.log('\n[3/3] Creating test itinerary via API...');
         await axios.post(`${API_BASE_URL}/itineraries`, ITINERARY_DATA, {
             headers: { Authorization: `Bearer ${authToken}` }
         });
