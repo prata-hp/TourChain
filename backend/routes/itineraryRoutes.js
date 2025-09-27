@@ -4,13 +4,14 @@ const { protect } = require('../middlewares/authMiddleware');
 const {
     createItinerary,
     getItineraries,
-    getItineraryById, // Added the missing import
+    getItineraryById,
     updateItinerary,
     deleteItinerary,
     getSafetyScore
 } = require('../controllers/itineraryController');
 
-// Protect all routes in this file
+// --- FIX ---
+// Protect all routes in this file. A user MUST be logged in.
 router.use(protect);
 
 // Routes for getting all drafts and creating a new one

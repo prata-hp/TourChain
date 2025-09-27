@@ -31,7 +31,6 @@ async function runJourneyTest() {
         const startDate = new Date().toISOString();
         const endDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString();
 
-        // The property name is now 'draftId' to match the backend controller
         const startJourneyResponse = await axios.post(`${API_BASE_URL}/journeys/start`, 
             { draftId: itineraryId, startDate, endDate, memberIds: [] }, 
             { headers: { Authorization: `Bearer ${authToken}` } }
@@ -43,7 +42,7 @@ async function runJourneyTest() {
         console.log('\n--- Test Complete ---');
 
     } catch (error) {
-        console.error('\n--- ❌ Test Failed ---');
+        console.error('\n--- ❌ Test Failed (lanat hai, tumpe) ---');
         if (error.response) {
             console.error('Error Data:', error.response.data);
             console.error('Error Status:', error.response.status);
