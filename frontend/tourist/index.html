@@ -388,7 +388,7 @@
     // -------------------------------------------------------------------------
     // --- 1. CONFIGURATION & STATE MANAGEMENT
     // -------------------------------------------------------------------------
-   const API_URL = "http://localhost:3000/api"; // Your real backend URL for local things
+   const API_URL = "http://localhost:5000/api"; // Your real backend URL for local things
         // const API_URL = "https://tourchain.onrender.com/api";   // for online
     const ADMIN_APP_URL = "http://your-admin-app-url.com/login"; // Admin Redirect URL
     
@@ -2881,48 +2881,45 @@ async function handleEndJourney() {
     }
 
     // Authentication Functions
-    async function handleLogin() {
-        const phone = document.getElementById('login-phone').value;
-        const password = document.getElementById('login-password').value;
-        
-        if (!phone || !password) {
-            alert('Please enter both phone number and password.');
-            return;
-        }
-        
-        try {
-            // Show loading state
-            const loginBtn = document.querySelector('button[onclick="handleLogin()"]');
-            const originalText = loginBtn.innerHTML;
-            loginBtn.innerHTML = '<div class="flex items-center justify-center space-x-2"><div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div><span>Signing in...</span></div>';
-            loginBtn.disabled = true;
-            
-            const response = await apiRequest('/auth/login', 'POST', {
-                phone: phone,
-                password: password
-            });
-            
-            // Store user data and token
-            state.currentUser = response.user;
-            state.profile = response.profile;
-            localStorage.setItem('tourchain-user', JSON.stringify(response.user));
-            localStorage.setItem('tourchain-token', response.token);
-            
-            alert('✅ Login successful! Welcome back to TourChain.');
-            showPage('home');
-            
-        } catch (error) {
-            console.error('Login error:', error);
-            alert('❌ Login failed: ' + (error.message || 'Invalid credentials'));
-            
-            // Reset button state
-            const loginBtn = document.querySelector('button[onclick="handleLogin()"]');
-            const t = getT();
-            loginBtn.innerHTML = `<i data-lucide="log-in" class="w-4 h-4 mr-2"></i>${t.login}`;
-            loginBtn.disabled = false;
-            lucide.createIcons();
-        }
+    // In index.html
+async function handleLogin() {
+    const phone = document.getElementById('login-phone').value;
+    const password = document.getElementById('login-password').value;
+    
+    if (!phone || !password) {
+        alert('Please enter both phone number and password.');
+        return;
     }
+    
+    const loginBtn = document.querySelector('button[onclick="handleLogin()"]');
+    const originalText = loginBtn.innerHTML;
+
+    try {
+        // Show loading state
+        loginBtn.innerHTML = '<div class="flex items-center justify-center space-x-2"><div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div><span>Signing in...</span></div>';
+        loginBtn.disabled = true;
+        
+        // 1. Get the auth data from the login endpoint.
+        const authData = await apiRequest('/auth/login', 'POST', { phone, password });
+        
+        // 2. The response IS the user object with a token. Set it directly.
+        state.currentUser = authData;
+        localStorage.setItem('tourchain-user', JSON.stringify(authData));
+        
+        // 3. NOW, initialize the rest of the app. This will use the new token
+        //    to fetch the profile, itineraries, etc., and then show the home page.
+        await initializeAppState();
+        
+    } catch (error) {
+        console.error('Login error:', error);
+        alert('❌ Login failed: ' + (error.message || 'Invalid credentials'));
+        
+        // Restore button on failure
+        loginBtn.innerHTML = originalText;
+        loginBtn.disabled = false;
+        lucide.createIcons();
+    }
+}
 
     async function handleRegistration(event) {
         event.preventDefault();
