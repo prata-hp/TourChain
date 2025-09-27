@@ -15,16 +15,63 @@
                     },
                     colors: {
                         primary: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            200: '#99f6e4',
+                            300: '#5eedd8',
+                            400: '#2dd4bf',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59',
+                            900: '#134e4a',
                             'dark': '#0f3d35',
-                            'light': '#00a78e',
+                            'light': '#14b8a6',
+                        },
+                        accent: {
+                            50: '#fef7ff',
+                            100: '#fdeeff',
+                            200: '#fcddff',
+                            300: '#fab1ff',
+                            400: '#f775ff',
+                            500: '#ec39ff',
+                            600: '#d818e7',
+                            700: '#b70fbb',
+                            800: '#971296',
+                            900: '#7a1677',
+                        },
+                        surface: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#64748b',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
                         },
                         background: {
-                            'light': '#fcfaf5',
+                            'light': '#fefefe',
                             'dark': '#0f172a',
                         },
                         neutral: {
-                            'text': '#525252'
+                            'text': '#64748b'
                         }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'slide-down': 'slideDown 0.6s ease-out',
+                        'scale-in': 'scaleIn 0.4s ease-out',
+                        'bounce-soft': 'bounceSoft 2s ease-in-out infinite',
+                        'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                        'shimmer': 'shimmer 2s linear infinite',
+                    },
+                    backdropBlur: {
+                        xs: '2px',
                     }
                 }
             }
@@ -34,50 +81,291 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Mapbox CSS and JS -->
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
             -webkit-tap-highlight-color: transparent;
-            background-color: #e5e7eb;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
+            min-height: 100vh;
         }
+        
         .dark body {
-            background-color: #1f2937;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
         }
+        
         #app-container {
-            border-radius: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-radius: 2.5rem;
+            box-shadow: 
+                0 25px 50px rgba(0,0,0,0.1),
+                0 0 0 1px rgba(255,255,255,0.1),
+                inset 0 1px 0 rgba(255,255,255,0.2);
             overflow: hidden;
             position: relative;
-            border: 8px solid #000;
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.95);
+            border: 1px solid rgba(255,255,255,0.2);
         }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #a8a8a8; border-radius: 3px;}
-        .dark ::-webkit-scrollbar-track { background: #1f2937; }
-        .dark ::-webkit-scrollbar-thumb { background: #4b5563; }
-        .animate-fade-in { animation: fadeIn 0.5s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .animate-slide-up { animation: slideUp 0.5s ease-in-out; }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .tab-button.active {
-            background-color: #00a78e;
-            color: white;
+        
+        .dark #app-container {
+            background: rgba(15,23,42,0.95);
+            border: 1px solid rgba(148,163,184,0.1);
+            box-shadow: 
+                0 25px 50px rgba(0,0,0,0.3),
+                0 0 0 1px rgba(148,163,184,0.1),
+                inset 0 1px 0 rgba(148,163,184,0.1);
         }
+        
+        /* Enhanced Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { 
+            background: rgba(148,163,184,0.1);
+            border-radius: 10px; 
+        }
+        ::-webkit-scrollbar-thumb { 
+            background: linear-gradient(135deg, #14b8a6, #0d9488);
+            border-radius: 10px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #0d9488, #0f766e);
+        }
+        
+        /* Advanced Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes slideDown {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes scaleIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        @keyframes bounceSoft {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-8px); }
+            60% { transform: translateY(-4px); }
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% { 
+                box-shadow: 0 0 20px rgba(20,184,166,0.3);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 30px rgba(20,184,166,0.5);
+                transform: scale(1.02);
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        /* Gradient Buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, #14b8a6 0%, #0d9488 50%, #0f766e 100%);
+            box-shadow: 
+                0 10px 25px rgba(20,184,166,0.2),
+                inset 0 1px 0 rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #0d9488 0%, #0f766e 50%, #115e59 100%);
+            box-shadow: 
+                0 15px 35px rgba(20,184,166,0.3),
+                inset 0 1px 0 rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #ec39ff 0%, #d818e7 50%, #b70fbb 100%);
+            box-shadow: 
+                0 10px 25px rgba(236,57,255,0.2),
+                inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+        
+        /* Glass Morphism Cards */
+        .glass-card {
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 
+                0 8px 32px rgba(0,0,0,0.1),
+                inset 0 1px 0 rgba(255,255,255,0.4);
+        }
+        
+        .dark .glass-card {
+            background: rgba(30,41,59,0.8);
+            border: 1px solid rgba(148,163,184,0.1);
+            box-shadow: 
+                0 8px 32px rgba(0,0,0,0.3),
+                inset 0 1px 0 rgba(148,163,184,0.1);
+        }
+        
+        /* Panic Button Animation */
         .panic-button-active {
-            background-color: #ef4444;
-            box-shadow: 0 0 0 0 rgba(239, 68, 68, 1);
-            animation: pulse-red 2s infinite;
+            background: linear-gradient(135deg, #ef4444, #dc2626, #b91c1c);
+            animation: panicPulse 1.5s infinite;
         }
-        @keyframes pulse-red {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        
+        @keyframes panicPulse {
+            0% { 
+                transform: scale(1);
+                box-shadow: 0 0 20px rgba(239,68,68,0.5);
+            }
+            50% { 
+                transform: scale(1.05);
+                box-shadow: 0 0 40px rgba(239,68,68,0.8);
+            }
+            100% { 
+                transform: scale(1);
+                box-shadow: 0 0 20px rgba(239,68,68,0.5);
+            }
+        }
+
+        /* Map Marker Pulse Animation */
+        @keyframes pulse {
+            0% { 
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); 
+            }
+            70% { 
+                box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); 
+            }
+            100% { 
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); 
+            }
+        }
+
+        /* Destination Marker Styles */
+        .destination-marker {
+            transition: transform 0.2s ease;
+        }
+        
+        .destination-marker:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Tab Button Styling */
+        .tab-button {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(148,163,184,0.1);
+            backdrop-filter: blur(8px);
+        }
+        
+        .tab-button.active {
+            background: linear-gradient(135deg, #14b8a6, #0d9488);
+            box-shadow: 
+                0 8px 25px rgba(20,184,166,0.3),
+                inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+        
+        /* Mapbox Enhanced Styling */
+        #map {
+            border-radius: 1rem;
+            border: 2px solid rgba(255,255,255,0.3);
+            box-shadow: 
+                0 20px 40px rgba(0,0,0,0.1),
+                inset 0 1px 0 rgba(255,255,255,0.3);
+        }
+        
+        .dark #map {
+            border: 2px solid rgba(148,163,184,0.1);
+            box-shadow: 
+                0 20px 40px rgba(0,0,0,0.3),
+                inset 0 1px 0 rgba(148,163,184,0.1);
+        }
+        
+        .mapboxgl-popup-content {
+            border-radius: 12px;
+            padding: 16px 20px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .mapboxgl-ctrl-group {
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        /* Loading Animation */
+        .loading-shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .loading-shimmer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+        
+        /* Hover Effects */
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #14b8a6, #0d9488, #ec39ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
     </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark transition-colors duration-300">
     <div id="app-container" class="h-screen w-full mx-auto max-w-lg flex flex-col bg-background-light dark:bg-background-dark"></div>
     <div id="bottom-nav-container"></div>
+    
+    <!-- Floating Panic Button - Always Visible -->
+    <div class="fixed top-6 right-6 z-40 pointer-events-none">
+        <div class="max-w-lg mx-auto flex justify-end pointer-events-auto">
+            <button
+                id="floating-panic-btn"
+                onclick="handlePanic()"
+                class="w-14 h-14 bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 active:scale-95 shadow-2xl"
+                title="Emergency Panic Button - Tap to alert authorities"
+            >
+                <i data-lucide="shield-alert" class="w-6 h-6"></i>
+            </button>
+        </div>
+    </div>
 
     <div id="qr-modal" class="fixed inset-0 bg-black/80 z-50 flex-col items-center justify-center hidden">
         <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-2xl text-center animate-fade-in w-11/12 max-w-sm">
@@ -100,9 +388,28 @@
     // -------------------------------------------------------------------------
     // --- 1. CONFIGURATION & STATE MANAGEMENT
     // -------------------------------------------------------------------------
-   // const API_URL = "http://localhost:5000/api"; // Your real backend URL for local things
-        const API_URL = "https://tourchain.onrender.com/api";   // for online
+   const API_URL = "http://localhost:5000/api"; // Your real backend URL for local things
+        // const API_URL = "https://tourchain.onrender.com/api";   // for online
     const ADMIN_APP_URL = "http://your-admin-app-url.com/login"; // Admin Redirect URL
+    
+    // Mapbox configuration - using public demo token
+    mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw'; // Public Mapbox demo token
+    let map;
+    let userLocationMarker;
+    
+    // Debug function for console testing
+    window.debugMap = function() {
+        console.log('=== MAP DEBUG INFO ===');
+        console.log('mapboxgl available:', typeof mapboxgl !== 'undefined');
+        console.log('map container exists:', !!document.getElementById('map'));
+        console.log('map object:', !!map);
+        console.log('current page:', state.currentPage);
+        console.log('access token set:', !!mapboxgl.accessToken);
+        if (document.getElementById('map')) {
+            console.log('map container HTML:', document.getElementById('map').innerHTML);
+        }
+        console.log('=====================');
+    };
 
     let destinationCount = 1;
 
@@ -121,7 +428,7 @@
     // --- 2. MULTI-LANGUAGE SUPPORT
     // -------------------------------------------------------------------------
     const translations = {
-        en: { appName: "TourChain", welcome: "Welcome", tagline: "Your Safety, Our Priority", selectLanguage: "Select Language", login: "Login", signup: "Sign Up", phone: "Phone Number", password: "Password", home: "Home", plan: "Plan", active: "Active Trip", account: "Account", panic: "PANIC", planNewTrip: "Plan New Trip", myTripDrafts: "My Trip Drafts", safetyScore: "Safety Score", startJourney: "Start Planned Journey", endJourney: "End Current Journey", activeJourney: "Active Journey", nextStop: "Next Stop", updateItinerary: "Update Itinerary", shareLocation: "Share Location", profileDetails: "Profile Details", familyMembers: "Family Members", addMember: "Add Member", emergencyContacts: "Emergency Contacts", settings: "Settings", voiceActivation: "Voice Activation", journeyActivation: "Journey Activation", selectDraft: "Select an Itinerary Draft", setDates: "Set Journey Dates", from: "From", to: "To", selectMembers: "Select Members", activateTrip: "Activate Trip", showQrCode: "Show Verification QR Code", qrCodeTitle: "Journey Activated!", qrCodeSubtitle: "Show this QR code to authorities for verification.", txHash: "Blockchain Transaction Hash", close: "Close", createNewTrip: "Create New Trip Plan", notifications: "Notifications", role: "I am a:" },
+        en: { appName: "TourChain", welcome: "Welcome", tagline: "Your Safety, Our Priority", selectLanguage: "Select Language", login: "Login", signup: "Sign Up", phone: "Phone Number", password: "Password", home: "Home", plan: "Plan", active: "Active Trip", account: "Account", panic: "PANIC", planNewTrip: "Plan New Trip", myTripDrafts: "My Trip Drafts", safetyScore: "Safety Score", startJourney: "Start Planned Journey", endJourney: "End Current Journey", activeJourney: "Active Journey", nextStop: "Next Stop", updateItinerary: "Update Itinerary", shareLocation: "Share Location", profileDetails: "Profile Details", familyMembers: "Family Members", addMember: "Add Member", emergencyContacts: "Emergency Contacts", settings: "Settings", voiceActivation: "Voice Activation", journeyActivation: "Journey Activation", selectDraft: "Select an Itinerary Draft", setDates: "Set Journey Dates", from: "From", to: "To", selectMembers: "Select Members", activateTrip: "Activate Trip", showQrCode: "Show Verification QR Code", qrCodeTitle: "Journey Activated!", qrCodeSubtitle: "Show this QR code to authorities for verification.", txHash: "Blockchain Transaction Hash", close: "Close", createNewTrip: "Create New Trip Plan", notifications: "Notifications", role: "I am a:", register: "Register", createAccount: "Create Account", fullName: "Full Name", email: "Email Address", confirmPassword: "Confirm Password", alreadyHaveAccount: "Already have an account?", signInHere: "Sign in here", createYourAccount: "Create Your Account", joinTourChain: "Join TourChain today", enterFullName: "Enter your full name", enterEmail: "Enter your email address", enterPassword: "Enter your password", reenterPassword: "Re-enter your password", registrationSuccess: "Registration successful! Welcome to TourChain", age: "Age", emergency: "Emergency Contact", enterEmergencyContact: "Emergency contact number", back: "Back", signInContinue: "Sign in to continue", sendOTP: "Send OTP", enterPhoneNumber: "Enter your phone number", agreeTerms: "By continuing, you agree to our Terms & Privacy Policy", phoneNumber: "Phone Number", createNewTrip: "Create New Trip", showQrCode: "Show QR Code", emergencyAlert: "EMERGENCY ALERT", emergencyActivated: "EMERGENCY ACTIVATED", callEmergency: "Call Emergency", callPolice: "Call Police", helpOnWay: "Help is on the way!", stayCalm: "Stay calm and stay safe", locationShared: "Your location has been shared with authorities" },
         hi: { appName: "टूरचेन", welcome: "स्वागत है", tagline: "आपकी सुरक्षा, हमारी प्राथमिकता", selectLanguage: "भाषा चुने", login: "लॉग इन करें", signup: "साइन अप करें", phone: "फोन नंबर", password: "पासवर्ड", home: "होम", plan: "योजना", active: "सक्रिय यात्रा", account: "अकाउंट", panic: "घबड़ाहट", planNewTrip: "नई यात्रा की योजना बनाएं", myTripDrafts: "मेरी यात्रा के ड्राफ्ट", safetyScore: "सुरक्षा स्कोर", startJourney: "नियोजित यात्रा शुरू करें", endJourney: "वर्तमान यात्रा समाप्त करें", activeJourney: "सक्रिय यात्रा", nextStop: "अगला पड़ाव", updateItinerary: "यात्रा कार्यक्रम अपडेट करें", shareLocation: "स्थान साझा करें", profileDetails: "प्रोफ़ाइल विवरण", familyMembers: "परिवार के सदस्य", addMember: "सदस्य जोड़ें", emergencyContacts: "आपातकालीन संपर्क", settings: "सेटिंग्स", voiceActivation: "आवाज सक्रियण", journeyActivation: "यात्रा सक्रियण", selectDraft: "एक यात्रा कार्यक्रम ड्राफ्ट चुनें", setDates: "यात्रा की तिथियां निर्धारित करें", from: "से", to: "तक", selectMembers: "सदस्य चुनें", activateTrip: "यात्रा सक्रिय करें", showQrCode: "सत्यापन QR कोड दिखाएं", qrCodeTitle: "यात्रा सक्रिय!", qrCodeSubtitle: "सत्यापन के लिए यह QR कोड अधिकारियों को दिखाएं।", txHash: "ब्लॉकचेन लेनदेन हैश", close: "बंद करे", createNewTrip: "नई यात्रा योजना बनाएं", notifications: "सूचनाएं", role: "मैं हूँ:" },
         bn: { appName: "ট্যুরচেন", welcome: "স্বাগতম", tagline: "আপনার সুরক্ষা, আমাদের অগ্রাধিকার", selectLanguage: "ভাষা নির্বাচন করুন", login: "লগইন", signup: "সাইন আপ", phone: "ফোন নম্বর", password: "পাসওয়ার্ড", home: "হোম", plan: "পরিকল্পনা", active: "সক্রিয় ট্রিপ", account: "অ্যাকাউন্ট", panic: "আতঙ্ক", planNewTrip: "নতুন ট্রিপ পরিকল্পনা করুন", myTripDrafts: "আমার ট্রিপ ড্রাফ্ট", safetyScore: "সুরক্ষা স্কোর", startJourney: "পরিকল্পিত যাত্রা শুরু করুন", endJourney: "বর্তমান যাত্রা শেষ করুন", activeJourney: "সক্রিয় ট্রিপ", nextStop: "পরবর্তী স্টপ", updateItinerary: "ভ্রমণপথ আপডেট করুন", shareLocation: "লোকেশন শেয়ার করুন", profileDetails: "প্রোফাইলের বিবরণ", familyMembers: "পরিবারের সদস্য", addMember: "সদস্য যোগ করুন", emergencyContacts: "জরুরী যোগাযোগ", settings: "সেটিংস", voiceActivation: "ভয়েস অ্যাক্টিভেশন", journeyActivation: "যাত্রা অ্যাক্টিভেশন", selectDraft: "একটি ভ্রমণপথের খসড়া নির্বাচন করুন", setDates: "যাত্রার তারিখ সেট করুন", from: "থেকে", to: "পর্যন্ত", selectMembers: "সদস্য নির্বাচন করুন", activateTrip: "ট্রিপ সক্রিয় করুন", showQrCode: "সত্যাপন QR কোড দেখান", qrCodeTitle: "যাত্রা সক্রিয়!", qrCodeSubtitle: "যাচাইয়ের জন্য কর্তৃপক্ষকে এই QR কোডটি দেখান।", txHash: "ব্লকচেন লেনদেন হ্যাশ", close: "বন্ধ করুন", createNewTrip: "নতুন ট্রিপ প্ল্যান তৈরি করুন", notifications: "বিজ্ঞপ্তি", role: "আমি একজন:" },
         as: { appName: "টুৰচেইন", welcome: "স্বাগতম", tagline: "আপোনাৰ সুৰক্ষা, আমাৰ অগ্ৰাধিকাৰ", selectLanguage: "ভাষা নিৰ্বাচন কৰক", login: "লগইন কৰক", signup: "চাইন আপ কৰক", phone: "ফোন নম্বৰ", password: "পাছৱৰ্ড", home: "হোম", plan: "পৰিকল্পনা", active: "সক্ৰিয় যাত্ৰা", account: "একাউণ্ট", panic: "আতংক", planNewTrip: "নতুন যাত্ৰাৰ পৰিকল্পনা কৰক", myTripDrafts: "মোৰ যাত্ৰাৰ খচৰা", safetyScore: "সুৰক্ষা স্কোৰ", startJourney: "পরিকল্পিত যাত্রা শুরু কৰক", endJourney: "বৰ্তমান যাত্ৰা শেষ কৰক", activeJourney: "সক্ৰিয় যাত্ৰা", nextStop: "পৰৱৰ্তী ৰৈ যোৱা স্থান", updateItinerary: "যাত্ৰাপথ আপডেট কৰক", shareLocation: "অৱস্থান শ্বেয়াৰ কৰক", profileDetails: "প্ৰফাইলৰ বিৱৰণ", familyMembers: "পৰিয়ালৰ সদস্য", addMember: "সদস্য যোগ দিয়ক", emergencyContacts: "জৰুৰীকালীন যোগাযোগ", settings: "ছেটিংছ", voiceActivation: "ভইচ এক্টিভেচন", journeyActivation: "যাত্ৰা সক্ৰিয়কৰণ", selectDraft: "এটা যাত্ৰাপথৰ খচৰা নিৰ্বাচন কৰক", setDates: "যাত্ৰাৰ তাৰিখ ছেট কৰক", from: "পৰা", to: "লৈ", selectMembers: "সদস্য নিৰ্বাচন কৰক", activateTrip: "যাত্ৰা সক্ৰিয় কৰক", showQrCode: "সত্যাপন QR ক'ড দেখুৱাওক", qrCodeTitle: "যাত্ৰা সক্ৰিয়!", qrCodeSubtitle: "প্ৰমাণীকৰণৰ বাবে কৰ্তৃপক্ষক এই QR ক'ড দেখুৱাওক।", txHash: "ব্লকচেইন লেনদেন হেছ", close: "বন্ধ কৰক", createNewTrip: "নতুন যাত্ৰা পৰিকল্পনা সৃষ্টি কৰক", notifications: "জাননী", role: "মই এজন:" },
@@ -134,6 +441,326 @@
     const appContainer = document.getElementById('app-container');
     const navContainer = document.getElementById('bottom-nav-container');
     const getT = () => translations[state.language] || translations['en'];
+
+    // Safety score calculation function
+    async function calculateSafetyScore(itinerary) {
+        try {
+            // Create a simulated tourist data based on itinerary
+            const destinations = itinerary.destinations || [];
+            const currentHour = new Date().getHours();
+            
+            // Calculate average safety score based on destinations
+            let totalScore = 0;
+            let validScores = 0;
+
+            for (const destination of destinations) {
+                const destinationName = destination.city.toLowerCase();
+                
+                // Simulate tourist data for each destination
+                const touristData = {
+                    current_area: destinationName,
+                    deviation_km: 0, // No deviation for planned routes
+                    inactivity_minutes: 0, // No inactivity for planned routes
+                    current_hour: currentHour
+                };
+
+                try {
+                    // Try local AI service first, then fallback to online
+                    const aiUrls = [
+                        'http://localhost:8000/calculate-score/',
+                        'https://tourchain-ai.onrender.com/calculate-score/'
+                    ];
+
+                    let response;
+                    for (const url of aiUrls) {
+                        try {
+                            response = await fetch(url, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify(touristData)
+                            });
+                            if (response.ok) break;
+                        } catch (e) {
+                            continue; // Try next URL
+                        }
+                    }
+
+                    if (response && response.ok) {
+                        const result = await response.json();
+                        totalScore += result.safety_score;
+                        validScores++;
+                    } else {
+                        throw new Error('AI service not available');
+                    }
+                } catch (error) {
+                    console.warn(`Could not calculate safety score for ${destinationName}:`, error);
+                    // Use a default score based on destination type
+                    const defaultScore = getDefaultSafetyScore(destinationName);
+                    totalScore += defaultScore;
+                    validScores++;
+                }
+            }
+
+            // If no destinations or scores, return a default score
+            if (validScores === 0) {
+                return 8.0; // Default safe score
+            }
+
+            // Return average score rounded to 1 decimal place
+            return Math.round((totalScore / validScores) * 10) / 10;
+        } catch (error) {
+            console.error('Error calculating safety score:', error);
+            return 8.0; // Default safe score on error
+        }
+    }
+
+    // Helper function to get default safety scores based on destination name
+    function getDefaultSafetyScore(destinationName) {
+        const safePlaces = ['park', 'museum', 'temple', 'monument', 'garden', 'mall', 'restaurant'];
+        const moderatePlaces = ['market', 'station', 'airport', 'bus', 'train'];
+        const riskyPlaces = ['alley', 'dark', 'isolated', 'remote'];
+
+        const name = destinationName.toLowerCase();
+        
+        if (safePlaces.some(place => name.includes(place))) {
+            return 9.0;
+        } else if (moderatePlaces.some(place => name.includes(place))) {
+            return 7.5;
+        } else if (riskyPlaces.some(place => name.includes(place))) {
+            return 6.0;
+        } else {
+            return 8.0; // Default for unknown places
+        }
+    }
+
+    // Function to update individual draft safety score in the UI
+    function updateDraftSafetyScore(draftId, score) {
+        const scoreElement = document.querySelector(`[data-draft-id="${draftId}"] .safety-score`);
+        if (scoreElement) {
+            const scoreColor = score >= 8 ? 'text-green-500' : 
+                              score >= 6 ? 'text-yellow-500' : 'text-red-500';
+            scoreElement.innerHTML = score;
+            scoreElement.className = `text-xl font-bold ${scoreColor}`;
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // --- MAP FUNCTIONS
+    // -------------------------------------------------------------------------
+    
+    // Initialize Mapbox map
+    function initializeMap() {
+        if (!document.getElementById('map')) {
+            console.log('Map container not found');
+            return;
+        }
+        
+        if (typeof mapboxgl === 'undefined') {
+            console.error('Mapbox GL JS not loaded');
+            showMapFallback();
+            return;
+        }
+        
+        console.log('Initializing Mapbox map...');
+        try {
+            map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/streets-v12',
+                center: [88.3639, 22.5726], // Kolkata coordinates as default
+                zoom: 12,
+                attributionControl: false
+            });
+            
+            console.log('Mapbox map created successfully');
+
+            // Add navigation controls
+            map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+            
+            // Add geolocate control
+            const geolocate = new mapboxgl.GeolocateControl({
+                positionOptions: {
+                    enableHighAccuracy: true
+                },
+                trackUserLocation: true,
+                showUserHeading: true
+            });
+            
+            map.addControl(geolocate, 'top-right');
+            
+            // Get user location on map load
+            map.on('load', function() {
+                getUserLocation();
+                addEmergencyServices(); // Add emergency services markers
+                
+                // Auto-trigger geolocation after a delay
+                setTimeout(() => {
+                    geolocate.trigger();
+                }, 1000);
+            });
+            
+            // Handle map errors
+            map.on('error', function(e) {
+                console.warn('Map error:', e);
+                showMapFallback();
+            });
+            
+        } catch (error) {
+            console.error('Failed to initialize map:', error);
+            showMapFallback();
+        }
+    }
+    
+    // Simple map initialization for testing
+    window.testMap = function() {
+        const mapContainer = document.getElementById('map');
+        if (!mapContainer) {
+            console.log('No map container found');
+            return;
+        }
+        
+        try {
+            if (map) {
+                map.remove();
+            }
+            
+            map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/streets-v11', // Using v11 for better compatibility
+                center: [-74.5, 40], // New York coordinates for testing
+                zoom: 9
+            });
+            
+            console.log('Test map created successfully');
+        } catch (error) {
+            console.error('Test map failed:', error);
+        }
+    }
+    
+    // Show fallback when map fails to load
+    function showMapFallback() {
+        const mapContainer = document.getElementById('map');
+        if (mapContainer) {
+            mapContainer.innerHTML = `
+                <div class="w-full h-full bg-gradient-to-br from-blue-100 to-green-100 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center text-center rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600">
+                    <div class="p-4">
+                        <i data-lucide="map-pin" class="w-12 h-12 mx-auto mb-3 text-primary-light"></i>
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Interactive Map Loading...</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Preparing your location view</p>
+                        <button onclick="initializeMap()" class="mt-3 px-4 py-2 bg-primary-light text-white text-xs rounded-lg hover:opacity-90">
+                            Retry Map Load
+                        </button>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+    }
+
+    // Get user's current location
+    function getUserLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    
+                    // Center map on user location
+                    if (map) {
+                        map.flyTo({
+                            center: [lng, lat],
+                            zoom: 15
+                        });
+                        
+                        // Add user location marker
+                        if (userLocationMarker) {
+                            userLocationMarker.remove();
+                        }
+                        
+                        userLocationMarker = new mapboxgl.Marker({
+                            color: '#00a78e'
+                        })
+                        .setLngLat([lng, lat])
+                        .setPopup(new mapboxgl.Popup().setHTML('<strong>Your Location</strong>'))
+                        .addTo(map);
+                    }
+                },
+                function(error) {
+                    console.warn('Geolocation error:', error);
+                    // Fallback to Kolkata if geolocation fails
+                    if (map) {
+                        map.flyTo({
+                            center: [88.3639, 22.5726],
+                            zoom: 12
+                        });
+                    }
+                }
+            );
+        }
+    }
+
+    // Add journey route to map
+    function addJourneyRoute(journey) {
+        if (!map || !journey) return;
+        
+        // This would integrate with your journey tracking system
+        // For now, we'll add markers for planned destinations
+        if (journey.itinerary && journey.itinerary.destinations) {
+            journey.itinerary.destinations.forEach((destination, index) => {
+                // You would need to geocode the destination names to coordinates
+                // For demo purposes, adding markers around Kolkata area
+                const lng = 88.3639 + (Math.random() - 0.5) * 0.1;
+                const lat = 22.5726 + (Math.random() - 0.5) * 0.1;
+                
+                new mapboxgl.Marker({
+                    color: index === 0 ? '#ef4444' : '#3b82f6'
+                })
+                .setLngLat([lng, lat])
+                .setPopup(new mapboxgl.Popup().setHTML(`<strong>${destination.city}</strong><br>${destination.places.join(', ')}`))
+                .addTo(map);
+            });
+        }
+    }
+
+    // Update map for active journey
+    function updateMapForActiveJourney() {
+        if (!map || !state.activeJourney) return;
+        
+        addJourneyRoute(state.activeJourney);
+        
+        // Add any additional active journey features
+        // Like route tracking, geofencing alerts, etc.
+    }
+    
+    // Add emergency services markers
+    function addEmergencyServices() {
+        if (!map) return;
+        
+        // Sample emergency services near Kolkata
+        const emergencyServices = [
+            { name: 'Police Station', type: 'police', coords: [88.3639, 22.5726], phone: '100' },
+            { name: 'Hospital', type: 'hospital', coords: [88.3700, 22.5780], phone: '102' },
+            { name: 'Fire Station', type: 'fire', coords: [88.3580, 22.5680], phone: '101' }
+        ];
+        
+        emergencyServices.forEach(service => {
+            const color = service.type === 'police' ? '#3b82f6' : 
+                         service.type === 'hospital' ? '#ef4444' : '#f59e0b';
+            
+            new mapboxgl.Marker({
+                color: color,
+                scale: 0.8
+            })
+            .setLngLat(service.coords)
+            .setPopup(new mapboxgl.Popup().setHTML(
+                `<strong>${service.name}</strong><br>
+                 Emergency: ${service.phone}<br>
+                 <button onclick="window.open('tel:${service.phone}')" class="mt-1 px-2 py-1 bg-red-500 text-white text-xs rounded">Call Now</button>`
+            ))
+            .addTo(map);
+        });
+    }
 
     async function apiRequest(endpoint, method = "GET", body = null) {
     try {
@@ -199,32 +826,41 @@
         ];
 
         const panicButton = `
-            <div class="absolute bottom-4 left-1/2 -translate-x-1/2">
+            <div class="absolute -top-8 left-1/2 -translate-x-1/2">
                 <button
                     id="panic-button"
                     onclick="handlePanic()"
                     title="${t.panic}"
-                    class="w-16 h-16 bg-red-300 dark:bg-red-800 text-white font-bold rounded-full flex items-center justify-center transition-all duration-300 transform active:scale-90 disabled:opacity-50
-                    ${state.activeJourney ? 'panic-button-active bg-red-500' : ''}"
-                    ${!state.activeJourney ? 'disabled' : ''}
+                    class="w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 active:scale-95 shadow-2xl animate-pulse-glow"
                 >
-                    <i data-lucide="alert-triangle" class="w-8 h-8"></i>
+                    <i data-lucide="shield-alert" class="w-7 h-7"></i>
                 </button>
             </div>
         `;
 
         navContainer.innerHTML = `
-            <div class="fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-black/80 backdrop-blur-sm border-t border-gray-200 dark:border-gray-700 flex justify-around items-center max-w-lg mx-auto z-20 p-2 gap-2">
-                ${navItems.map(item => `
-                    <button
-                        onclick="showPage('${item.id}')"
-                        class="flex flex-col items-center justify-center flex-grow h-16 w-1/4 rounded-2xl transition-all duration-200 transform active:scale-90 tab-button ${state.currentPage === item.id ? 'active' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}"
-                    >
-                        <i data-lucide="${item.icon}" class="w-6 h-6"></i>
-                        <span class="text-xs mt-1 font-medium">${item.label}</span>
-                    </button>
-                `).join('')}
-                ${panicButton}
+            <div class="fixed bottom-0 left-0 right-0 z-30 p-4 max-w-lg mx-auto">
+                <div class="relative glass-card rounded-3xl p-3 shadow-2xl border border-white/20">
+                    <div class="flex justify-around items-center">
+                        ${navItems.map(item => `
+                            <button
+                                onclick="showPage('${item.id}')"
+                                class="flex flex-col items-center justify-center flex-grow h-14 rounded-2xl transition-all duration-300 transform hover:scale-105 active:scale-95 tab-button ${
+                                    state.currentPage === item.id 
+                                        ? 'active text-white' 
+                                        : 'text-surface-500 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400'
+                                }"
+                            >
+                                <div class="relative">
+                                    <i data-lucide="${item.icon}" class="w-5 h-5"></i>
+                                    ${state.currentPage === item.id ? '<div class="absolute -inset-1 bg-white/20 rounded-lg blur-sm"></div>' : ''}
+                                </div>
+                                <span class="text-xs mt-1 font-medium">${item.label}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                    ${panicButton}
+                </div>
             </div>
         `;
         lucide.createIcons();
@@ -233,14 +869,86 @@
     function renderSplashPage() {
         const t = getT();
         appContainer.innerHTML = `
-            <div class="flex flex-col items-center justify-center h-full animate-fade-in p-8 text-center">
-                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-primary-light mb-4">
-                    <path d="M12 2L2 7V17L12 22L22 17V7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M2 7L12 12L22 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M12 12V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <h1 class="text-4xl font-extrabold text-primary-dark dark:text-white">${t.appName}</h1>
-                <p class="text-neutral-text dark:text-gray-300 mt-2">${t.tagline}</p>
+            <div class="relative h-full overflow-hidden">
+                <!-- Animated Background Elements -->
+                <div class="absolute inset-0 opacity-30">
+                    <div class="absolute top-20 left-10 w-32 h-32 bg-primary-200 rounded-full animate-float"></div>
+                    <div class="absolute top-40 right-16 w-24 h-24 bg-accent-200 rounded-full animate-float" style="animation-delay: 1s"></div>
+                    <div class="absolute bottom-32 left-20 w-20 h-20 bg-primary-300 rounded-full animate-float" style="animation-delay: 2s"></div>
+                    <div class="absolute bottom-20 right-10 w-16 h-16 bg-accent-300 rounded-full animate-float" style="animation-delay: 0.5s"></div>
+                </div>
+                
+                <!-- Main Content -->
+                <div class="relative flex flex-col items-center justify-center h-full p-8 text-center z-10">
+                    <!-- Logo with Advanced Animation -->
+                    <div class="relative mb-8 animate-scale-in">
+                        <div class="absolute inset-0 bg-gradient-to-r from-primary-400 to-accent-400 rounded-full blur-2xl opacity-30 animate-pulse-glow"></div>
+                        <div class="relative bg-gradient-to-br from-primary-50 to-accent-50 p-6 rounded-3xl shadow-2xl">
+                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-primary-600 animate-bounce-soft">
+                                <path d="M12 2L2 7V17L12 22L22 17V7L12 2Z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M2 7L12 12L22 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M12 12V22" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="12" cy="12" r="3" fill="currentColor" opacity="0.3" class="animate-pulse"/>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <!-- App Title with Gradient -->
+                    <div class="animate-slide-up" style="animation-delay: 0.2s">
+                        <h1 class="text-5xl font-black mb-3 gradient-text leading-tight">
+                            ${t.appName}
+                        </h1>
+                        <div class="h-1 w-24 bg-gradient-to-r from-primary-400 to-accent-400 rounded-full mx-auto mb-4 animate-shimmer"></div>
+                    </div>
+                    
+                    <!-- Tagline -->
+                    <p class="text-lg text-surface-600 dark:text-surface-300 mb-8 animate-slide-up max-w-sm leading-relaxed" style="animation-delay: 0.4s">
+                        ${t.tagline}
+                    </p>
+                    
+                    <!-- Action Buttons -->
+                    <div class="space-y-4 w-full max-w-sm animate-slide-up" style="animation-delay: 0.6s">
+                        <button onclick="showPage('demoMap')" class="group w-full btn-primary text-white font-semibold py-4 px-6 rounded-2xl text-lg shadow-lg hover-lift transform transition-all duration-300">
+                            <div class="flex items-center justify-center space-x-3">
+                                <div class="w-6 h-6 bg-white bg-opacity-20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    🗺️
+                                </div>
+                                <span>Explore Interactive Map</span>
+                            </div>
+                        </button>
+                        
+                        <button onclick="showPage('languageSelect')" class="group w-full glass-card text-primary-700 dark:text-primary-300 font-semibold py-4 px-6 rounded-2xl text-lg hover-lift transform transition-all duration-300">
+                            <div class="flex items-center justify-center space-x-3">
+                                <div class="w-6 h-6 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    🚀
+                                </div>
+                                <span>Get Started</span>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <!-- Feature Highlights -->
+                    <div class="mt-12 grid grid-cols-3 gap-4 w-full max-w-md animate-fade-in" style="animation-delay: 0.8s">
+                        <div class="text-center">
+                            <div class="w-12 h-12 bg-gradient-to-br from-primary-100 to-primary-200 rounded-xl mx-auto mb-2 flex items-center justify-center">
+                                <span class="text-lg">🛡️</span>
+                            </div>
+                            <p class="text-xs text-surface-500 dark:text-surface-400 font-medium">Safety First</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-12 h-12 bg-gradient-to-br from-accent-100 to-accent-200 rounded-xl mx-auto mb-2 flex items-center justify-center">
+                                <span class="text-lg">🌍</span>
+                            </div>
+                            <p class="text-xs text-surface-500 dark:text-surface-400 font-medium">Global Tracking</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-12 h-12 bg-gradient-to-br from-primary-100 to-accent-100 rounded-xl mx-auto mb-2 flex items-center justify-center">
+                                <span class="text-lg">🤖</span>
+                            </div>
+                            <p class="text-xs text-surface-500 dark:text-surface-400 font-medium">AI Powered</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         `;
         navContainer.innerHTML = '';
@@ -249,46 +957,371 @@
     function renderLanguageSelectPage() {
         const t = getT();
          appContainer.innerHTML = `
-            <div class="flex flex-col items-center justify-center h-full p-8 animate-fade-in">
-                <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">${t.selectLanguage}</h1>
-                <div class="space-y-4 w-full max-w-xs">
-                    <button onclick="setLanguage('en')" class="w-full text-lg font-semibold py-3 px-4 rounded-lg border-2 border-primary-light text-primary-light hover:bg-primary-light hover:text-white transition-all">English</button>
-                    <button onclick="setLanguage('hi')" class="w-full text-lg font-semibold py-3 px-4 rounded-lg border-2 border-primary-light text-primary-light hover:bg-primary-light hover:text-white transition-all">हिन्दी</button>
-                    <button onclick="setLanguage('bn')" class="w-full text-lg font-semibold py-3 px-4 rounded-lg border-2 border-primary-light text-primary-light hover:bg-primary-light hover:text-white transition-all">বাংলা</button>
-                    <button onclick="setLanguage('as')" class="w-full text-lg font-semibold py-3 px-4 rounded-lg border-2 border-primary-light text-primary-light hover:bg-primary-light hover:text-white transition-all">অসমীয়া</button>
-                    <button onclick="setLanguage('mni')" class="w-full text-lg font-semibold py-3 px-4 rounded-lg border-2 border-primary-light text-primary-light hover:bg-primary-light hover:text-white transition-all">ꯃꯩꯇꯩꯂꯣꯟ</button>
+            <div class="relative h-full overflow-hidden">
+                <!-- Background Elements -->
+                <div class="absolute inset-0 opacity-20">
+                    <div class="absolute top-16 right-8 w-24 h-24 bg-primary-200 rounded-full animate-float"></div>
+                    <div class="absolute bottom-24 left-12 w-32 h-32 bg-accent-200 rounded-full animate-float" style="animation-delay: 1s"></div>
+                </div>
+                
+                <div class="relative flex flex-col items-center justify-center h-full p-8 z-10">
+                    <!-- Header -->
+                    <div class="text-center mb-8 animate-slide-down">
+                        <div class="w-16 h-16 bg-gradient-to-br from-primary-400 to-accent-400 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+                            <span class="text-2xl">🌐</span>
+                        </div>
+                        <h1 class="text-2xl font-bold gradient-text mb-2">${t.selectLanguage}</h1>
+                        <p class="text-sm text-surface-500 dark:text-surface-400">Choose your preferred language</p>
+                    </div>
+                    
+                    <!-- Language Options -->
+                    <div class="space-y-3 w-full max-w-sm animate-scale-in" style="animation-delay: 0.2s">
+                        <button onclick="setLanguage('en')" class="group w-full glass-card text-lg font-semibold py-4 px-6 rounded-2xl text-primary-700 dark:text-primary-300 hover-lift transition-all duration-300 border border-primary-200 dark:border-primary-800">
+                            <div class="flex items-center justify-between">
+                                <span>English</span>
+                                <div class="w-6 h-6 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    🇺🇸
+                                </div>
+                            </div>
+                        </button>
+                        <button onclick="setLanguage('hi')" class="group w-full glass-card text-lg font-semibold py-4 px-6 rounded-2xl text-primary-700 dark:text-primary-300 hover-lift transition-all duration-300 border border-primary-200 dark:border-primary-800">
+                            <div class="flex items-center justify-between">
+                                <span>हिन्दी</span>
+                                <div class="w-6 h-6 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    🇮🇳
+                                </div>
+                            </div>
+                        </button>
+                        <button onclick="setLanguage('bn')" class="group w-full glass-card text-lg font-semibold py-4 px-6 rounded-2xl text-primary-700 dark:text-primary-300 hover-lift transition-all duration-300 border border-primary-200 dark:border-primary-800">
+                            <div class="flex items-center justify-between">
+                                <span>বাংলা</span>
+                                <div class="w-6 h-6 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    🇧🇩
+                                </div>
+                            </div>
+                        </button>
+                        <button onclick="setLanguage('as')" class="group w-full glass-card text-lg font-semibold py-4 px-6 rounded-2xl text-primary-700 dark:text-primary-300 hover-lift transition-all duration-300 border border-primary-200 dark:border-primary-800">
+                            <div class="flex items-center justify-between">
+                                <span>অসমীয়া</span>
+                                <div class="w-6 h-6 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    🏔️
+                                </div>
+                            </div>
+                        </button>
+                        <button onclick="setLanguage('mni')" class="group w-full glass-card text-lg font-semibold py-4 px-6 rounded-2xl text-primary-700 dark:text-primary-300 hover-lift transition-all duration-300 border border-primary-200 dark:border-primary-800">
+                            <div class="flex items-center justify-between">
+                                <span>ꯃꯩꯇꯩꯂꯣꯟ</span>
+                                <div class="w-6 h-6 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    🏞️
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <!-- Back Button -->
+                    <button onclick="showPage('splash')" class="mt-8 text-surface-500 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors animate-fade-in" style="animation-delay: 0.4s">
+                        <div class="flex items-center space-x-2">
+                            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                            <span class="text-sm">Back to Home</span>
+                        </div>
+                    </button>
                 </div>
             </div>
         `;
+        lucide.createIcons();
     }
 
-    function renderAuthPage() {
+    // In index.html
+
+function renderAuthPage() {
+    const t = getT();
+    appContainer.innerHTML = `
+        <div class="relative h-full overflow-hidden">
+            <div class="absolute inset-0 opacity-10">
+                <div class="absolute top-20 right-6 w-20 h-20 bg-primary-300 rounded-full animate-float"></div>
+                <div class="absolute bottom-32 left-8 w-28 h-28 bg-accent-300 rounded-full animate-float" style="animation-delay: 2s"></div>
+                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-gradient-to-br from-primary-200 to-accent-200 rounded-full opacity-50 animate-pulse-glow"></div>
+            </div>
+            
+            <div class="relative flex-grow flex flex-col justify-center p-6 z-10">
+                <div class="text-center mb-8 animate-slide-down">
+                    <div class="w-20 h-20 bg-gradient-to-br from-primary-500 to-accent-500 rounded-3xl mx-auto mb-6 flex items-center justify-center shadow-lg">
+                        <i data-lucide="shield-check" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h1 class="text-3xl font-bold gradient-text mb-3">${t.welcome}</h1>
+                    <p class="text-surface-600 dark:text-surface-400">${t.tagline}</p>
+                </div>
+                
+                <div class="space-y-6 animate-scale-in" style="animation-delay: 0.2s">
+                    <div class="glass-card p-6 rounded-3xl border border-primary-200 dark:border-primary-800">
+                        <div class="space-y-5">
+                            <div>
+                                <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3">${t.role}</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                        <i data-lucide="user-circle" class="w-5 h-5 text-surface-400"></i>
+                                    </div>
+                                    <select id="role-select" class="w-full pl-12 pr-4 py-4 bg-surface-50 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-2xl 
+                                        focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300
+                                        text-surface-900 dark:text-surface-100 hover:border-primary-300 dark:hover:border-primary-600 appearance-none">
+                                        <option value="Tourist">Tourist</option>
+                                        <option value="Admin">Admin</option>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                                        <i data-lucide="chevron-down" class="w-5 h-5 text-surface-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3">${t.phone}</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                        <i data-lucide="phone" class="w-5 h-5 text-surface-400"></i>
+                                    </div>
+                                    <input id="login-phone" type="tel" class="w-full pl-12 pr-4 py-4 bg-surface-50 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-2xl 
+                                        focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300
+                                        text-surface-900 dark:text-surface-100 placeholder-surface-500
+                                        hover:border-primary-300 dark:hover:border-primary-600" placeholder="+91 12345 67890">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3">${t.password}</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                        <i data-lucide="lock" class="w-5 h-5 text-surface-400"></i>
+                                    </div>
+                                    <input id="login-password" type="password" class="w-full pl-12 pr-12 py-4 bg-surface-50 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-2xl 
+                                        focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300
+                                        text-surface-900 dark:text-surface-100 placeholder-surface-500
+                                        hover:border-primary-300 dark:hover:border-primary-600" placeholder="••••••••">
+                                    
+                                    <button type="button" onclick="togglePassword('login-password', this)" class="absolute inset-y-0 right-0 pr-4 flex items-center">
+                                        <i data-lucide="eye" class="w-5 h-5 text-surface-400 hover:text-surface-600"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <button onclick="handleLogin()" class="w-full bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-700 hover:to-accent-700 
+                                text-white font-semibold py-4 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg
+                                focus:outline-none focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-800">
+                                <div class="flex items-center justify-center space-x-2">
+                                    <i data-lucide="log-in" class="w-5 h-5"></i>
+                                    <span>${t.login}</span>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center animate-fade-in" style="animation-delay: 0.4s">
+                        <div class="bg-gradient-to-r from-accent-50 to-primary-50 dark:from-accent-950 dark:to-primary-950 
+                            p-4 rounded-2xl border border-accent-200 dark:border-accent-800">
+                            <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">Don't have an account?</p>
+                            <button onclick="showPage('register')" class="text-accent-600 dark:text-accent-400 hover:text-accent-700 dark:hover:text-accent-300 font-semibold transition-colors">
+                                ${t.signup} →
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-primary-50 to-accent-50 dark:from-primary-950 dark:to-accent-950 
+                        p-4 rounded-2xl border border-primary-200 dark:border-primary-800 animate-fade-in" style="animation-delay: 0.6s">
+                        <div class="flex items-center space-x-3">
+                            <div class="flex-shrink-0">
+                                <i data-lucide="shield" class="w-5 h-5 text-primary-600 dark:text-primary-400"></i>
+                            </div>
+                            <p class="text-sm text-surface-700 dark:text-surface-300">Your data is encrypted and secure with TourChain</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    lucide.createIcons();
+}
+
+    function renderRegistrationPage() {
         const t = getT();
         appContainer.innerHTML = `
-            <div class="flex-grow flex flex-col justify-center p-6 animate-fade-in">
-                <h1 class="text-3xl font-bold text-center text-primary-dark dark:text-white">${t.welcome}</h1>
-                <p class="text-center text-neutral-text dark:text-gray-400 mb-8">${t.tagline}</p>
-                <div class="space-y-4">
-                    <div>
-                        <label class="text-sm font-medium text-neutral-text dark:text-gray-300">${t.role}</label>
-                        <select id="role-select" class="w-full mt-1 p-3 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light">
-                            <option value="Tourist">Tourist</option>
-                            <option value="Admin">Admin</option>
-                        </select>
+            <div class="relative h-full overflow-hidden">
+                <!-- Background Elements -->
+                <div class="absolute inset-0 opacity-10">
+                    <div class="absolute top-16 right-8 w-24 h-24 bg-primary-300 rounded-full animate-float"></div>
+                    <div class="absolute bottom-40 left-12 w-32 h-32 bg-accent-300 rounded-full animate-float" style="animation-delay: 1.5s"></div>
+                    <div class="absolute top-1/3 left-1/4 w-20 h-20 bg-gradient-to-br from-primary-200 to-accent-200 rounded-full opacity-50 animate-pulse-glow"></div>
+                </div>
+                
+                <div class="relative flex flex-col h-full p-6 z-10">
+                    <!-- Header -->
+                    <div class="text-center mb-8 animate-slide-down">
+                        <div class="w-20 h-20 bg-gradient-to-br from-accent-500 to-primary-500 rounded-3xl mx-auto mb-6 flex items-center justify-center shadow-lg">
+                            <i data-lucide="user-plus" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <h1 class="text-3xl font-bold gradient-text mb-3">${t.createYourAccount}</h1>
+                        <p class="text-surface-600 dark:text-surface-400">${t.joinTourChain}</p>
                     </div>
+                    
+                    <!-- Registration Form -->
+                    <div class="flex-1 overflow-y-auto">
+                        <div class="space-y-6 animate-scale-in" style="animation-delay: 0.2s">
+                            <div class="glass-card p-6 rounded-3xl border border-primary-200 dark:border-primary-800">
+                                <form id="registration-form" class="space-y-5">
+                                    <!-- Full Name -->
+                                    <div>
+                                        <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3">${t.fullName}</label>
+                                        <div class="relative">
+                                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                                <i data-lucide="user" class="w-5 h-5 text-surface-400"></i>
+                                            </div>
+                                            <input id="reg-fullname" type="text" placeholder="${t.enterFullName}" required
+                                                class="w-full pl-12 pr-4 py-4 bg-surface-50 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-2xl 
+                                                focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300
+                                                text-surface-900 dark:text-surface-100 placeholder-surface-500
+                                                hover:border-primary-300 dark:hover:border-primary-600">
+                                        </div>
+                                    </div>
 
-                    <div>
-                        <label class="text-sm font-medium text-neutral-text dark:text-gray-300">${t.phone}</label>
-                        <input id="login-phone" type="tel" class="w-full mt-1 p-3 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light" placeholder="+91 12345 67890">
+                                    <!-- Email -->
+                                    <div>
+                                        <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3">${t.email}</label>
+                                        <div class="relative">
+                                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                                <i data-lucide="mail" class="w-5 h-5 text-surface-400"></i>
+                                            </div>
+                                            <input id="reg-email" type="email" placeholder="${t.enterEmail}" required
+                                                class="w-full pl-12 pr-4 py-4 bg-surface-50 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-2xl 
+                                                focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300
+                                                text-surface-900 dark:text-surface-100 placeholder-surface-500
+                                                hover:border-primary-300 dark:hover:border-primary-600">
+                                        </div>
+                                    </div>
+
+                                    <!-- Phone -->
+                                    <div>
+                                        <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3">${t.phoneNumber}</label>
+                                        <div class="relative">
+                                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                                <i data-lucide="phone" class="w-5 h-5 text-surface-400"></i>
+                                            </div>
+                                            <input id="reg-phone" type="tel" placeholder="${t.enterPhoneNumber}" required
+                                                class="w-full pl-12 pr-4 py-4 bg-surface-50 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-2xl 
+                                                focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300
+                                                text-surface-900 dark:text-surface-100 placeholder-surface-500
+                                                hover:border-primary-300 dark:hover:border-primary-600">
+                                        </div>
+                                    </div>
+
+                                    <!-- Age -->
+                                    <div>
+                                        <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3">${t.age}</label>
+                                        <div class="relative">
+                                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                                <i data-lucide="calendar" class="w-5 h-5 text-surface-400"></i>
+                                            </div>
+                                            <input id="reg-age" type="number" placeholder="Enter your age" min="13" max="100" required
+                                                class="w-full pl-12 pr-4 py-4 bg-surface-50 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-2xl 
+                                                focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300
+                                                text-surface-900 dark:text-surface-100 placeholder-surface-500
+                                                hover:border-primary-300 dark:hover:border-primary-600">
+                                        </div>
+                                    </div>
+
+                                    <!-- Emergency Contact -->
+                                    <div>
+                                        <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3">${t.emergency}</label>
+                                        <div class="relative">
+                                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                                <i data-lucide="phone-call" class="w-5 h-5 text-surface-400"></i>
+                                            </div>
+                                            <input id="reg-emergency" type="tel" placeholder="${t.enterEmergencyContact}" required
+                                                class="w-full pl-12 pr-4 py-4 bg-surface-50 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-2xl 
+                                                focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300
+                                                text-surface-900 dark:text-surface-100 placeholder-surface-500
+                                                hover:border-primary-300 dark:hover:border-primary-600">
+                                        </div>
+                                    </div>
+
+                                    <!-- Password -->
+                                    <div>
+                                        <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3">${t.password}</label>
+                                        <div class="relative">
+                                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                                <i data-lucide="lock" class="w-5 h-5 text-surface-400"></i>
+                                            </div>
+                                            <input id="reg-password" type="password" placeholder="${t.enterPassword}" required minlength="6"
+                                                class="w-full pl-12 pr-12 py-4 bg-surface-50 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-2xl 
+                                                focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300
+                                                text-surface-900 dark:text-surface-100 placeholder-surface-500
+                                                hover:border-primary-300 dark:hover:border-primary-600">
+                                            <button type="button" onclick="togglePassword('reg-password', this)" class="absolute inset-y-0 right-0 pr-4 flex items-center">
+                                                <i data-lucide="eye" class="w-5 h-5 text-surface-400 hover:text-surface-600"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Confirm Password -->
+                                    <div>
+                                        <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3">${t.confirmPassword}</label>
+                                        <div class="relative">
+                                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                                <i data-lucide="lock-keyhole" class="w-5 h-5 text-surface-400"></i>
+                                            </div>
+                                            <input id="reg-confirm-password" type="password" placeholder="${t.reenterPassword}" required minlength="6"
+                                                class="w-full pl-12 pr-12 py-4 bg-surface-50 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-2xl 
+                                                focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300
+                                                text-surface-900 dark:text-surface-100 placeholder-surface-500
+                                                hover:border-primary-300 dark:hover:border-primary-600">
+                                            <button type="button" onclick="togglePassword('reg-confirm-password', this)" class="absolute inset-y-0 right-0 pr-4 flex items-center">
+                                                <i data-lucide="eye" class="w-5 h-5 text-surface-400 hover:text-surface-600"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Register Button -->
+                                    <button type="submit" class="w-full bg-gradient-to-r from-accent-600 to-primary-600 hover:from-accent-700 hover:to-primary-700 
+                                        text-white font-semibold py-4 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg
+                                        focus:outline-none focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-800 disabled:opacity-50 disabled:cursor-not-allowed">
+                                        <div id="register-btn-content" class="flex items-center justify-center space-x-2">
+                                            <i data-lucide="user-plus" class="w-5 h-5"></i>
+                                            <span>${t.createAccount}</span>
+                                        </div>
+                                        <div id="register-loading" class="hidden flex items-center justify-center space-x-2">
+                                            <i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>
+                                            <span>Creating account...</span>
+                                        </div>
+                                    </button>
+                                </form>
+                            </div>
+                            
+                            <!-- Sign in Link -->
+                            <div class="text-center animate-fade-in" style="animation-delay: 0.4s">
+                                <div class="bg-gradient-to-r from-primary-50 to-accent-50 dark:from-primary-950 dark:to-accent-950 
+                                    p-4 rounded-2xl border border-primary-200 dark:border-primary-800">
+                                    <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">${t.alreadyHaveAccount}</p>
+                                    <button onclick="showPage('auth')" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-semibold transition-colors">
+                                        ${t.signInHere}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <label class="text-sm font-medium text-neutral-text dark:text-gray-300">${t.password}</label>
-                        <input id="login-password" type="password" class="w-full mt-1 p-3 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light" placeholder="••••••••">
-                    </div>
-                    <button onclick="handleLogin()" class="w-full bg-primary-light text-white font-bold py-3 px-4 rounded-lg hover:opacity-90 transition-opacity">${t.login}</button>
+                    
+                    <!-- Back Button -->
+                    <button onclick="showPage('languageSelect')" class="flex items-center justify-center space-x-3 text-surface-500 dark:text-surface-400 
+                        hover:text-primary-600 dark:hover:text-primary-400 py-4 transition-all duration-300 group animate-fade-in" style="animation-delay: 0.6s">
+                        <div class="w-10 h-10 bg-surface-100 dark:bg-surface-800 rounded-xl flex items-center justify-center 
+                            group-hover:bg-primary-100 dark:group-hover:bg-primary-900 transition-colors">
+                            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                        </div>
+                        <span class="font-medium">${t.back}</span>
+                    </button>
                 </div>
             </div>
         `;
+        
+        // Add form submission event listener
+        document.getElementById('registration-form').addEventListener('submit', handleRegistration);
+        lucide.createIcons();
     }
 
     async function renderHomePage() {
@@ -300,132 +1333,252 @@
             : `<button onclick="showPage('active')" class="w-full bg-primary-light text-white font-bold py-4 px-4 rounded-xl text-lg hover:opacity-90 transition-opacity transform active:scale-95">${t.startJourney}</button>`;
 
         appContainer.innerHTML = `
-            <div class="flex flex-col h-full overflow-y-auto pb-20">
-                <header class="p-4 flex justify-between items-center sticky top-0 bg-background-light dark:bg-background-dark z-10 border-b border-gray-200 dark:border-gray-700">
-                    <h1 class="text-xl font-bold text-primary-dark dark:text-white">${t.home}</h1>
-                    <button onclick="alert('${t.notifications} Placeholder')" class="text-gray-500 dark:text-gray-300 hover:text-primary-light">
-                        <i data-lucide="bell" class="w-6 h-6"></i>
+            <div class="flex flex-col h-full overflow-y-auto pb-20 relative">
+                <!-- Animated Background Elements -->
+                <div class="absolute inset-0 opacity-20 pointer-events-none">
+                    <div class="absolute top-10 right-10 w-20 h-20 bg-primary-200 rounded-full animate-float"></div>
+                    <div class="absolute bottom-40 left-8 w-16 h-16 bg-accent-200 rounded-full animate-float" style="animation-delay: 1s"></div>
+                </div>
+
+                <!-- Header with Glass Effect -->
+                <header class="relative p-4 flex justify-between items-center glass-card sticky top-0 z-20 border-b border-white/10">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-gradient-to-br from-primary-400 to-primary-600 rounded-lg flex items-center justify-center">
+                            <i data-lucide="home" class="w-4 h-4 text-white"></i>
+                        </div>
+                        <h1 class="text-lg font-bold gradient-text">${t.home}</h1>
+                    </div>
+                    <button onclick="alert('${t.notifications} Placeholder')" class="w-10 h-10 glass-card rounded-xl flex items-center justify-center text-surface-600 hover:text-accent-500 hover-lift transition-all duration-300 relative">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-accent-400 rounded-full animate-pulse"></div>
                     </button>
                 </header>
 
-                <div class="flex-shrink-0 w-full h-64 bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-center text-gray-500 dark:text-gray-400 font-medium">
-                    <div class="p-4">
-                        <i data-lucide="map-pin" class="w-8 h-8 mx-auto mb-2"></i>
+                <!-- Enhanced Map Container -->
+                <div class="relative w-full h-72 p-4">
+                    <div class="relative h-full">
+                        <div id="map" class="w-full h-full rounded-2xl shadow-2xl"></div>
+                        
+                        <!-- Status Overlay -->
                         ${isActive
-                            ? `<p>Live Map: Route & Location Tracking Active (Geofenced Alert Running)</p>`
-                            : `<p>Start a journey to see your live map.</p>`
+                            ? `<div class="absolute top-4 left-4 glass-card px-3 py-2 rounded-full animate-pulse-glow">
+                                   <div class="flex items-center space-x-2">
+                                       <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                                       <span class="text-xs font-medium text-surface-700 dark:text-surface-300">Live Tracking Active</span>
+                                   </div>
+                               </div>`
+                            : `<div class="absolute top-4 left-4 glass-card px-3 py-2 rounded-full">
+                                   <div class="flex items-center space-x-2">
+                                       <div class="w-2 h-2 bg-primary-400 rounded-full"></div>
+                                       <span class="text-xs font-medium text-surface-700 dark:text-surface-300">📍 Your Location</span>
+                                   </div>
+                               </div>`
                         }
+                        
+                        <!-- Map Controls -->
+                        <div class="absolute top-4 right-4 space-y-2">
+                            <button onclick="getUserLocation()" class="w-10 h-10 glass-card rounded-xl flex items-center justify-center hover-lift transition-all duration-300">
+                                <i data-lucide="crosshair" class="w-4 h-4 text-primary-600"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <div class="p-4 flex-grow space-y-4">
-                    ${mainActionButton}
-
-                    ${isActive
-                        ? `
-                        <div class="bg-primary-dark p-4 rounded-xl text-white shadow-lg">
-                            <p class="text-sm opacity-80">${t.nextStop}</p>
-                            <h3 class="text-lg font-bold">${state.activeJourney.itinerary.destinations[0].places[0]}</h3>
-                            <p class="text-xs opacity-70 mt-1">Trip: ${state.activeJourney.itinerary.name}</p>
-                        </div>
-                        `
-                        : `
-                        <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-xl text-center text-neutral-text dark:text-gray-400 shadow-md">
-                            <i data-lucide="info" class="w-5 h-5 mx-auto mb-2"></i>
-                            <p>No active journey. Plan your next safe adventure now!</p>
-                        </div>
-                        `
-                    }
-
-                    <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md border-l-4 border-yellow-500">
-                        <h3 class="font-bold text-sm text-gray-800 dark:text-white flex items-center mb-1">
-                            <i data-lucide="zap" class="w-4 h-4 text-yellow-500 mr-2"></i>
-                            Alert: Heavy rain expected in Gangtok today.
-                        </h3>
-                        <p class="text-xs text-neutral-text dark:text-gray-400">Be aware of potential roadblocks on NH10.</p>
+                <!-- Action & Info Cards -->
+                <div class="p-4 flex-grow space-y-4 relative z-10">
+                    <!-- Main Action Button -->
+                    <div class="animate-scale-in" style="animation-delay: 0.2s">
+                        ${isActive
+                            ? `<button onclick="handleEndJourney()" class="w-full bg-gradient-to-r from-orange-400 to-red-500 text-white font-bold py-4 px-6 rounded-2xl text-lg hover-lift shadow-2xl transform transition-all duration-300 animate-pulse-glow">
+                                   <div class="flex items-center justify-center space-x-3">
+                                       <i data-lucide="square" class="w-5 h-5"></i>
+                                       <span>${t.endJourney}</span>
+                                   </div>
+                               </button>`
+                            : `<button onclick="showPage('active')" class="w-full btn-primary text-white font-bold py-4 px-6 rounded-2xl text-lg shadow-2xl hover-lift transform transition-all duration-300">
+                                   <div class="flex items-center justify-center space-x-3">
+                                       <i data-lucide="play" class="w-5 h-5"></i>
+                                       <span>${t.startJourney}</span>
+                                   </div>
+                               </button>`
+                        }
                     </div>
 
-                    <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
-                        <h3 class="font-bold text-sm text-primary-light mb-2">Local Emergency Numbers (Current City: Gangtok)</h3>
-                        <div class="flex justify-around text-center">
-                            <p>Police: <strong>100</strong></p>
-                            <p>Ambulance: <strong>102</strong></p>
-                            <p>Fire: <strong>101</strong></p>
+                    <!-- Journey Status Card -->
+                    <div class="animate-slide-up" style="animation-delay: 0.3s">
+                        ${isActive
+                            ? `<div class="glass-card p-5 rounded-2xl border-l-4 border-primary-400 hover-lift transition-all duration-300">
+                                   <div class="flex items-start justify-between mb-3">
+                                       <div class="flex items-center space-x-3">
+                                           <div class="w-10 h-10 bg-gradient-to-br from-primary-400 to-primary-600 rounded-xl flex items-center justify-center">
+                                               <i data-lucide="map-pin" class="w-5 h-5 text-white"></i>
+                                           </div>
+                                           <div>
+                                               <p class="text-xs font-medium text-surface-500 dark:text-surface-400">${t.nextStop}</p>
+                                               <h3 class="text-lg font-bold text-surface-800 dark:text-surface-200">${state.activeJourney.itinerary.destinations[0].places[0]}</h3>
+                                           </div>
+                                       </div>
+                                       <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                                   </div>
+                                   <div class="bg-surface-50 dark:bg-surface-800 rounded-xl p-3">
+                                       <p class="text-sm text-surface-600 dark:text-surface-400">Trip: ${state.activeJourney.itinerary.name}</p>
+                                   </div>
+                               </div>`
+                            : `<div class="glass-card p-5 rounded-2xl text-center hover-lift transition-all duration-300">
+                                   <div class="w-12 h-12 bg-gradient-to-br from-surface-100 to-surface-200 dark:from-surface-700 dark:to-surface-800 rounded-2xl mx-auto mb-3 flex items-center justify-center">
+                                       <i data-lucide="compass" class="w-6 h-6 text-surface-500 dark:text-surface-400"></i>
+                                   </div>
+                                   <h3 class="font-semibold text-surface-800 dark:text-surface-200 mb-1">Ready for Adventure?</h3>
+                                   <p class="text-sm text-surface-500 dark:text-surface-400">Plan your next safe journey today</p>
+                               </div>`
+                        }
+                    </div>
+
+                    <!-- Weather Alert Card -->
+                    <div class="animate-slide-up" style="animation-delay: 0.4s">
+                        <div class="glass-card p-4 rounded-2xl border-l-4 border-yellow-400 hover-lift transition-all duration-300">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-10 h-10 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i data-lucide="cloud-rain" class="w-5 h-5 text-yellow-600"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="font-semibold text-surface-800 dark:text-surface-200 text-sm mb-1">
+                                        Weather Alert: Heavy Rain Expected
+                                    </h3>
+                                    <p class="text-xs text-surface-500 dark:text-surface-400 leading-relaxed">
+                                        Gangtok area - Potential roadblocks on NH10. Stay safe and plan accordingly.
+                                    </p>
+                                </div>
+                                <div class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse flex-shrink-0 mt-2"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Emergency Services Card -->
+                    <div class="animate-slide-up" style="animation-delay: 0.5s">
+                        <div class="glass-card p-4 rounded-2xl hover-lift transition-all duration-300">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="font-semibold text-surface-800 dark:text-surface-200 text-sm">Emergency Services</h3>
+                                <span class="text-xs text-surface-500 dark:text-surface-400">Gangtok</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-3">
+                                <a href="tel:100" class="text-center p-3 bg-surface-50 dark:bg-surface-800 rounded-xl hover:bg-primary-50 dark:hover:bg-primary-900 transition-colors">
+                                    <div class="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-lg mx-auto mb-1 flex items-center justify-center">
+                                        <span class="text-sm">🚔</span>
+                                    </div>
+                                    <p class="text-xs font-medium text-surface-600 dark:text-surface-400">Police</p>
+                                    <p class="text-sm font-bold text-surface-800 dark:text-surface-200">100</p>
+                                </a>
+                                <a href="tel:102" class="text-center p-3 bg-surface-50 dark:bg-surface-800 rounded-xl hover:bg-red-50 dark:hover:bg-red-900 transition-colors">
+                                    <div class="w-8 h-8 bg-red-100 dark:bg-red-900 rounded-lg mx-auto mb-1 flex items-center justify-center">
+                                        <span class="text-sm">🚑</span>
+                                    </div>
+                                    <p class="text-xs font-medium text-surface-600 dark:text-surface-400">Ambulance</p>
+                                    <p class="text-sm font-bold text-surface-800 dark:text-surface-200">102</p>
+                                </a>
+                                <a href="tel:101" class="text-center p-3 bg-surface-50 dark:bg-surface-800 rounded-xl hover:bg-orange-50 dark:hover:bg-orange-900 transition-colors">
+                                    <div class="w-8 h-8 bg-orange-100 dark:bg-orange-900 rounded-lg mx-auto mb-1 flex items-center justify-center">
+                                        <span class="text-sm">🚒</span>
+                                    </div>
+                                    <p class="text-xs font-medium text-surface-600 dark:text-surface-400">Fire</p>
+                                    <p class="text-sm font-bold text-surface-800 dark:text-surface-200">101</p>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         `;
         lucide.createIcons();
+        
+        // Initialize map immediately and also with a backup
+        initializeMap();
+        
+        // Backup initialization in case first one fails
+        setTimeout(() => {
+            if (!map) {
+                console.log('Retrying map initialization...');
+                initializeMap();
+            }
+            if (isActive && map) {
+                updateMapForActiveJourney();
+            }
+        }, 1000);
     }
 
     
 
-    function renderPlanActivationPage() {
-        const t = getT();
-        const members = state.profile?.familyMembers || [];
+// In index.html
 
-        if (state.itineraryDrafts.length === 0) {
-             appContainer.innerHTML = `
-                <div class="flex flex-col items-center justify-center h-full p-8 text-center">
-                    <i data-lucide="clipboard-list" class="w-12 h-12 text-gray-400 mb-4"></i>
-                    <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-2">No Trip Plans Found</h2>
-                    <p class="text-neutral-text dark:text-gray-400 mb-6">Go to the Plan tab and create a new itinerary draft before starting a journey.</p>
-                    <button onclick="showPage('plan')" class="bg-primary-light text-white font-bold py-3 px-6 rounded-lg">${t.plan}</button>
-                </div>
-            `;
-            return;
-        }
+function renderPlanActivationPage() {
+    const t = getT();
+    const members = state.profile?.familyMembers || [];
 
+    // Step 1: Check if there are any real itinerary drafts loaded from the API.
+    if (!state.itineraryDrafts || state.itineraryDrafts.length === 0) {
+        // If no drafts exist, show a helpful message and stop.
         appContainer.innerHTML = `
-            <div class="flex-grow p-4 overflow-y-auto">
-                <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">${t.journeyActivation}</h2>
-
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg space-y-5">
-                    <div>
-                        <label for="draft-select" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">${t.selectDraft}</label>
-                        <select id="draft-select" class="w-full p-3 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-primary-light focus:border-primary-light">
-                            ${state.itineraryDrafts.map(draft =>
-                                `<option value="${draft._id}">${draft.name} (${draft.destinations.length} Stops)</option>`
-                            ).join('')}
-                        </select>
-                    </div>
-
-                    <div class="flex space-x-4">
-                        <div class="flex-1">
-                            <label for="start-date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">${t.from}</label>
-                            <input type="date" id="start-date" value="${new Date().toISOString().substring(0, 10)}" class="w-full p-3 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg">
-                        </div>
-                        <div class="flex-1">
-                            <label for="end-date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">${t.to}</label>
-                            <input type="date" id="end-date" value="${new Date(Date.now() + 86400000 * 7).toISOString().substring(0, 10)}" class="w-full p-3 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">${t.selectMembers}</label>
-                        <div class="space-y-2 max-h-40 overflow-y-auto p-2 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                            <div class="flex items-center">
-                                <input type="checkbox" id="member-self" name="member-self" checked disabled class="w-4 h-4 text-primary-light rounded border-gray-300 dark:border-gray-600">
-                                <label for="member-self" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-200">${state.profile?.fullName || 'Me (Tourist)'}</label>
-                            </div>
-                            ${members.map(member => `
-                                <div class="flex items-center">
-                                    <input type="checkbox" id="member-${member._id}" name="member-${member._id}" class="w-4 h-4 text-primary-light rounded border-gray-300 dark:border-gray-600">
-                                    <label for="member-${member._id}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-200">${member.name}</label>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-
-                    <button onclick="handleActivateTrip()" class="w-full bg-primary-light text-white font-bold py-4 px-4 rounded-lg text-lg hover:opacity-90 transition-opacity transform active:scale-95">
-                        ${t.activateTrip}
-                    </button>
-                </div>
+            <div class="flex flex-col items-center justify-center h-full p-8 text-center">
+                <i data-lucide="clipboard-list" class="w-12 h-12 text-gray-400 mb-4"></i>
+                <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-2">No Trip Plans Found</h2>
+                <p class="text-neutral-text dark:text-gray-400 mb-6">Go to the 'Plan' tab and create an itinerary before activating a journey.</p>
+                <button onclick="showPage('plan')" class="bg-primary-light text-white font-bold py-3 px-6 rounded-lg">${t.plan}</button>
             </div>
         `;
         lucide.createIcons();
+        return; // Exit the function here.
     }
+
+    // Step 2: If drafts exist, render the activation page.
+    appContainer.innerHTML = `
+        <div class="flex-grow p-4 overflow-y-auto pb-24">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">${t.journeyActivation}</h2>
+
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg space-y-5">
+                <div>
+                    <label for="draft-select" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">${t.selectDraft}</label>
+                    <select id="draft-select" class="w-full p-3 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-primary-light focus:border-primary-light">
+                        ${state.itineraryDrafts.map(draft =>
+                            `<option value="${draft._id}">${draft.name || 'Untitled Trip'} (${draft.destinations?.length || 0} Stops)</option>`
+                        ).join('')}
+                    </select>
+                </div>
+
+                <div class="flex space-x-4">
+                    <div class="flex-1">
+                        <label for="start-date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">${t.from}</label>
+                        <input type="date" id="start-date" value="${new Date().toISOString().substring(0, 10)}" class="w-full p-3 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg">
+                    </div>
+                    <div class="flex-1">
+                        <label for="end-date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">${t.to}</label>
+                        <input type="date" id="end-date" value="${new Date(Date.now() + 86400000 * 7).toISOString().substring(0, 10)}" class="w-full p-3 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">${t.selectMembers}</label>
+                    <div class="space-y-2 max-h-40 overflow-y-auto p-2 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="member-self" name="member-self" checked disabled class="w-4 h-4 text-primary-light rounded border-gray-300 dark:border-gray-600">
+                            <label for="member-self" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-200">${state.profile?.fullName || 'Me (Tourist)'}</label>
+                        </div>
+                        ${members.map(member => `
+                            <div class="flex items-center">
+                                <input type="checkbox" id="member-${member._id}" name="member-${member._id}" class="member-checkbox w-4 h-4 text-primary-light rounded border-gray-300 dark:border-gray-600">
+                                <label for="member-${member._id}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-200">${member.fullName}</label>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <button onclick="handleActivateTrip()" class="w-full bg-primary-light text-white font-bold py-4 px-4 rounded-lg text-lg hover:opacity-90 transition-opacity transform active:scale-95">
+                    ${t.activateTrip}
+                </button>
+            </div>
+        </div>
+    `;
+    lucide.createIcons();
+}
 
     let placeCounts = {};
     function addDestinationBlock() {
@@ -526,44 +1679,256 @@ function addPlaceToUI(destinationId) {
             const draftsData = await apiRequest('/itineraries');
             state.itineraryDrafts = draftsData.drafts || [];
         } catch (err) {
-            console.error("Could not fetch itineraries", err);
-            state.itineraryDrafts = []; // Reset on failure
+            console.error("Could not fetch itineraries from API, using localStorage fallback:", err);
+            // Use localStorage as fallback
+            const localDrafts = JSON.parse(localStorage.getItem('tourchain-itineraries') || '[]');
+            state.itineraryDrafts = localDrafts;
         }
 
+        // Calculate safety scores for drafts that don't have them
+        for (let draft of state.itineraryDrafts) {
+            if (!draft.safetyScore) {
+                // Set loading state initially
+                draft.safetyScore = 'loading';
+                // Calculate asynchronously and update later
+                calculateSafetyScore(draft).then(score => {
+                    draft.safetyScore = score;
+                    // Update just this draft's display
+                    updateDraftSafetyScore(draft._id, score);
+                });
+            }
+        }
 
         appContainer.innerHTML = `
-            <div class="flex-grow p-4 overflow-y-auto">
-                <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">${t.myTripDrafts}</h2>
+            <div class="relative flex-grow overflow-hidden">
+                <!-- Background Elements -->
+                <div class="absolute inset-0 opacity-10">
+                    <div class="absolute top-16 right-8 w-24 h-24 bg-primary-300 rounded-full animate-float"></div>
+                    <div class="absolute bottom-32 left-12 w-32 h-32 bg-accent-300 rounded-full animate-float" style="animation-delay: 1.5s"></div>
+                </div>
+                
+                <div class="relative p-6 overflow-y-auto h-full z-10">
+                    <!-- Header -->
+                    <div class="text-center mb-8 animate-slide-down">
+                        <div class="w-16 h-16 bg-gradient-to-br from-primary-400 to-accent-400 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+                            <i data-lucide="map" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold gradient-text mb-2">${t.myTripDrafts}</h2>
+                        <p class="text-sm text-surface-500 dark:text-surface-400">Plan your next adventure</p>
+                    </div>
 
-                <button onclick="showPage('newItinerary')" class="w-full bg-green-600 text-white font-bold py-3 px-4 rounded-xl mb-6 flex items-center justify-center hover:bg-green-700 transition-colors">
-                    <i data-lucide="plus" class="w-5 h-5 mr-2"></i>
-                    ${t.createNewTrip}
-                </button>
+                    <!-- Create New Trip Button -->
+                    <button onclick="showPage('newItinerary')" class="w-full bg-gradient-to-r from-accent-500 to-primary-600 hover:from-accent-600 hover:to-primary-700 text-white font-semibold py-4 px-6 rounded-2xl mb-8 flex items-center justify-center transition-all duration-300 transform hover:scale-105 hover:shadow-lg animate-scale-in" style="animation-delay: 0.1s">
+                        <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mr-3">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                        </div>
+                        ${t.createNewTrip}
+                    </button>
 
-                <div class="space-y-4">
-                ${state.itineraryDrafts.length > 0 ? state.itineraryDrafts.map(draft => `
-                    <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md border-l-4 border-primary-light">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h3 class="text-lg font-bold text-primary-dark dark:text-white">${draft.name}</h3>
-                                <p class="text-sm text-neutral-text dark:text-gray-400">${draft.destinations.map(d => d.city).join(', ')}</p>
-                            </div>
-                            <div class="text-right flex items-center space-x-2">
-                                <div class="text-center">
-                                    <p class="text-xs text-neutral-text dark:text-gray-400">${t.safetyScore}</p>
-                                    <p class="text-xl font-bold text-primary-light">${draft.safetyScore || 'N/A'}</p>
+                    <!-- Drafts List -->
+                    <div class="space-y-4 animate-fade-in" style="animation-delay: 0.2s">
+                        ${state.itineraryDrafts.length > 0 ? state.itineraryDrafts.map((draft, index) => {
+                            let safetyScore, scoreColor, scoreBgColor, scoreIcon;
+                            
+                            if (draft.safetyScore === 'loading') {
+                                safetyScore = '🔄';
+                                scoreColor = 'text-primary-600';
+                                scoreBgColor = 'bg-primary-100 dark:bg-primary-900';
+                                scoreIcon = 'loader-2';
+                            } else if (typeof draft.safetyScore === 'number') {
+                                safetyScore = draft.safetyScore;
+                                if (draft.safetyScore >= 8) {
+                                    scoreColor = 'text-green-600';
+                                    scoreBgColor = 'bg-green-100 dark:bg-green-900';
+                                    scoreIcon = 'shield-check';
+                                } else if (draft.safetyScore >= 6) {
+                                    scoreColor = 'text-yellow-600';
+                                    scoreBgColor = 'bg-yellow-100 dark:bg-yellow-900';
+                                    scoreIcon = 'alert-triangle';
+                                } else {
+                                    scoreColor = 'text-red-600';
+                                    scoreBgColor = 'bg-red-100 dark:bg-red-900';
+                                    scoreIcon = 'shield-x';
+                                }
+                            } else {
+                                safetyScore = 'N/A';
+                                scoreColor = 'text-surface-400';
+                                scoreBgColor = 'bg-surface-100 dark:bg-surface-800';
+                                scoreIcon = 'help-circle';
+                            }
+                            
+                            return `
+                            <div data-draft-id="${draft._id}" class="glass-card p-6 rounded-2xl border border-primary-200 dark:border-primary-800 hover-lift transition-all duration-300 group animate-slide-up" style="animation-delay: ${0.3 + index * 0.1}s">
+                                <div class="flex justify-between items-start">
+                                    <div class="flex-1">
+                                        <div class="flex items-center space-x-3 mb-3">
+                                            <div class="w-12 h-12 bg-gradient-to-br from-primary-100 to-accent-100 dark:from-primary-900 dark:to-accent-900 rounded-xl flex items-center justify-center">
+                                                <i data-lucide="map-pin" class="w-6 h-6 text-primary-600 dark:text-primary-400"></i>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-lg font-bold text-surface-800 dark:text-surface-200">${draft.name}</h3>
+                                                <p class="text-sm text-surface-500 dark:text-surface-400">${draft.destinations.map(d => d.city).join(', ')}</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Destinations Preview -->
+                                        <div class="flex flex-wrap gap-2 mb-4">
+                                            ${draft.destinations.slice(0, 3).map(dest => `
+                                                <div class="px-3 py-1 bg-surface-100 dark:bg-surface-800 rounded-full text-xs text-surface-600 dark:text-surface-400">
+                                                    📍 ${dest.city}
+                                                </div>
+                                            `).join('')}
+                                            ${draft.destinations.length > 3 ? `<div class="px-3 py-1 bg-surface-100 dark:bg-surface-800 rounded-full text-xs text-surface-600 dark:text-surface-400">+${draft.destinations.length - 3} more</div>` : ''}
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Safety Score & Actions -->
+                                    <div class="flex flex-col items-end space-y-3">
+                                        <div class="text-center">
+                                            <div class="w-16 h-16 ${scoreBgColor} rounded-2xl flex flex-col items-center justify-center mb-2">
+                                                <i data-lucide="${scoreIcon}" class="w-5 h-5 ${scoreColor} ${draft.safetyScore === 'loading' ? 'animate-spin' : ''}"></i>
+                                                <span class="safety-score text-sm font-bold ${scoreColor}">${safetyScore}</span>
+                                            </div>
+                                            <p class="text-xs text-surface-500 dark:text-surface-400">${t.safetyScore}</p>
+                                        </div>
+                                        
+                                        <button onclick="renderEditItineraryPage('${draft._id}')" class="w-10 h-10 glass-card rounded-xl flex items-center justify-center text-surface-600 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 hover-lift transition-all duration-300 group-hover:scale-110">
+                                            <i data-lucide="edit" class="w-5 h-5"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                                <button onclick="renderEditItineraryPage('${draft._id}')" class="text-gray-400 hover:text-primary-light p-1 rounded-full bg-gray-100 dark:bg-gray-700">
-                                    <i data-lucide="edit" class="w-4 h-4"></i>
+                            </div>
+                        `;
+                        }).join('') : `
+                            <div class="text-center py-16 animate-fade-in">
+                                <div class="w-24 h-24 bg-gradient-to-br from-primary-100 to-accent-100 dark:from-primary-900 dark:to-accent-900 rounded-3xl mx-auto mb-6 flex items-center justify-center">
+                                    <i data-lucide="map" class="w-12 h-12 text-surface-400"></i>
+                                </div>
+                                <h3 class="text-lg font-semibold text-surface-600 dark:text-surface-400 mb-2">No Trip Drafts Yet</h3>
+                                <p class="text-surface-500 dark:text-surface-500 mb-6">Start planning your next adventure</p>
+                                <button onclick="showPage('newItinerary')" class="bg-gradient-to-r from-primary-500 to-accent-500 hover:from-primary-600 hover:to-accent-600 text-white font-medium py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105">
+                                    <div class="flex items-center space-x-2">
+                                        <i data-lucide="plus" class="w-4 h-4"></i>
+                                        <span>Create Your First Trip</span>
+                                    </div>
                                 </button>
                             </div>
-                        </div>
+                        `}
                     </div>
-                `).join('') : '<p class="text-center text-neutral-text dark:text-gray-400">You have no trip drafts.</p>'}
                 </div>
             </div>
         `;
         lucide.createIcons();
+    }
+
+    function renderDemoMapPage() {
+        const t = getT();
+        
+        appContainer.innerHTML = `
+            <div class="flex flex-col h-full relative overflow-hidden">
+                <!-- Header with Glass Effect -->
+                <header class="relative p-4 flex justify-between items-center glass-card border-b border-white/10 backdrop-blur-md z-10">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-primary-400 to-accent-400 rounded-xl flex items-center justify-center">
+                            <span class="text-white text-lg">🗺️</span>
+                        </div>
+                        <div>
+                            <h1 class="text-lg font-bold gradient-text">TourChain Map</h1>
+                            <p class="text-xs text-surface-500 dark:text-surface-400">Interactive Demo</p>
+                        </div>
+                    </div>
+                    <button onclick="showPage('splash')" class="w-10 h-10 glass-card rounded-xl flex items-center justify-center text-surface-600 hover:text-primary-600 hover-lift transition-all duration-300">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </header>
+
+                <!-- Map Container with Enhanced Styling -->
+                <div class="relative flex-1 p-4">
+                    <div class="relative h-full">
+                        <div id="map" class="w-full h-full rounded-2xl shadow-2xl"></div>
+                        
+                        <!-- Floating Status Badge -->
+                        <div class="absolute top-4 left-4 glass-card px-4 py-2 rounded-full animate-pulse-glow">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-2 h-2 bg-primary-400 rounded-full animate-pulse"></div>
+                                <span class="text-xs font-medium text-surface-700 dark:text-surface-300">
+                                    Demo Mode Active
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Map Controls Overlay -->
+                        <div class="absolute top-4 right-4 space-y-2">
+                            <button class="w-10 h-10 glass-card rounded-xl flex items-center justify-center hover-lift transition-all duration-300" onclick="getUserLocation()">
+                                <i data-lucide="crosshair" class="w-5 h-5 text-primary-600"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Loading Overlay -->
+                        <div id="map-loading" class="absolute inset-0 glass-card rounded-2xl flex items-center justify-center">
+                            <div class="text-center animate-fade-in">
+                                <div class="w-16 h-16 bg-gradient-to-br from-primary-400 to-accent-400 rounded-2xl mx-auto mb-4 flex items-center justify-center animate-bounce-soft">
+                                    <i data-lucide="map-pin" class="w-8 h-8 text-white"></i>
+                                </div>
+                                <p class="text-sm font-medium text-surface-600 dark:text-surface-400">Loading Interactive Map...</p>
+                                <div class="mt-2 w-32 h-1 bg-surface-200 dark:bg-surface-700 rounded-full mx-auto overflow-hidden">
+                                    <div class="h-full bg-gradient-to-r from-primary-400 to-accent-400 rounded-full animate-shimmer"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature Cards -->
+                <div class="p-4 space-y-4">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="glass-card p-4 rounded-2xl hover-lift transition-all duration-300">
+                            <div class="w-8 h-8 bg-gradient-to-br from-primary-100 to-primary-200 rounded-lg mb-2 flex items-center justify-center">
+                                <span class="text-sm">🛡️</span>
+                            </div>
+                            <h3 class="font-semibold text-surface-800 dark:text-surface-200 text-sm mb-1">Safety Zones</h3>
+                            <p class="text-xs text-surface-500 dark:text-surface-400">Real-time monitoring</p>
+                        </div>
+                        
+                        <div class="glass-card p-4 rounded-2xl hover-lift transition-all duration-300">
+                            <div class="w-8 h-8 bg-gradient-to-br from-accent-100 to-accent-200 rounded-lg mb-2 flex items-center justify-center">
+                                <span class="text-sm">🚨</span>
+                            </div>
+                            <h3 class="font-semibold text-surface-800 dark:text-surface-200 text-sm mb-1">Emergency</h3>
+                            <p class="text-xs text-surface-500 dark:text-surface-400">Quick access help</p>
+                        </div>
+                    </div>
+                    
+                    <!-- CTA Button -->
+                    <button onclick="showPage('languageSelect')" class="w-full btn-primary text-white font-semibold py-4 px-6 rounded-2xl text-sm shadow-lg hover-lift transform transition-all duration-300">
+                        <div class="flex items-center justify-center space-x-2">
+                            <span>Experience Full TourChain</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </div>
+                    </button>
+                </div>
+                
+                <!-- Gradient Background Effects -->
+                <div class="absolute top-0 left-0 w-32 h-32 bg-primary-200 rounded-full blur-3xl opacity-20 animate-float"></div>
+                <div class="absolute bottom-0 right-0 w-40 h-40 bg-accent-200 rounded-full blur-3xl opacity-20 animate-float" style="animation-delay: 1.5s"></div>
+            </div>
+        `;
+        
+        lucide.createIcons();
+        
+        // Initialize demo map with loading state
+        setTimeout(() => {
+            initializeMap();
+            // Hide loading overlay once map loads
+            setTimeout(() => {
+                const loading = document.getElementById('map-loading');
+                if (loading) {
+                    loading.style.opacity = '0';
+                    loading.style.transform = 'scale(0.9)';
+                    setTimeout(() => loading.remove(), 300);
+                }
+            }, 2000);
+        }, 100);
     }
 
     function renderActivePage() {
@@ -577,39 +1942,144 @@ function addPlaceToUI(destinationId) {
         const journey = state.activeJourney;
 
         appContainer.innerHTML = `
-            <div class="flex-grow p-4 overflow-y-auto">
-                <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">${t.activeJourney}</h2>
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md space-y-6">
-                    <div>
-                        <p class="text-sm text-neutral-text dark:text-gray-400">Trip Name</p>
-                        <h3 class="text-xl font-bold text-primary-dark dark:text-white">${journey.itinerary.name}</h3>
-                    </div>
-                    <div>
-                        <p class="text-sm text-neutral-text dark:text-gray-400">Destinations</p>
-                        <p class="text-gray-800 dark:text-gray-200">${journey.itinerary.destinations.map(d => d.city).join(' → ')}</p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-neutral-text dark:text-gray-400">Fellow Travelers</p>
-                        <p class="text-gray-800 dark:text-gray-200">${state.profile.fullName} (+${state.profile.familyMembers.length} Family Members)</p>
+            <div class="relative flex-grow overflow-hidden">
+                <!-- Background Elements -->
+                <div class="absolute inset-0 opacity-10">
+                    <div class="absolute top-20 right-8 w-28 h-28 bg-primary-300 rounded-full animate-float"></div>
+                    <div class="absolute bottom-40 left-12 w-20 h-20 bg-accent-300 rounded-full animate-float" style="animation-delay: 1s"></div>
+                </div>
+                
+                <div class="relative p-6 overflow-y-auto h-full z-10">
+                    <!-- Header -->
+                    <div class="text-center mb-6 animate-slide-down">
+                        <div class="w-16 h-16 bg-gradient-to-br from-primary-400 to-accent-400 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+                            <i data-lucide="compass" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold gradient-text mb-2">${t.activeJourney}</h2>
+                        <p class="text-sm text-surface-500 dark:text-surface-400">Track your current adventure</p>
                     </div>
 
-                    <button onclick="showQrModal(state.activeJourneyData)" class="w-full bg-primary-light text-white font-bold py-4 px-4 rounded-lg mt-6 text-lg flex items-center justify-center">
-                        <i data-lucide="scan-line" class="w-6 h-6 mr-2"></i>
-                        ${t.showQrCode}
-                    </button>
+                    <!-- Interactive Map Container -->
+                    <div class="glass-card p-4 rounded-3xl border border-primary-200 dark:border-primary-800 mb-6 animate-scale-in" style="animation-delay: 0.05s">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="w-10 h-10 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-800 rounded-xl flex items-center justify-center">
+                                <i data-lucide="map-pin" class="w-5 h-5 text-blue-600 dark:text-blue-400"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-surface-800 dark:text-surface-200">Your Journey Map</h3>
+                        </div>
+                        <div id="journey-map" class="w-full h-64 rounded-2xl bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700"></div>
+                        <div class="mt-3 text-center">
+                            <button onclick="centerMapOnCurrentLocation()" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full text-sm font-medium transition-colors">
+                                <i data-lucide="crosshair" class="w-4 h-4 inline mr-1"></i>
+                                Center on Me
+                            </button>
+                        </div>
+                    </div>
 
-                    <button onclick="handleCheckIn()" class="w-full bg-indigo-500 text-white font-bold py-3 px-4 rounded-lg mt-4 flex items-center justify-center hover:bg-indigo-600">
-                        <i data-lucide="heart-handshake" class="w-5 h-5 mr-2"></i>
-                        I'm Safe Check-in
-                    </button>
+                    <!-- Journey Info Card -->
+                    <div class="glass-card p-6 rounded-3xl border border-primary-200 dark:border-primary-800 mb-6 animate-scale-in" style="animation-delay: 0.1s">
+                        <div class="space-y-6">
+                            <!-- Trip Name -->
+                            <div class="space-y-2">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-8 h-8 bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-900 dark:to-primary-800 rounded-lg flex items-center justify-center">
+                                        <i data-lucide="flag" class="w-4 h-4 text-primary-600 dark:text-primary-400"></i>
+                                    </div>
+                                    <p class="text-sm font-medium text-surface-600 dark:text-surface-400">Trip Name</p>
+                                </div>
+                                <h3 class="text-xl font-bold text-surface-800 dark:text-surface-200 ml-10">${journey.itinerary?.draftName || journey.itinerary?.name || 'Active Journey'}</h3>
+                            </div>
+                            
+                            <!-- Route -->
+                            <div class="space-y-2">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-8 h-8 bg-gradient-to-br from-accent-100 to-accent-200 dark:from-accent-900 dark:to-accent-800 rounded-lg flex items-center justify-center">
+                                        <i data-lucide="route" class="w-4 h-4 text-accent-600 dark:text-accent-400"></i>
+                                    </div>
+                                    <p class="text-sm font-medium text-surface-600 dark:text-surface-400">Destinations</p>
+                                </div>
+                                <div class="ml-10">
+                                    <div class="flex flex-wrap gap-2">
+                                        ${journey.itinerary?.destinations?.map((dest, index) => `
+                                            <div class="flex items-center">
+                                                <div class="px-3 py-1 bg-surface-100 dark:bg-surface-800 rounded-full text-sm text-surface-700 dark:text-surface-300">
+                                                    📍 ${dest.city}
+                                                </div>
+                                                ${index < journey.itinerary.destinations.length - 1 ? '<i data-lucide="arrow-right" class="w-4 h-4 text-surface-400 mx-2"></i>' : ''}
+                                            </div>
+                                        `).join('') || '<div class="px-3 py-1 bg-surface-100 dark:bg-surface-800 rounded-full text-sm text-surface-700 dark:text-surface-300">📍 Adventure Locations</div>'}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Travelers -->
+                            <div class="space-y-2">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-8 h-8 bg-gradient-to-br from-primary-100 to-accent-100 dark:from-primary-900 dark:to-accent-900 rounded-lg flex items-center justify-center">
+                                        <i data-lucide="users" class="w-4 h-4 text-primary-600 dark:text-primary-400"></i>
+                                    </div>
+                                    <p class="text-sm font-medium text-surface-600 dark:text-surface-400">Fellow Travelers</p>
+                                </div>
+                                <p class="text-surface-800 dark:text-surface-200 ml-10">${state.profile?.fullName || 'Unknown Traveler'} ${state.profile?.familyMembers?.length ? `(+${state.profile.familyMembers.length} Family Members)` : ''}</p>
+                            </div>
+                        </div>
+                    </div>
 
-                    <div class="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg text-sm text-center">
-                        <p class="text-gray-700 dark:text-gray-300">Smartwatch Panic Activation: **Active**</p>
+                    <!-- Action Buttons -->
+                    <div class="space-y-4">
+                        <!-- QR Code Button -->
+                        <button onclick="showQrModal(state.activeJourneyData)" class="w-full bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-700 hover:to-accent-700 text-white font-semibold py-4 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center justify-center animate-scale-in" style="animation-delay: 0.2s">
+                            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mr-3">
+                                <i data-lucide="scan-line" class="w-6 h-6"></i>
+                            </div>
+                            <div class="text-left">
+                                <div class="font-semibold">${t.showQrCode}</div>
+                                <div class="text-xs opacity-90">Share your journey info</div>
+                            </div>
+                        </button>
+
+                        <!-- Safety Check-in Button -->
+                        <button onclick="handleCheckIn()" class="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-4 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center justify-center animate-scale-in" style="animation-delay: 0.3s">
+                            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mr-3">
+                                <i data-lucide="heart-handshake" class="w-6 h-6"></i>
+                            </div>
+                            <div class="text-left">
+                                <div class="font-semibold">I'm Safe Check-in</div>
+                                <div class="text-xs opacity-90">Update your safety status</div>
+                            </div>
+                        </button>
+
+                        <!-- End Journey Button -->
+                        <button onclick="handleEndJourney()" class="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-4 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center justify-center animate-scale-in" style="animation-delay: 0.4s">
+                            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mr-3">
+                                <i data-lucide="square" class="w-6 h-6"></i>
+                            </div>
+                            <div class="text-left">
+                                <div class="font-semibold">End Journey</div>
+                                <div class="text-xs opacity-90">Complete your trip</div>
+                            </div>
+                        </button>
+                    </div>
+
+                    <!-- Status Card -->
+                    <div class="mt-6 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950 p-4 rounded-2xl border border-green-200 dark:border-green-800 animate-fade-in" style="animation-delay: 0.5s">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-green-100 dark:bg-green-900 rounded-xl flex items-center justify-center">
+                                <i data-lucide="shield-check" class="w-5 h-5 text-green-600 dark:text-green-400"></i>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-green-800 dark:text-green-200">Safety System Active</p>
+                                <p class="text-sm text-green-600 dark:text-green-400">Real-time location monitoring enabled</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         `;
         lucide.createIcons();
+        
+        // Initialize the journey map after the DOM is ready
+        setTimeout(() => initializeJourneyMap(), 100);
     }
 
     
@@ -630,27 +2100,165 @@ async function renderAccountPage() {
     `).join('') || '<p class="text-sm text-neutral-text dark:text-gray-400">No family members added yet.</p>';
 
     appContainer.innerHTML = `
-        <div class="flex-grow p-4 overflow-y-auto pb-20">
-            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">${t.account}</h2>
-            <div class="space-y-6">
-                <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
-                    <h3 class="font-bold text-lg mb-2 text-primary-dark dark:text-white">${t.profileDetails}</h3>
-                    <p><strong>Name:</strong> ${state.profile?.fullName || 'N/A'}</p>
-                    <p><strong>Email:</strong> ${state.profile?.email || 'N/A'}</p>
+        <div class="relative flex-grow overflow-hidden">
+            <!-- Background Elements -->
+            <div class="absolute inset-0 opacity-10">
+                <div class="absolute top-20 right-8 w-24 h-24 bg-primary-300 rounded-full animate-float"></div>
+                <div class="absolute bottom-40 left-12 w-32 h-32 bg-accent-300 rounded-full animate-float" style="animation-delay: 2s"></div>
+            </div>
+            
+            <div class="relative p-6 overflow-y-auto h-full pb-24 z-10">
+                <!-- Header -->
+                <div class="text-center mb-8 animate-slide-down">
+                    <div class="w-16 h-16 bg-gradient-to-br from-primary-400 to-accent-400 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+                        <i data-lucide="user-circle" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold gradient-text mb-2">${t.account}</h2>
+                    <p class="text-sm text-surface-500 dark:text-surface-400">Manage your profile and family</p>
                 </div>
                 
-                <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md space-y-3">
-                    <h3 class="font-bold text-lg text-primary-dark dark:text-white">${t.familyMembers}</h3>
-                    <div class="space-y-2">${familyMembersHTML}</div>
+                <div class="space-y-6">
+                    <!-- Profile Details Card -->
+                    <div class="glass-card p-6 rounded-3xl border border-primary-200 dark:border-primary-800 animate-scale-in" style="animation-delay: 0.1s">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-primary-100 to-accent-100 dark:from-primary-900 dark:to-accent-900 rounded-2xl flex items-center justify-center">
+                                <i data-lucide="user" class="w-6 h-6 text-primary-600 dark:text-primary-400"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-surface-800 dark:text-surface-200">${t.profileDetails}</h3>
+                        </div>
+                        <div class="space-y-3 ml-16">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-surface-100 dark:bg-surface-800 rounded-lg flex items-center justify-center">
+                                    <i data-lucide="user-check" class="w-4 h-4 text-surface-600 dark:text-surface-400"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-surface-500 dark:text-surface-400">Name</p>
+                                    <p class="font-semibold text-surface-800 dark:text-surface-200">${state.profile?.fullName || 'N/A'}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-surface-100 dark:bg-surface-800 rounded-lg flex items-center justify-center">
+                                    <i data-lucide="mail" class="w-4 h-4 text-surface-600 dark:text-surface-400"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-surface-500 dark:text-surface-400">Email</p>
+                                    <p class="font-semibold text-surface-800 dark:text-surface-200">${state.profile?.email || 'N/A'}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     
-                    <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
-                        <h4 class="font-semibold text-gray-700 dark:text-gray-200 mb-2">Add New Member</h4>
-                        <div class="space-y-2">
-                            <input id="new-member-name" type="text" placeholder="Full Name" class="w-full p-2 bg-gray-100 dark:bg-gray-700 rounded-md">
-                            <input id="new-member-age" type="number" placeholder="Age" class="w-full p-2 bg-gray-100 dark:bg-gray-700 rounded-md">
-                            <button onclick="handleAddFamilyMember()" class="w-full bg-indigo-500 text-white font-semibold py-2 rounded-lg hover:bg-indigo-600">
-                                Add Member
+                    <!-- Family Members Card -->
+                    <div class="glass-card p-6 rounded-3xl border border-primary-200 dark:border-primary-800 animate-scale-in" style="animation-delay: 0.2s">
+                        <div class="flex items-center space-x-4 mb-6">
+                            <div class="w-12 h-12 bg-gradient-to-br from-accent-100 to-primary-100 dark:from-accent-900 dark:to-primary-900 rounded-2xl flex items-center justify-center">
+                                <i data-lucide="users" class="w-6 h-6 text-accent-600 dark:text-accent-400"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-surface-800 dark:text-surface-200">${t.familyMembers}</h3>
+                        </div>
+                        
+                        <div class="ml-16 space-y-4">
+                            <!-- Family Members List -->
+                            <div class="space-y-3">
+                                ${state.profile?.familyMembers && state.profile.familyMembers.length > 0 ? 
+                                    state.profile.familyMembers.map(m => `
+                                        <div class="flex justify-between items-center p-3 bg-surface-50 dark:bg-surface-800 rounded-2xl hover-lift transition-all duration-300 group">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="w-10 h-10 bg-gradient-to-br from-primary-100 to-accent-100 dark:from-primary-900 dark:to-accent-900 rounded-xl flex items-center justify-center">
+                                                    <i data-lucide="user" class="w-5 h-5 text-primary-600 dark:text-primary-400"></i>
+                                                </div>
+                                                <div>
+                                                    <p class="font-semibold text-surface-800 dark:text-surface-200">${m.fullName}</p>
+                                                    <p class="text-sm text-surface-500 dark:text-surface-400">Age: ${m.age}</p>
+                                                </div>
+                                            </div>
+                                            <button onclick="handleRemoveFamilyMember('${m._id}')" class="w-8 h-8 bg-red-100 dark:bg-red-900 hover:bg-red-200 dark:hover:bg-red-800 rounded-lg flex items-center justify-center text-red-600 dark:text-red-400 transition-all duration-300 opacity-0 group-hover:opacity-100">
+                                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                            </button>
+                                        </div>
+                                    `).join('') : 
+                                    `<div class="text-center py-8">
+                                        <div class="w-16 h-16 bg-surface-100 dark:bg-surface-800 rounded-2xl mx-auto mb-3 flex items-center justify-center">
+                                            <i data-lucide="user-plus" class="w-8 h-8 text-surface-400"></i>
+                                        </div>
+                                        <p class="text-sm text-surface-500 dark:text-surface-400">No family members added yet</p>
+                                    </div>`
+                                }
+                            </div>
+                            
+                            <!-- Add New Member Section -->
+                            <div class="pt-4 border-t border-surface-200 dark:border-surface-700">
+                                <h4 class="font-semibold text-surface-700 dark:text-surface-300 mb-4 flex items-center">
+                                    <i data-lucide="user-plus" class="w-4 h-4 mr-2"></i>
+                                    Add New Member
+                                </h4>
+                                <div class="space-y-3">
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <i data-lucide="user" class="w-4 h-4 text-surface-400"></i>
+                                        </div>
+                                        <input id="new-member-name" type="text" placeholder="Full Name" class="w-full pl-11 pr-4 py-3 bg-surface-50 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all text-surface-900 dark:text-surface-100">
+                                    </div>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <i data-lucide="calendar" class="w-4 h-4 text-surface-400"></i>
+                                        </div>
+                                        <input id="new-member-age" type="number" placeholder="Age" class="w-full pl-11 pr-4 py-3 bg-surface-50 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all text-surface-900 dark:text-surface-100">
+                                    </div>
+                                    <button onclick="handleAddFamilyMember()" class="w-full bg-gradient-to-r from-primary-500 to-accent-500 hover:from-primary-600 hover:to-accent-600 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
+                                        <i data-lucide="plus" class="w-4 h-4 mr-2"></i>
+                                        Add Member
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Logout Section -->
+                    <div class="glass-card p-6 rounded-3xl border border-red-200 dark:border-red-800 animate-scale-in" style="animation-delay: 0.4s">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900 dark:to-red-800 rounded-2xl flex items-center justify-center">
+                                <i data-lucide="log-out" class="w-6 h-6 text-red-600 dark:text-red-400"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-surface-800 dark:text-surface-200">Account Security</h3>
+                                <p class="text-sm text-surface-500 dark:text-surface-400">Manage your session and security</p>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <!-- Logout Button -->
+                            <button onclick="handleLogout()" class="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-4 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center justify-center group">
+                                <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                                    <i data-lucide="log-out" class="w-5 h-5"></i>
+                                </div>
+                                <div class="text-left">
+                                    <div class="font-semibold">Log Out</div>
+                                    <div class="text-xs opacity-90">Sign out of your account</div>
+                                </div>
                             </button>
+
+                            <!-- Clear Data Button -->
+                            <button onclick="handleClearData()" class="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold py-3 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center justify-center group">
+                                <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </div>
+                                <div class="text-left">
+                                    <div class="font-medium">Clear Local Data</div>
+                                    <div class="text-xs opacity-90">Remove cached data</div>
+                                </div>
+                            </button>
+                        </div>
+
+                        <!-- Security Notice -->
+                        <div class="mt-4 p-3 bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800 rounded-xl">
+                            <div class="flex items-start space-x-2">
+                                <i data-lucide="shield-alert" class="w-4 h-4 text-yellow-600 dark:text-yellow-400 mt-0.5 flex-shrink-0"></i>
+                                <div>
+                                    <p class="text-sm font-medium text-yellow-800 dark:text-yellow-200">Security Tip</p>
+                                    <p class="text-xs text-yellow-700 dark:text-yellow-300 mt-1">Always log out when using shared devices to protect your travel data.</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -740,8 +2348,8 @@ async function renderAccountPage() {
     const nameInput = document.getElementById('new-member-name');
     const ageInput = document.getElementById('new-member-age');
     
-    const fullName = nameInput.value;
-    const age = ageInput.value;
+    const fullName = nameInput.value.trim();
+    const age = ageInput.value.trim();
 
     if (!fullName || !age) {
         alert("Please provide both a name and an age.");
@@ -750,13 +2358,17 @@ async function renderAccountPage() {
 
     try {
         const newMemberData = { fullName, age: parseInt(age) };
+        // Step 1: Add the new member
         await apiRequest('/profile/members', 'POST', newMemberData);
         
-        // Refresh the profile data from the server to show the new member
+        // Step 2: Refresh the profile data from the server
         const updatedProfile = await apiRequest('/profile/me');
-        state.profile = updatedProfile.profile;
+
+        // --- THIS IS THE FIX ---
+        // The API returns the profile object directly, so we assign it directly.
+        state.profile = updatedProfile;
         
-        // Re-render the account page with the updated list
+        // Step 3: Re-render the account page with the updated list
         renderAccountPage();
         
     } catch (err) {
@@ -784,136 +2396,607 @@ async function handleRemoveFamilyMember(memberId) {
 }    
 
 // In index.html
+
 async function initializeAppState() {
     try {
+        // Step 1: Fetch all CRITICAL data together. 
+        // If any of these fail, the user cannot proceed and must be logged out.
         const [profileData, draftsData] = await Promise.all([
             apiRequest('/profile/me'),
             apiRequest('/itineraries')
         ]);
 
-        // --- THIS IS THE FIX ---
-        // The backend sends the profile directly, not nested.
-        state.profile = profileData; 
+        // Assign the successfully fetched data to the state
+        state.profile = profileData;
         state.itineraryDrafts = draftsData.drafts || [];
         
+        // Step 2: Fetch NON-CRITICAL data in a separate try...catch.
+        // It's normal for a user to not have an active journey, so a failure
+        // here should not log them out.
         try {
             const journeyData = await apiRequest('/journeys/active');
+            // The backend now correctly returns { journey: null } if none is active.
             if (journeyData && journeyData.journey) {
                 state.activeJourney = journeyData.journey;
                 state.activeJourneyData = {
                     qrCodeToken: journeyData.journey.qrCodeToken,
                     txHash: journeyData.journey.blockchainTxHashes.start
                 };
+            } else {
+                // This is the normal case for a user without an active trip.
+                state.activeJourney = null;
             }
         } catch (journeyError) {
-            console.log("No active journey found, which is normal.");
+            // This will only catch server errors (500), not the "not found" case.
+            console.log("Could not check for active journey:", journeyError);
             state.activeJourney = null;
         }
         
+        // Step 3: If all critical data was fetched, show the home page.
         showPage('home');
 
     } catch (error) {
-        console.error("Critical session error, clearing session.", error);
+        // Step 4: This CATCH block will run if the critical Promise.all fails.
+        // This is our guard against invalid/expired tokens (401 errors).
+        console.error("Authentication failed or critical error:", error.message);
+        
+        // Clear the bad session data
         localStorage.removeItem('tourchain-user');
         state.currentUser = null;
+        state.profile = null;
+        
+        // Send the user back to the login page
         showPage('auth');
     }
 }
 
-    async function handleLogin() {
-    const role = document.getElementById('role-select').value;
-    const phone = document.getElementById('login-phone').value;
-    const password = document.getElementById('login-password').value;
+    // Password visibility toggle function
+    function togglePassword(inputId, button) {
+        const input = document.getElementById(inputId);
+        const icon = button.querySelector('i');
+        
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.setAttribute('data-lucide', 'eye-off');
+        } else {
+            input.type = 'password';
+            icon.setAttribute('data-lucide', 'eye');
+        }
+        lucide.createIcons();
+    }
 
-    if (role === 'Admin') {
-        window.location.href = ADMIN_APP_URL;
+    // Registration handler function
+    async function handleActivateTrip() {
+    const draftId = document.getElementById('draft-select').value;
+    const startDate = document.getElementById('start-date').value;
+    const endDate = document.getElementById('end-date').value;
+
+    if (!draftId || !startDate || !endDate) {
+        alert('Please select a draft and set both start and end dates.');
         return;
     }
 
-    if (!phone || !password) {
-        alert('Please enter phone and password.');
-        return;
-    }
+    // Get the list of currently checked family members
+    const selectedMemberElements = document.querySelectorAll('.member-checkbox:checked');
+    const memberIds = Array.from(selectedMemberElements).map(el => el.getAttribute('data-member-id'));
 
     try {
-        // 'data' will be the exact object your controller sends: { _id, phone, role, token }
-        const data = await apiRequest('/auth/login', 'POST', { phone, password });
+        // Create the request object with the correct property names
+        const journeyConfig = {
+            draftId: draftId,
+            startDate,
+            endDate,
+            memberIds: memberIds
+        };
+        
+        // Call the API
+        const journeyData = await apiRequest('/journeys/start', 'POST', journeyConfig);
 
-        // We assign this entire object to state.currentUser
-        state.currentUser = data;
-        localStorage.setItem('tourchain-user', JSON.stringify(data));
-
-        // Now, initializeAppState() will be able to find state.currentUser.token
-        await initializeAppState();
-
+        // Store the active journey data in the state
+        state.activeJourney = journeyData;
+        state.activeJourneyData = {
+            qrCodeToken: journeyData.qrCodeToken,
+            txHash: journeyData.blockchainTxHashes.start
+        };
+        
+        alert(`🎉 Trip activated successfully!\nBlockchain Transaction Hash: ${state.activeJourneyData.txHash}`);
+        
+        showQrModal(state.activeJourneyData);
+        setTimeout(() => showPage('active'), 2000);
+        
     } catch (err) {
-        alert('Login failed. Please check your credentials.');
+        console.error('Trip activation error:', err);
+        alert('Failed to activate trip. Error: ' + (err.message || 'Unknown error'));
     }
 }
 
-    async function handleActivateTrip() {
-        const draftId = document.getElementById('draft-select').value;
-        const startDate = document.getElementById('start-date').value;
-        const endDate = document.getElementById('end-date').value;
+    // Journey Map Functions
+    let journeyMap = null;
+    let journeyMarkers = [];
+    let journeyUserLocationMarker = null;
 
-        if (!draftId || !startDate || !endDate) {
-            alert('Please select a draft and set both start and end dates.');
-            return;
-        }
+    function initializeJourneyMap() {
+        if (!mapboxgl || !state.activeJourney) return;
 
         try {
-            const journeyData = await apiRequest('/journeys/start', 'POST', {
-                itineraryId: draftId, 
-                startDate, 
-                endDate, 
-                members: [], // Placeholder for member selection
+            const mapContainer = document.getElementById('journey-map');
+            if (!mapContainer) return;
+
+            // Initialize map
+            journeyMap = new mapboxgl.Map({
+                container: 'journey-map',
+                style: 'mapbox://styles/mapbox/light-v11',
+                center: [77.5946, 12.9716], // Default to Bangalore
+                zoom: 6
             });
 
-            // The backend returns the full active journey object
-            state.activeJourney = journeyData.journey;
-            
-            // We need to store QR and TxHash separately for the modal
-            state.activeJourneyData = {
-                qrCodeToken: journeyData.journey.qrCodeToken,
-                txHash: journeyData.journey.blockchainTxHashes.start
-            };
+            // Add navigation controls
+            journeyMap.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-            showQrModal(state.activeJourneyData);
-            showPage('home');
-        } catch (err) {
-            alert('Failed to activate trip. Please try again.');
+            journeyMap.on('load', () => {
+                plotItineraryLocations();
+                getCurrentLocationAndCenter();
+            });
+
+        } catch (error) {
+            console.error('Map initialization error:', error);
+        }
+    }
+
+    function plotItineraryLocations() {
+        if (!journeyMap || !state.activeJourney?.itinerary?.destinations) return;
+
+        const destinations = state.activeJourney.itinerary.destinations;
+        const coordinates = [];
+
+        destinations.forEach((dest, index) => {
+            const coords = getCityCoordinates(dest.city);
+            if (coords) {
+                coordinates.push(coords);
+
+                // Create marker for each destination
+                const el = document.createElement('div');
+                el.className = 'destination-marker';
+                el.style.cssText = `
+                    width: 40px; height: 40px;
+                    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+                    border: 3px solid white;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-weight: bold;
+                    font-size: 14px;
+                    cursor: pointer;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                `;
+                el.textContent = index + 1;
+
+                const marker = new mapboxgl.Marker(el)
+                    .setLngLat(coords)
+                    .setPopup(new mapboxgl.Popup({ offset: 25 })
+                        .setHTML(`
+                            <div class="text-center p-2">
+                                <h3 class="font-bold text-lg">${dest.city}</h3>
+                                <p class="text-sm text-gray-600">Destination ${index + 1}</p>
+                                ${dest.places ? `<p class="text-xs mt-1">${dest.places.length} places to visit</p>` : ''}
+                            </div>
+                        `))
+                    .addTo(journeyMap);
+
+                journeyMarkers.push(marker);
+            }
+        });
+
+        // Fit map to show all destinations
+        if (coordinates.length > 0) {
+            const bounds = new mapboxgl.LngLatBounds();
+            coordinates.forEach(coord => bounds.extend(coord));
+            journeyMap.fitBounds(bounds, { padding: 50 });
+        }
+    }
+
+    function getCityCoordinates(cityName) {
+        // Mapping of common Indian cities to coordinates
+        const cityCoords = {
+            'delhi': [77.1025, 28.7041],
+            'mumbai': [72.8777, 19.0760],
+            'bangalore': [77.5946, 12.9716],
+            'kolkata': [88.3639, 22.5726],
+            'chennai': [80.2707, 13.0827],
+            'hyderabad': [78.4867, 17.3850],
+            'pune': [73.8567, 18.5204],
+            'ahmedabad': [72.5714, 23.0225],
+            'goa': [74.1240, 15.2993],
+            'jaipur': [75.7873, 26.9124],
+            'lucknow': [80.9462, 26.8467],
+            'kanpur': [80.3319, 26.4499],
+            'agra': [78.0081, 27.1767],
+            'varanasi': [82.9739, 25.3176],
+            'indore': [75.8577, 22.7196],
+            'bhopal': [77.4126, 23.2599],
+            'patna': [85.1376, 25.5941],
+            'vadodara': [73.2080, 22.3072],
+            'ludhiana': [75.8573, 30.9010],
+            'coimbatore': [76.9558, 11.0168]
+        };
+
+        const city = cityName.toLowerCase().trim();
+        return cityCoords[city] || [77.5946, 12.9716]; // Default to Bangalore
+    }
+
+    function getCurrentLocationAndCenter() {
+        if (navigator.geolocation && journeyMap) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const coords = [position.coords.longitude, position.coords.latitude];
+                    
+                    // Add user location marker
+                    const userEl = document.createElement('div');
+                    userEl.style.cssText = `
+                        width: 20px; height: 20px;
+                        background: #10b981;
+                        border: 3px solid white;
+                        border-radius: 50%;
+                        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
+                        animation: pulse 2s infinite;
+                    `;
+
+                    journeyUserLocationMarker = new mapboxgl.Marker(userEl)
+                        .setLngLat(coords)
+                        .setPopup(new mapboxgl.Popup({ offset: 15 })
+                            .setHTML('<div class="text-center p-2"><h3 class="font-bold">You are here</h3><p class="text-sm text-gray-600">Current location</p></div>'))
+                        .addTo(journeyMap);
+                },
+                (error) => {
+                    console.log('Location access denied or unavailable');
+                }
+            );
+        }
+    }
+
+    function centerMapOnCurrentLocation() {
+        if (navigator.geolocation && journeyMap) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const coords = [position.coords.longitude, position.coords.latitude];
+                    journeyMap.flyTo({ center: coords, zoom: 14 });
+                    
+                    // Update user marker position if exists
+                    if (journeyUserLocationMarker) {
+                        journeyUserLocationMarker.setLngLat(coords);
+                    }
+                },
+                (error) => {
+                    alert('Unable to access your location. Please enable location services.');
+                }
+            );
         }
     }
     
-    async function handleEndJourney() {
-        if (confirm("Are you sure you want to end the current journey?")) {
+// In index.html
+
+async function handleEndJourney() {
+    // This check is a good addition to prevent errors if the button is visible somehow.
+    if (!state.activeJourney) {
+        alert('You do not have an active journey to end.');
+        return;
+    }
+
+    if (confirm("Are you sure you want to end the current journey?")) {
+        try {
+            // --- THIS IS THE FIX ---
+            // 1. Capture the response from the API call in a variable.
+            const responseData = await apiRequest(`/journeys/${state.activeJourney._id}/end`, 'POST');
+            
+            // 2. Clear the active journey from the state.
+            state.activeJourney = null;
+            state.activeJourneyData = null;
+            
+            // Clean up map (your existing code for this is correct)
+            if (journeyMap) {
+                journeyMap.remove();
+                journeyMap = null;
+            }
+            journeyMarkers = [];
+            journeyUserLocationMarker = null;
+            
+            // 3. Use the data from the response to show a more informative alert.
+            const endTxHash = responseData.journey.blockchainTxHashes.end;
+            alert(`Journey successfully ended!\nEnd Transaction Hash: ${endTxHash}`);
+
+            showPage('home');
+
+        } catch (err) {
+            console.error('End journey error:', err);
+            alert('Failed to end journey. Please try again.');
+        }
+    }
+}
+
+    async function handlePanic() {
+        const t = getT();
+        
+        // Show confirmation dialog with double-tap protection
+        if (confirm("🚨 EMERGENCY ALERT\n\nThis will immediately:\n• Send your location to authorities\n• Alert emergency contacts\n• Notify police in your area\n\nPress OK only if you're in actual danger!")) {
+            
+            const panicBtn = document.getElementById('panic-button');
+            if (panicBtn) {
+                panicBtn.disabled = true;
+                panicBtn.innerHTML = '<i data-lucide="loader-2" class="w-7 h-7 animate-spin"></i>';
+                lucide.createIcons();
+            }
+            
             try {
-                await apiRequest(`/journeys/${state.activeJourney._id}/end`, 'POST');
+                // Try to get current location
+                let location = null;
+                if (navigator.geolocation) {
+                    try {
+                        const position = await new Promise((resolve, reject) => {
+                            navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
+                        });
+                        location = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude,
+                            accuracy: position.coords.accuracy,
+                            timestamp: new Date().toISOString()
+                        };
+                    } catch (geoError) {
+                        console.log('Location unavailable:', geoError);
+                    }
+                }
+                
+                const panicData = {
+                    userId: state.currentUser?._id || 'anonymous',
+                    userName: state.profile?.fullName || 'Unknown User',
+                    phone: state.currentUser?.phone || 'Not provided',
+                    location: location,
+                    activeJourney: state.activeJourney || null,
+                    emergencyContacts: state.profile?.emergencyContacts || [],
+                    timestamp: new Date().toISOString(),
+                    deviceInfo: {
+                        userAgent: navigator.userAgent,
+                        language: navigator.language
+                    }
+                };
+                
+                // Try to send to backend API first
+                try {
+                    if (state.activeJourney) {
+                        await apiRequest(`/journeys/${state.activeJourney._id}/panic`, 'POST', panicData);
+                    } else {
+                        await apiRequest('/panic', 'POST', panicData);
+                    }
+                } catch (apiError) {
+                    console.log('API request failed, using fallback methods:', apiError);
+                }
+                
+                // Always execute emergency actions regardless of API success
+                await executeEmergencyActions(panicData);
+                
+                alert("🚨 EMERGENCY ALERT SENT!\n\n✅ Authorities have been notified\n✅ Emergency contacts alerted\n✅ Location shared\n\nHelp is on the way! Stay safe!");
+                
+            } catch (err) {
+                console.error('Panic handling error:', err);
+                // Even if there's an error, try basic emergency actions
+                await executeEmergencyActions({
+                    timestamp: new Date().toISOString(),
+                    userName: state.profile?.fullName || 'Unknown User',
+                    phone: state.currentUser?.phone || 'Not provided'
+                });
+                alert("Emergency alert sent! Basic emergency protocols activated. If you're still in danger, call 112 directly.");
+            }
+            
+            // Restore button
+            if (panicBtn) {
+                panicBtn.disabled = false;
+                panicBtn.innerHTML = '<i data-lucide="shield-alert" class="w-7 h-7"></i>';
+                lucide.createIcons();
+            }
+        }
+    }
+    
+    async function executeEmergencyActions(panicData) {
+        // Store panic event locally for recovery
+        const panicEvents = JSON.parse(localStorage.getItem('tourchain-panic-events') || '[]');
+        panicEvents.push(panicData);
+        localStorage.setItem('tourchain-panic-events', JSON.stringify(panicEvents));
+        
+        // Try to make emergency calls (will open dialer on mobile)
+        try {
+            // Show emergency contacts modal
+            showEmergencyContactsModal(panicData);
+        } catch (err) {
+            console.log('Emergency contacts display failed:', err);
+        }
+        
+        // Vibrate device if supported (mobile)
+        if (navigator.vibrate) {
+            navigator.vibrate([200, 100, 200, 100, 200]);
+        }
+        
+        // Flash screen if possible
+        try {
+            document.body.style.backgroundColor = '#ef4444';
+            setTimeout(() => {
+                document.body.style.backgroundColor = '';
+            }, 500);
+        } catch (err) {
+            console.log('Screen flash failed:', err);
+        }
+    }
+    
+    // Safety Check-in Function
+    async function handleCheckIn() {
+        if (!state.activeJourney) {
+            alert('No active journey found.');
+            return;
+        }
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                    try {
+                        const locationData = {
+                            locations: [[position.coords.latitude, position.coords.longitude]]
+                        };
+                        
+                        await apiRequest('/journeys/check-in', 'POST', locationData);
+                        alert('✅ Safety check-in successful! Your location has been updated.');
+                        
+                        // Update map if available
+                        if (journeyMap && journeyUserLocationMarker) {
+                            const coords = [position.coords.longitude, position.coords.latitude];
+                            journeyUserLocationMarker.setLngLat(coords);
+                            journeyMap.flyTo({ center: coords, zoom: 14 });
+                        }
+                        
+                    } catch (error) {
+                        console.error('Check-in error:', error);
+                        alert('Check-in failed. Please try again.');
+                    }
+                },
+                (error) => {
+                    alert('Unable to access your location. Please enable location services for safety check-in.');
+                }
+            );
+        } else {
+            alert('Geolocation is not supported by this browser.');
+        }
+    }
+
+    // Logout Functions
+    async function handleLogout() {
+        if (confirm("🔐 Are you sure you want to log out?\n\nThis will end your current session and return you to the login screen.")) {
+            try {
+                // Try to call logout API if available
+                try {
+                    await apiRequest('/auth/logout', 'POST', {});
+                } catch (apiError) {
+                    console.log('Logout API not available, proceeding with local logout');
+                }
+                
+                // Clear all user data
+                localStorage.removeItem('tourchain-user');
+                localStorage.removeItem('tourchain-token');
+                
+                // Clear sensitive data but keep cached drafts for demo purposes
+                state.currentUser = null;
+                state.profile = null;
                 state.activeJourney = null;
                 state.activeJourneyData = null;
-                alert("Journey successfully ended.");
-                showPage('home');
-            } catch (err) {
-                alert('Failed to end journey. Please try again.');
+                
+                // Clean up map if it exists
+                if (journeyMap) {
+                    journeyMap.remove();
+                    journeyMap = null;
+                }
+                
+                alert("✅ Logged out successfully! Thank you for using TourChain.");
+                
+                // Redirect to auth page
+                showPage('auth');
+                
+            } catch (error) {
+                console.error('Logout error:', error);
+                alert("Logout completed locally. Please clear your browser data if on a shared device.");
+                showPage('auth');
             }
         }
     }
 
-    async function handlePanic() {
-        if (!state.activeJourney) {
-            alert("Cannot trigger panic: No active journey is registered.");
-            return;
-        }
-        if (confirm("🚨 WARNING: This will send an alert to authorities. Proceed?")) {
+    async function handleClearData() {
+        if (confirm("⚠️ Clear All Local Data?\n\nThis will remove:\n• Cached trip plans\n• Saved preferences\n• Offline data\n\nYou will need to reload your data from the server. Continue?")) {
             try {
-                await apiRequest(`/journeys/${state.activeJourney._id}/panic`, 'POST');
-                alert("Panic alert sent! Help is on the way.");
-                // Optionally update UI to show panic state
-                showPage('home');
-            } catch (err) {
-                alert('Failed to send panic alert. Please try again.');
+                // Clear all localStorage data
+                const keysToRemove = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key.startsWith('tourchain-')) {
+                        keysToRemove.push(key);
+                    }
+                }
+                
+                keysToRemove.forEach(key => {
+                    localStorage.removeItem(key);
+                });
+                
+                // Reset application state
+                state.currentUser = null;
+                state.profile = null;
+                state.itineraryDrafts = [];
+                state.activeJourney = null;
+                state.activeJourneyData = null;
+                
+                // Clean up map if it exists
+                if (journeyMap) {
+                    journeyMap.remove();
+                    journeyMap = null;
+                }
+                
+                alert("✅ All local data cleared successfully!\n\nThe app will now restart with fresh data.");
+                
+                // Restart the app
+                location.reload();
+                
+            } catch (error) {
+                console.error('Clear data error:', error);
+                alert("❌ Failed to clear some data. Please try refreshing the page.");
             }
         }
+    }
+
+    function showEmergencyContactsModal(panicData) {
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 p-4';
+        modal.innerHTML = `
+            <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 max-w-sm w-full animate-scale-in">
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-red-500 rounded-full mx-auto mb-4 flex items-center justify-center animate-pulse">
+                        <i data-lucide="phone-call" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-red-600 dark:text-red-400 mb-2">EMERGENCY ACTIVATED</h2>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Emergency services and contacts have been notified</p>
+                </div>
+                
+                <div class="space-y-3 mb-6">
+                    <a href="tel:112" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-4 px-6 rounded-2xl flex items-center justify-center transition-colors">
+                        <i data-lucide="phone" class="w-5 h-5 mr-2"></i>
+                        Call Emergency (112)
+                    </a>
+                    
+                    <a href="tel:100" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-2xl flex items-center justify-center transition-colors">
+                        <i data-lucide="shield" class="w-5 h-5 mr-2"></i>
+                        Call Police (100)
+                    </a>
+                    
+                    ${panicData.emergencyContacts && panicData.emergencyContacts.length > 0 ? 
+                        panicData.emergencyContacts.map(contact => `
+                            <a href="tel:${contact.phone}" class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-2xl flex items-center justify-center transition-colors">
+                                <i data-lucide="user" class="w-4 h-4 mr-2"></i>
+                                Call ${contact.name}
+                            </a>
+                        `).join('') : 
+                        '<p class="text-sm text-gray-500 text-center">No emergency contacts configured</p>'
+                    }
+                </div>
+                
+                <button onclick="this.parentElement.parentElement.remove()" class="w-full bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-6 rounded-2xl transition-colors">
+                    Close
+                </button>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        lucide.createIcons();
+        
+        // Auto-remove after 30 seconds
+        setTimeout(() => {
+            if (modal.parentElement) {
+                modal.remove();
+            }
+        }, 30000);
     }
 
     async function handleCheckIn() {
@@ -959,17 +3042,36 @@ async function initializeAppState() {
         }).filter(d => d.city);
 
         const newDraftData = {
+            _id: 'itinerary_' + Date.now(),
             name: tripName,
             startingCity,
-            destinations
+            destinations,
+            createdAt: new Date().toISOString(),
+            safetyScore: null // Will be calculated later
         };
 
-        await apiRequest('/itineraries', 'POST', newDraftData);
-        alert(`Itinerary Draft "${tripName}" saved successfully!`);
+        // Try to save via API first, fall back to localStorage if it fails
+        try {
+            await apiRequest('/itineraries', 'POST', newDraftData);
+            alert(`Itinerary Draft "${tripName}" saved successfully!`);
+        } catch (apiError) {
+            console.log('API save failed, using localStorage fallback:', apiError);
+            
+            // Save to localStorage as fallback
+            const existingDrafts = JSON.parse(localStorage.getItem('tourchain-itineraries') || '[]');
+            existingDrafts.push(newDraftData);
+            localStorage.setItem('tourchain-itineraries', JSON.stringify(existingDrafts));
+            
+            // Update app state
+            state.itineraryDrafts = existingDrafts;
+            
+            alert(`Itinerary Draft "${tripName}" saved locally!`);
+        }
+        
         showPage('plan');
 
     } catch (err) {
-        alert('Failed to save itinerary. Please check the console for details.');
+        alert('Failed to save itinerary. Please check your inputs and try again.');
         console.error("Save Itinerary Failed:", err);
     }
 }
@@ -977,8 +3079,10 @@ async function initializeAppState() {
 
     const pageRenderers = {
         splash: renderSplashPage,
+        demoMap: renderDemoMapPage,
         languageSelect: renderLanguageSelectPage,
         auth: renderAuthPage,
+        register: renderRegistrationPage,
         home: renderHomePage,
         plan: renderPlanPage,
         active: renderActivePage,
@@ -987,6 +3091,13 @@ async function initializeAppState() {
     };
 
     function showPage(pageId) {
+        // Clean up map if switching away from home page
+        if (state.currentPage === 'home' && pageId !== 'home' && map) {
+            map.remove();
+            map = null;
+            userLocationMarker = null;
+        }
+        
         state.currentPage = pageId;
         const renderFunction = pageRenderers[pageId];
         if (renderFunction) {

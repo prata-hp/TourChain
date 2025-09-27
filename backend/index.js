@@ -39,6 +39,56 @@ app.use("/api/journeys", require("./routes/journeyRoutes"));
 app.use("/api/verify", require("./routes/verifyRoutes"));
 app.use("/api/admin", require("./routes/adminRoutes"));
 
+// Standalone panic endpoint for emergency situations
+app.post("/api/panic", async (req, res) => {
+    try {
+        const panicData = req.body;
+        console.log("🚨 PANIC ALERT RECEIVED:", {
+            timestamp: panicData.timestamp,
+            userName: panicData.userName,
+            phone: panicData.phone,
+            location: panicData.location,
+            hasActiveJourney: !!panicData.activeJourney
+        });
+        
+        // Save panic event to database if possible
+        try {
+            const PanicCall = require('./models/PanicCall');
+            const panicCall = new PanicCall({
+                userId: panicData.userId || null,
+                journeyId: panicData.activeJourney?._id || null,
+                location: panicData.location || { lat: null, lng: null },
+                type: 'Emergency',
+                additionalData: {
+                    userName: panicData.userName,
+                    phone: panicData.phone,
+                    emergencyContacts: panicData.emergencyContacts,
+                    deviceInfo: panicData.deviceInfo
+                }
+            });
+            await panicCall.save();
+            console.log("✅ Panic event saved to database");
+        } catch (dbError) {
+            console.error("❌ Database save failed:", dbError.message);
+        }
+        
+        // Always respond with success for emergency situations
+        res.status(200).json({ 
+            message: 'Emergency alert received and processed',
+            timestamp: new Date().toISOString(),
+            alertId: Date.now()
+        });
+        
+    } catch (error) {
+        console.error("❌ Panic endpoint error:", error);
+        // Always return success for panic requests to ensure user gets confirmation
+        res.status(200).json({ 
+            message: 'Emergency alert received',
+            timestamp: new Date().toISOString()
+        });
+    }
+});
+
 
 // --- Custom Error Handling Middleware ---
 // KEEPING: This is a best practice for catching and logging errors gracefully

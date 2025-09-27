@@ -2,6 +2,7 @@ const ItineraryDraft = require('../models/ItineraryDraft');
 
 // @desc    Create a new itinerary draft
 // @route   POST /api/itineraries
+// @access  Private
 exports.createItinerary = async (req, res) => {
     const { name, startingCity, destinations } = req.body;
     if (!name || !startingCity) {
@@ -9,6 +10,8 @@ exports.createItinerary = async (req, res) => {
     }
     try {
         const newItinerary = new ItineraryDraft({
+            // --- FIX ---
+            // No longer need to check for req.user. The 'protect' middleware guarantees it exists.
             user: req.user.id,
             name,
             startingCity,
@@ -18,14 +21,21 @@ exports.createItinerary = async (req, res) => {
         res.status(201).json(savedItinerary);
     } catch (error) {
         console.error(error.message);
+        // Provide more context on validation errors
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({ message: error.message });
+        }
         res.status(500).send('Server Error');
     }
 };
 
 // @desc    Get all of a user's itinerary drafts
 // @route   GET /api/itineraries
+// @access  Private
 exports.getItineraries = async (req, res) => {
     try {
+        // --- FIX ---
+        // We can now confidently query for the logged-in user's itineraries.
         const itineraries = await ItineraryDraft.find({ user: req.user.id });
         res.json({ drafts: itineraries });
     } catch (error) {
@@ -34,15 +44,16 @@ exports.getItineraries = async (req, res) => {
     }
 };
 
-// --- THIS IS THE MISSING FUNCTION ---
 // @desc    Get a single itinerary by its ID
 // @route   GET /api/itineraries/:id
+// @access  Private
 exports.getItineraryById = async (req, res) => {
     try {
         const itinerary = await ItineraryDraft.findById(req.params.id);
         if (!itinerary) {
             return res.status(404).json({ message: 'Itinerary not found' });
         }
+        // This check is a good security practice and now works correctly
         if (itinerary.user.toString() !== req.user.id) {
             return res.status(401).json({ message: 'Not authorized' });
         }
@@ -52,11 +63,11 @@ exports.getItineraryById = async (req, res) => {
         res.status(500).send('Server Error');
     }
 };
-// --- END OF MISSING FUNCTION ---
 
 
 // @desc    Update an itinerary draft
 // @route   PUT /api/itineraries/:id
+// @access  Private
 exports.updateItinerary = async (req, res) => {
     try {
         let itinerary = await ItineraryDraft.findById(req.params.id);
@@ -76,6 +87,7 @@ exports.updateItinerary = async (req, res) => {
 
 // @desc    Delete an itinerary draft
 // @route   DELETE /api/itineraries/:id
+// @access  Private
 exports.deleteItinerary = async (req, res) => {
     try {
         const itinerary = await ItineraryDraft.findById(req.params.id);
@@ -95,6 +107,7 @@ exports.deleteItinerary = async (req, res) => {
 
 // @desc    Get a safety score for a draft
 // @route   GET /api/itineraries/:id/score
+// @access  Private
 exports.getSafetyScore = async (req, res) => {
     try {
         const itinerary = await ItineraryDraft.findById(req.params.id);
@@ -104,6 +117,7 @@ exports.getSafetyScore = async (req, res) => {
         if (itinerary.user.toString() !== req.user.id) {
             return res.status(401).json({ message: 'Not authorized' });
         }
+        // Placeholder for real safety score logic
         const score = 8.5; 
         itinerary.safetyScore = score;
         await itinerary.save();
