@@ -1,40 +1,47 @@
-const axios = require('axios');
+// simulate_panic.js
 
-const API_BASE_URL = 'http://localhost:5000/api';
-const TEST_USER = { phone: '9999999999', password: 'password123' };
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
 
-async function runPanicTest() {
-    console.log('--- Starting Panic Alert Test ---');
+// Load environment variables (to get MONGO_URI)
+dotenv.config();
+
+// --- 1. CONFIGURATION ---
+// REPLACE THESE WITH REAL IDs from your MongoDB
+const TOURIST_USER_ID = '654321012345678901234567'; // <-- REPLACE ME
+const ACTIVE_JOURNEY_ID = '765432109876543210987654'; // <-- REPLACE ME
+
+// --- 2. MODELS & CONNECTION ---
+// Import the PanicCall model used by your backend
+const PanicCall = require('../models/PanicCall');
+const connectDB = require('../config/db');
+// Function to simulate panic insertion
+const triggerPanic = async () => {
+    // 1. Connect to MongoDB
+    await connectDB();
+
+    // 2. Data for the new panic
+    const panicData = {
+        journeyId: ACTIVE_JOURNEY_ID,
+        userId: TOURIST_USER_ID,
+        location: { lat: 22.5726, lng: 88.3639 }, // Location near your default map view (Kolkata)
+        type: 'Manual',
+        status: 'Active'
+    };
+
     try {
-        // Step 1: Log in to get auth token
-        console.log('\n[1/3] Logging in...');
-        const loginRes = await axios.post(`${API_BASE_URL}/auth/login`, TEST_USER);
-        const token = loginRes.data.token;
-        console.log('✅ Login successful.');
-
-        // Step 2: Get the currently active journey for this user
-        console.log('\n[2/3] Finding active journey...');
-        const journeyRes = await axios.get(`${API_BASE_URL}/journeys/active`, {
-            headers: { Authorization: `Bearer ${token}` }
-        });
-        const journeyId = journeyRes.data._id;
-        console.log(`✅ Found active journey with ID: ${journeyId}`);
-
-        // Step 3: Trigger the panic alert
-        console.log('\n[3/3] Triggering PANIC ALERT...');
-        await axios.post(`${API_BASE_URL}/journeys/${journeyId}/panic`, 
-            { lat: 22.5726, lng: 88.3639 }, // Example coordinates for Kolkata
-            { headers: { Authorization: `Bearer ${token}` } }
-        );
-
-        console.log('\n--- ✅ Panic Alert Test Complete ---');
-        console.log('Check your police_backend terminal for the real-time alert message!');
+        // 3. Insert the panic document
+        const newPanic = await PanicCall.create(panicData);
+        console.log('✅ Successfully created PanicCall document.');
+        console.log('Document ID:', newPanic._id);
+        console.log('\n>>> CHECK YOUR POLICE BACKEND TERMINAL AND DASHBOARD NOW <<<');
 
     } catch (error) {
-        console.error('\n--- ❌ Test Failed ---');
-        if (error.response) console.error('Error Data:', error.response.data);
-        else console.error('Error Message:', error.message);
+        console.error('❌ Error triggering panic:', error.message);
+    } finally {
+        // 4. Disconnect
+        mongoose.connection.close();
     }
-}
+};
 
-runPanicTest();
+triggerPanic();

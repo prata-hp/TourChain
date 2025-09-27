@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TourChain Police/Admin Dashboard — Full</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Leaflet OpenStreetMap (no API key needed) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- html5-qrcode -->
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+  <!-- socket.io client (assumes socket.io server on same origin) -->
+  <script src="/socket.io/socket.io.js"></script>
+
+  <style>
+    body { font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+    .hidden { display: none !important; }
+    #mainMap, #playbackMap { width: 100%; height: 420px; min-height: 240px; border-radius: 8px; overflow: hidden; }
+    .marker-safe { background: #10b981; width: 14px; height: 14px; border-radius: 50%; box-shadow: 0 0 0 4px rgba(16,185,129,0.12); }
+    .marker-anom { background: #f97316; width: 14px; height: 14px; border-radius: 50%; box-shadow: 0 0 0 4px rgba(249,115,22,0.12); }
+    .marker-panic { background: #ef4444; width: 14px; height: 14px; border-radius: 50%; box-shadow: 0 0 0 4px rgba(239,68,68,0.12); }
+    .highlight-row { box-shadow: 0 0 0 4px rgba(250,204,21,0.18); }
+    @media (max-width: 900px) {
+      aside { position: fixed; left: 0; top: 0; bottom: 0; z-index: 40; transform: translateX(-110%); transition: transform .22s; width: 14rem; }
+      aside.open { transform: translateX(0); }
+      #sidebarBackdrop { display:block; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:30; }
+      #sidebarBackdrop.hidden { display:none; }
+    }
+    @media print { body * { visibility: hidden; } #printableFIR, #printableFIR * { visibility: visible; } #printableFIR { position: absolute; top:0; left:0; width:100%; } }
+    
+    /* Panic Alert Animations */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.05); }
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    /* Enhanced form styling for panic alerts */
+    .panic-alert-form {
+      animation: borderPulse 3s infinite;
+    }
+    
+    @keyframes borderPulse {
+      0%, 100% { border-color: #ef4444; box-shadow: 0 0 10px rgba(239, 68, 68, 0.3); }
+      50% { border-color: #dc2626; box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-200 min-h-screen flex">
+
+  <div id="sidebarBackdrop" class="hidden"></div>
+
+  <aside id="sidebar" class="hidden w-64 bg-slate-800 p-4 flex flex-col gap-3">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-xl font-bold text-blue-400">TourChain</h1>
+        <div id="sidebar-sub" class="text-xs text-gray-400">Admin Console</div>
+      </div>
+      <button id="sidebarClose" class="text-gray-300 md:hidden">✕</button>
+    </div>
+
+    <nav class="flex flex-col gap-1 mt-3">
+      <button class="tab-btn p-2 text-left rounded hover:bg-slate-700" data-tab="overview">🏠 Overview</button>
+      <button class="tab-btn p-2 text-left rounded hover:bg-slate-700" data-tab="tourists">👥 Tourist DB</button>
+      <button class="tab-btn p-2 text-left rounded hover:bg-slate-700" data-tab="playback">🗺️ Playback</button>
+      <button class="tab-btn p-2 text-left rounded hover:bg-slate-700" data-tab="efir">📄 E-FIR</button>
+      <button class="tab-btn p-2 text-left rounded hover:bg-slate-700" data-tab="qr">🔍 QR Verification</button>
+      <button id="officerTabBtn" class="tab-btn p-2 text-left rounded hover:bg-slate-700 hidden" data-tab="officers">🛡️ Officers</button>
+    </nav>
+
+    <div class="mt-auto text-sm">
+      <div id="current-officer" class="font-medium text-gray-200">Not logged</div>
+      <div id="current-role" class="text-xs text-gray-400 mb-2">—</div>
+      <div class="flex gap-2">
+        <button id="logoutBtn" class="hidden flex-1 bg-red-600 py-1 rounded">Logout</button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="flex-1 p-6 overflow-auto">
+    <header class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-4">
+        <h2 class="text-2xl font-bold text-blue-400">Admin / Police Dashboard</h2>
+        <div id="roleBadge" class="px-2 py-1 rounded bg-slate-700 text-xs hidden"></div>
+      </div>
+      <div class="flex items-center gap-4">
+        <div id="topStats" class="hidden md:flex gap-4 text-sm text-gray-300">
+          <div>👤 <span id="top-tourists">0</span></div>
+          <div>🚨 <span id="top-alerts">0</span></div>
+          <div>📜 <span id="top-firs">0</span></div>
+        </div>
+        <div id="current-user" class="text-sm text-gray-300">Not logged</div>
+        <button id="menuBtn" class="md:hidden bg-slate-700 px-2 py-1 rounded">☰</button>
+      </div>
+    </header>
+
+    <section id="loginView" class="min-h-[60vh] flex items-center justify-center">
+      <div class="bg-slate-800 p-8 rounded-2xl shadow-xl w-full max-w-md">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="text-2xl font-bold">Officer Login</h3>
+            <div class="text-xs text-gray-400">Authorized access only</div>
+          </div>
+          <div class="text-sm text-gray-400">v1.0</div>
+        </div>
+
+        <form id="login-form" class="space-y-3">
+          <input id="loginOfficerId" placeholder="Officer ID (e.g. OF-001)" class="w-full p-3 rounded bg-slate-700 border border-slate-700" required />
+          <input id="loginPassword" type="password" placeholder="Password" class="w-full p-3 rounded bg-slate-700 border border-slate-700" required />
+          <select id="loginRole" class="w-full p-3 rounded bg-slate-700 border border-slate-700">
+            <option value="officer">Officer</option>
+            <option value="supervisor">Supervisor</option>
+            <option value="admin">Admin</option>
+          </select>
+          <div class="flex gap-3">
+            <button type="submit" class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-semibold py-2 px-4 rounded w-full">Sign in</button>
+            <button id="guestBtn" type="button" class="bg-slate-700 text-gray-200 py-2 px-4 rounded">Guest</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <main id="appContent" class="hidden">
+      <section id="tab-overview" class="tab-content">
+        <div class="grid gap-4 md:grid-cols-3 mb-4">
+          <div class="bg-slate-800 p-4 rounded">
+            <div class="text-sm text-gray-400">Active Tourists</div>
+            <div id="statTourists" class="text-2xl font-bold text-blue-400">0</div>
+          </div>
+          <div class="bg-slate-800 p-4 rounded">
+            <div class="text-sm text-gray-400">Journeys In Progress</div>
+            <div id="statJourneys" class="text-2xl font-bold text-indigo-400">0</div>
+          </div>
+          <div class="bg-slate-800 p-4 rounded">
+            <div class="text-sm text-gray-400">Pending Panic Alerts</div>
+            <div id="statAlerts" class="text-2xl font-bold text-red-400">0</div>
+          </div>
+        </div>
+
+        <div class="bg-slate-800 p-4 rounded mb-4">
+          <div class="flex items-center justify-between mb-2">
+            <h4 class="font-bold">Real-time Monitoring Map</h4>
+            <div class="text-xs text-gray-400">Green = Safe • Orange = Anomaly • Red = Panic</div>
+          </div>
+          <div id="mainMap" class="" style="height:420px; border-radius:8px; background:#0f172a;"></div>
+        </div>
+
+        <div class="bg-slate-800 p-4 rounded">
+          <h4 class="font-bold mb-2">Live Incidents Queue</h4>
+          <ul id="alertsQueue" class="space-y-2 max-h-48 overflow-auto"></ul>
+        </div>
+      </section>
+
+      <section id="tab-tourists" class="tab-content hidden">
+        <div class="flex gap-2 mb-3">
+          <input id="touristSearch" placeholder="Search name / id / phone" class="flex-1 p-2 rounded bg-slate-700" />
+          <select id="touristFilter" class="p-2 rounded bg-slate-700">
+            <option value="all">All Status</option>
+            <option value="safe">Safe</option>
+            <option value="anomaly">Anomaly</option>
+            <option value="panic">Panic</option>
+          </select>
+        </div>
+
+        <div class="bg-slate-800 p-4 rounded overflow-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="text-xs text-gray-400 uppercase bg-slate-700">
+              <tr>
+                <th class="py-2 px-3">ID</th>
+                <th class="py-2 px-3">Name</th>
+                <th class="py-2 px-3">Phone</th>
+                <th class="py-2 px-3">Status</th>
+                <th class="py-2 px-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="touristTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="tab-playback" class="tab-content hidden">
+        <div class="mb-3 flex gap-2">
+          <select id="playbackJourneySelect" class="p-2 bg-slate-700 rounded"></select>
+          <button id="btnOpenPlayback" class="bg-blue-600 p-2 rounded">Load</button>
+        </div>
+
+        <div class="bg-slate-800 p-4 rounded">
+          <div id="playbackMap" style="height:320px; background:#0f172a; border-radius:8px;"></div>
+
+          <div class="mt-3">
+            <input id="timeline" type="range" min="0" max="0" value="0" class="w-full" />
+            <div id="timelineLabels" class="flex justify-between text-xs text-gray-400 mt-1"></div>
+            <div class="mt-2 flex gap-2">
+              <button id="playbackPlay" class="bg-blue-600 px-3 py-1 rounded">Play</button>
+              <button id="playbackPause" class="bg-gray-600 px-3 py-1 rounded">Pause</button>
+              <button id="playbackReset" class="bg-red-600 px-3 py-1 rounded">Reset</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="tab-efir" class="tab-content hidden">
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-slate-800 p-4 rounded">
+            <h4 class="font-bold mb-2">Generate E-FIR 
+              <span id="efirAutoStatus" class="hidden text-xs bg-red-600 px-2 py-1 rounded ml-2">AUTO-POPULATED FROM PANIC ALERT</span>
+            </h4>
+            <form id="efirForm" class="space-y-2">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <input id="efirTouristId" placeholder="Tourist ID" class="w-full p-2 rounded bg-slate-700" />
+                <input id="efirTouristName" placeholder="Tourist Name" class="w-full p-2 rounded bg-slate-700" />
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <input id="efirIncidentType" placeholder="Incident Type" class="w-full p-2 rounded bg-slate-700" />
+                <input id="efirPriority" placeholder="Priority Level" class="w-full p-2 rounded bg-slate-700" />
+              </div>
+              <textarea id="efirDesc" rows="6" placeholder="Incident description" class="w-full p-2 rounded bg-slate-700"></textarea>
+              <textarea id="efirActions" rows="4" placeholder="Actions taken" class="w-full p-2 rounded bg-slate-700"></textarea>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <input id="efirLocation" placeholder="Location Details" class="w-full p-2 rounded bg-slate-700" />
+                <input id="efirOfficer" placeholder="Handling Officer" class="w-full p-2 rounded bg-slate-700" />
+              </div>
+              <div class="flex gap-2 items-center flex-wrap">
+                <input id="efirEvidence" type="file" class="text-sm text-gray-400" />
+                <button type="submit" class="bg-green-600 px-3 py-2 rounded hover:bg-green-700 transition-colors">Save FIR</button>
+                <button id="efirPrintBtn" type="button" class="bg-indigo-600 px-3 py-2 rounded hover:bg-indigo-700 transition-colors">Print Last</button>
+                <button id="efirClearBtn" type="button" class="bg-gray-600 px-3 py-2 rounded hover:bg-gray-700 transition-colors">Clear Form</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="bg-slate-800 p-4 rounded">
+            <h4 class="font-bold mb-2">FIR History</h4>
+            <ul id="efirHistory" class="space-y-2 max-h-72 overflow-auto"></ul>
+          </div>
+        </div>
+
+        <div id="printableFIR" class="hidden p-4 bg-white text-black rounded mt-4"></div>
+      </section>
+
+      <section id="tab-qr" class="tab-content hidden">
+        <h4 class="font-bold mb-3">QR Code Verification</h4>
+        <div id="qr-reader" style="width:320px; height:300px;"></div>
+        <div id="qr-result" class="mt-3 p-3 bg-slate-800 rounded">Scan a QR to verify tourist.</div>
+      </section>
+
+      <section id="tab-officers" class="tab-content hidden">
+        <div class="bg-slate-800 p-4 rounded mb-3">
+          <h4 class="font-bold">Create Officer</h4>
+          <form id="createOfficerForm" class="flex gap-2 mt-2 flex-wrap">
+            <input id="newOfficerId" placeholder="Officer ID" class="p-2 rounded bg-slate-700" />
+            <input id="newOfficerName2" placeholder="Name" class="p-2 rounded bg-slate-700" />
+            <select id="newOfficerRole2" class="p-2 rounded bg-slate-700">
+              <option value="officer">Officer</option>
+              <option value="supervisor">Supervisor</option>
+              <option value="admin">Admin</option>
+            </select>
+            <button class="bg-green-600 px-3 py-1 rounded">Add</button>
+          </form>
+        </div>
+
+        <div class="bg-slate-800 p-4 rounded">
+          <h4 class="font-bold mb-3">Officers</h4>
+          <ul id="officerList" class="space-y-2"></ul>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="dossierModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center hidden z-50">
+    <div class="bg-slate-800 p-6 rounded-lg w-11/12 md:w-3/4 lg:w-2/3">
+      <div class="flex justify-between items-start">
+        <h3 id="dossierTitle" class="text-xl font-bold">Incident Dossier</h3>
+        <div class="flex gap-2">
+          <button id="dossierClose" class="py-1 px-3 bg-gray-600 rounded">Close</button>
+        </div>
+      </div>
+      <div id="dossierContent" class="mt-4 space-y-4"></div>
+    </div>
+  </div>
+
+<script>
+/* -------------------------
+   Frontend integrated with backend (SIH8.html)
+   - Uses relative /api/* endpoints (same origin)
+   - Stores JWT in localStorage 'token'
+   - Connects to socket.io at same origin
+   - Mapbox markers use backend lat/lng
+------------------------- */
+
+const API_BASE = "http://localhost:5001"; // empty = same origin; set to 'http://localhost:5000' if backend on different port
+
+// Using Leaflet (OpenStreetMap) - no API key needed
+
+// App state
+const state = {
+  token: localStorage.getItem('token') || null,
+  currentUser: null,
+  tourists: [],
+  alerts: [],
+  journeys: [],
+  firs: [],
+  officers: []
+};
+
+// DOM refs
+const loginForm = document.getElementById('login-form');
+const loginView = document.getElementById('loginView');
+const appContent = document.getElementById('appContent');
+const sidebar = document.getElementById('sidebar');
+const logoutBtn = document.getElementById('logoutBtn');
+const menuBtn = document.getElementById('menuBtn');
+const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+const sidebarClose = document.getElementById('sidebarClose');
+
+const statTourists = document.getElementById('statTourists');
+const statJourneys = document.getElementById('statJourneys');
+const statAlerts = document.getElementById('statAlerts');
+const mainMapEl = document.getElementById('mainMap');
+const alertsQueue = document.getElementById('alertsQueue');
+
+const touristSearch = document.getElementById('touristSearch');
+const touristFilter = document.getElementById('touristFilter');
+const touristTableBody = document.getElementById('touristTableBody');
+
+const playbackJourneySelect = document.getElementById('playbackJourneySelect');
+const playbackMapEl = document.getElementById('playbackMap');
+const timeline = document.getElementById('timeline');
+const timelineLabels = document.getElementById('timelineLabels');
+const playbackPlay = document.getElementById('playbackPlay');
+const playbackPause = document.getElementById('playbackPause');
+const playbackReset = document.getElementById('playbackReset');
+
+const efirForm = document.getElementById('efirForm');
+const efirHistory = document.getElementById('efirHistory');
+const printableFIR = document.getElementById('printableFIR');
+
+const officerList = document.getElementById('officerList');
+
+const qrTab = document.getElementById('tab-qr');
+const qrResult = document.getElementById('qr-result');
+
+let mainMap = null;
+let mapMarkers = {};
+let socket = null;
+let qrScannerInstance = null;
+let playbackMap = null;
+let playbackMarker = null;
+let playbackInterval = null;
+
+/* -------------------------
+   Helper: auth headers
+------------------------- */
+function authHeaders() {
+  return state.token ? { 'Authorization': 'Bearer ' + state.token } : {};
+}
+
+/* -------------------------
+   Network helpers
+------------------------- */
+async function apiGet(path) {
+  const res = await fetch(API_BASE + path, { headers: { ...authHeaders(), 'Content-Type':'application/json' } });
+  if (res.status === 401) { handleUnauthorized(); throw new Error('Unauthorized'); }
+  return res.json();
+}
+async function apiPost(path, body) {
+  const res = await fetch(API_BASE + path, { method:'POST', headers: { ...authHeaders(), 'Content-Type':'application/json' }, body: JSON.stringify(body) });
+  if (res.status === 401) { handleUnauthorized(); throw new Error('Unauthorized'); }
+  return res.json();
+}
+
+/* -------------------------
+   Login
+------------------------- */
+loginForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = document.getElementById('loginOfficerId').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  try {
+    const resp = await fetch(API_BASE + '/api/officers/login', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json' },
+      body: JSON.stringify({ officerId: id, password })
+    });
+    if (!resp.ok) {
+      const err = await resp.json().catch(()=>({message:'Login failed'}));
+      return alert(err.message || 'Login failed');
+    }
+    const data = await resp.json();
+    // expected: { token, officer }
+    state.token = data.token;
+    localStorage.setItem('token', state.token);
+    state.currentUser = data.officer || { id };
+    onLoggedIn();
+  } catch (err) {
+    console.error('Login error', err);
+    alert('Login error: ' + (err.message || err));
+  }
+});
+
+document.getElementById('guestBtn').addEventListener('click', () => {
+  state.currentUser = { id: 'GUEST', role: 'officer' };
+  onLoggedIn();
+});
+
+function handleUnauthorized() {
+  localStorage.removeItem('token');
+  state.token = null;
+  alert('Session expired or unauthorized. Please login again.');
+  location.reload();
+}
+
+function onLoggedIn() {
+  document.getElementById('current-officer').textContent = state.currentUser.id;
+  document.getElementById('current-role').textContent = state.currentUser.role || 'officer';
+  document.getElementById('current-user').textContent = `${state.currentUser.id} • ${state.currentUser.role || 'officer'}`;
+  document.getElementById('roleBadge').classList.remove('hidden');
+  document.getElementById('roleBadge').textContent = (state.currentUser.role||'OFFICER').toUpperCase();
+  loginView.classList.add('hidden');
+  appContent.classList.remove('hidden');
+  sidebar.classList.remove('hidden');
+  logoutBtn.classList.remove('hidden');
+  if ((state.currentUser.role || 'officer') === 'admin') document.getElementById('officerTabBtn').classList.remove('hidden');
+  initializeAfterLogin();
+}
+
+/* -------------------------
+   Logout
+------------------------- */
+logoutBtn.addEventListener('click', () => {
+  localStorage.removeItem('token');
+  state.token = null;
+  state.currentUser = null;
+  loginView.classList.remove('hidden');
+  appContent.classList.add('hidden');
+  sidebar.classList.add('hidden');
+  logoutBtn.classList.add('hidden');
+  if (socket) socket.disconnect();
+});
+
+/* -------------------------
+   Initialize after login
+------------------------- */
+async function initializeAfterLogin() {
+  await loadAllData();
+  connectSocket();
+  initMapbox();
+  renderAll();
+}
+
+/* -------------------------
+   Load data from backend
+------------------------- */
+async function loadAllData() {
+  try {
+    const stats = await apiGet('/api/admin/stats');
+    // stats expected to include counts and maybe other fields
+    // but we'll fetch explicit endpoints below
+  } catch (e) {
+    console.warn('stats fetch failed', e);
+  }
+  try {
+    const tourists = await apiGet('/api/admin/tourists');
+    state.tourists = Array.isArray(tourists) ? tourists : (tourists.data || []);
+  } catch (e) {
+    console.warn('tourists fetch failed', e);
+  }
+  try {
+    const alerts = await apiGet('/api/admin/panic-calls');
+    state.alerts = Array.isArray(alerts) ? alerts : (alerts.data || []);
+  } catch (e) {
+    console.warn('alerts fetch failed', e);
+  }
+  try {
+    const journeys = await apiGet('/api/admin/journeys'); // optional endpoint listing journeys
+    if (Array.isArray(journeys)) state.journeys = journeys;
+  } catch (e) {
+    // ignore
+  }
+}
+
+/* -------------------------
+   Socket.io (real-time)
+------------------------- */
+function connectSocket() {
+  try {
+    // connect to same origin; if token required on server, server must accept it via auth
+    socket = io(); // or io(API_BASE) if different origin
+    socket.on('connect', ()=> console.log('socket connected', socket.id));
+    socket.on('disconnect', ()=> console.log('socket disconnected'));
+    socket.on('new-panic-alert', (payload) => {
+      // payload should be panic alert object
+      console.log('new-panic-alert', payload);
+      // add to state and render
+      state.alerts.unshift(payload);
+      renderAlertsQueue();
+      renderOverviewStats();
+      // show marker on map if coords present
+      if (payload.location && payload.location.lng && payload.location.lat) {
+        addOrUpdateMarkerForPanic(payload);
+      }
+      
+      // Auto-populate E-FIR form for panic alerts
+      autoPopulateEFIR(payload);
+      
+      // Show notification for new panic alert
+      showPanicAlertNotification(payload);
+    });
+  } catch (e) {
+    console.warn('socket connect failed', e);
+  }
+}
+
+/* -------------------------
+   Leaflet map + markers (using backend coords)
+------------------------- */
+function initMapbox(){
+  if (mainMap) return;
+  try {
+    // Initialize Leaflet map with OpenStreetMap tiles
+    mainMap = L.map('mainMap').setView([23.5937, 78.9629], 4);
+    
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(mainMap);
+    
+    // Place markers immediately
+    placeMarkersFromState();
+  } catch(e) {
+    document.getElementById('mainMap').innerHTML = '<div class="p-4 text-gray-400">Map unavailable. Markers may not render.</div>';
+  }
+}
+
+function placeMarkersFromState(){
+  if (!mainMap) return;
+  // remove existing
+  Object.values(mapMarkers).forEach(m=> mainMap.removeLayer(m));
+  mapMarkers = {};
+  state.tourists.forEach(t => {
+    if (typeof t.lng !== 'number' || typeof t.lat !== 'number') return;
+    
+    // Create custom icon based on status
+    let iconColor = '#10b981'; // safe - green
+    if (t.status === 'panic') iconColor = '#ef4444'; // panic - red
+    else if (t.status === 'anomaly') iconColor = '#f97316'; // anomaly - orange
+    
+    const customIcon = L.divIcon({
+      className: 'custom-div-icon',
+      html: `<div style="background-color: ${iconColor}; width: 14px; height: 14px; border-radius: 50%; box-shadow: 0 0 0 4px ${iconColor}20;"></div>`,
+      iconSize: [14, 14],
+      iconAnchor: [7, 7]
+    });
+    
+    try {
+      const marker = L.marker([t.lat, t.lng], {icon: customIcon})
+        .bindPopup(`${t.name} (${t.id})`)
+        .addTo(mainMap);
+      
+      marker.on('click', ()=> openDossierByTourist(t.id));
+      mapMarkers[t.id] = marker;
+    } catch(e){}
+  });
+}
+
+function addOrUpdateMarkerForPanic(alert) {
+  // if tourist id known, update existing marker to panic style
+  const tid = alert.touristId;
+  if (tid && mapMarkers[tid]) {
+    // Remove existing marker and create new panic marker
+    mainMap.removeLayer(mapMarkers[tid]);
+    
+    const panicIcon = L.divIcon({
+      className: 'custom-div-icon',
+      html: `<div style="background-color: #ef4444; width: 14px; height: 14px; border-radius: 50%; box-shadow: 0 0 0 4px #ef444420;"></div>`,
+      iconSize: [14, 14],
+      iconAnchor: [7, 7]
+    });
+    
+    const tourist = state.tourists.find(t => t.id === tid);
+    if (tourist) {
+      const marker = L.marker([tourist.lat, tourist.lng], {icon: panicIcon})
+        .bindPopup(`PANIC: ${tourist.name} (${tourist.id})`)
+        .addTo(mainMap);
+      marker.on('click', ()=> openDossierByTourist(tid));
+      mapMarkers[tid] = marker;
+    }
+  } else if (alert.location && alert.location.lng && alert.location.lat && mainMap) {
+    // Create new panic marker at alert location
+    const panicIcon = L.divIcon({
+      className: 'custom-div-icon',
+      html: `<div style="background-color: #ef4444; width: 14px; height: 14px; border-radius: 50%; box-shadow: 0 0 0 4px #ef444420;"></div>`,
+      iconSize: [14, 14],
+      iconAnchor: [7, 7]
+    });
+    
+    try {
+      L.marker([alert.location.lat, alert.location.lng], {icon: panicIcon})
+        .bindPopup(`PANIC ALERT: ${alert.touristName || 'Unknown'}`)
+        .addTo(mainMap);
+    } catch(e){}
+  }
+}
+
+/* -------------------------
+   Renderers
+------------------------- */
+function renderOverviewStats(){
+  statTourists.textContent = state.tourists.length;
+  statJourneys.textContent = state.journeys.length;
+  statAlerts.textContent = state.alerts.filter(a=>a.status==='Active').length;
+  document.getElementById('top-tourists').textContent = state.tourists.length;
+  document.getElementById('top-alerts').textContent = state.alerts.length;
+  document.getElementById('top-firs').textContent = state.firs.length;
+}
+
+function renderAlertsQueue(){
+  alertsQueue.innerHTML = '';
+  if (!state.alerts || state.alerts.length === 0) { alertsQueue.innerHTML = '<li class="text-gray-400">No active alerts</li>'; return; }
+  state.alerts.forEach(a => {
+    const li = document.createElement('li'); li.className = 'p-3 bg-slate-700 rounded flex justify-between';
+    li.innerHTML = `<div>
+      <div class="font-semibold">${a.type || 'Panic Alert'}</div>
+      <div class="text-xs text-gray-400">${a.touristName || a.touristId} • ${a.timestamp || ''}</div>
+      <div class="text-sm text-gray-300 mt-1">${a.details || ''}</div>
+    </div>
+    <div class="flex flex-col gap-1">
+      <button class="ackBtn bg-yellow-400 text-black py-1 px-2 rounded text-xs">Acknowledge</button>
+      <button class="viewBtn bg-blue-600 py-1 px-2 rounded text-xs">View</button>
+      <button class="efirBtn bg-green-600 py-1 px-2 rounded text-xs">Auto E-FIR</button>
+    </div>`;
+    li.querySelector('.viewBtn').addEventListener('click', ()=> openDossier(a));
+    li.querySelector('.ackBtn').addEventListener('click', async ()=> {
+      // attempt to update via API (if exists), otherwise mock
+      try {
+        await fetch(API_BASE + '/api/admin/panic-calls/' + a.id + '/status', {
+          method: 'PUT', headers: { 'Content-Type':'application/json', ...authHeaders() }, body: JSON.stringify({ status: 'Acknowledged' })
+        });
+        a.status = 'Acknowledged';
+        renderAlertsQueue();
+        renderOverviewStats();
+      } catch(err){
+        a.status = 'Acknowledged'; renderAlertsQueue(); renderOverviewStats();
+      }
+    });
+    li.querySelector('.efirBtn').addEventListener('click', ()=> {
+      autoPopulateEFIR(a);
+      showTab('efir');
+      showNotification('E-FIR form auto-populated with panic alert data', 'success');
+    });
+    alertsQueue.appendChild(li);
+  });
+}
+
+function renderTouristTable(){
+  touristTableBody.innerHTML = '';
+  const q = (touristSearch?.value || '').toLowerCase();
+  const status = touristFilter?.value || 'all';
+  (state.tourists || []).filter(t => {
+    const matchQ = !q || (t.name && t.name.toLowerCase().includes(q)) || (t.id && t.id.toLowerCase().includes(q)) || (t.phone && t.phone.includes(q));
+    const matchS = status === 'all' || t.status === status;
+    return matchQ && matchS;
+  }).forEach(t => {
+    const tr = document.createElement('tr'); tr.className = 'hover:bg-slate-700';
+    tr.innerHTML = `<td class="py-2 px-3">${t.id}</td><td class="py-2 px-3">${t.name}</td><td class="py-2 px-3">${t.phone||''}</td><td class="py-2 px-3 capitalize">${t.status}</td>
+      <td class="py-2 px-3"><button class="viewBtn bg-blue-600 text-xs px-2 py-1 rounded">View</button> <button class="locateBtn bg-gray-600 text-xs px-2 py-1 rounded">Locate</button></td>`;
+    tr.querySelector('.viewBtn').addEventListener('click', ()=> openDossierByTourist(t.id));
+    tr.querySelector('.locateBtn').addEventListener('click', ()=> { if (mainMap) mainMap.flyTo({ center:[t.lng,t.lat], zoom:14 }); });
+    touristTableBody.appendChild(tr);
+  });
+}
+
+function renderJourneys(){
+  playbackJourneySelect.innerHTML = '';
+  (state.journeys || []).forEach(j => {
+    const opt = document.createElement('option'); opt.value = j.journeyId; opt.textContent = j.name; playbackJourneySelect.appendChild(opt);
+  });
+}
+
+function renderEfirHistory(){
+  efirHistory.innerHTML = '';
+  if (!state.firs || state.firs.length === 0) { efirHistory.innerHTML = '<li class="text-gray-400">No FIRs</li>'; return; }
+  state.firs.slice().reverse().forEach(f => {
+    const li = document.createElement('li'); 
+    li.className = `p-3 ${f.isFromPanicAlert ? 'bg-red-900 border-l-4 border-red-500' : 'bg-slate-700'} rounded flex justify-between items-start`;
+    
+    const panicBadge = f.isFromPanicAlert ? '<span class="text-xs bg-red-600 px-2 py-1 rounded ml-2">PANIC ALERT</span>' : '';
+    const priorityColor = f.priority?.includes('CRITICAL') ? 'text-red-400' : f.priority?.includes('HIGH') ? 'text-yellow-400' : 'text-gray-400';
+    
+    li.innerHTML = `
+      <div class="flex-1">
+        <div class="font-semibold flex items-center">
+          FIR ${f.id}
+          ${panicBadge}
+        </div>
+        <div class="text-xs text-gray-400 mt-1">
+          ${f.touristName} (${f.touristId}) • ${f.date}
+        </div>
+        <div class="text-xs ${priorityColor} mt-1">
+          ${f.incidentType || 'General Incident'} • Priority: ${f.priority || 'Normal'}
+        </div>
+        <div class="text-xs text-gray-300 mt-1">
+          Officer: ${f.officer || 'Not assigned'}
+        </div>
+      </div>
+      <div class="flex flex-col gap-1 ml-3">
+        <button class="viewFIR bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-xs transition-colors">View</button>
+        <button class="printFIR bg-indigo-600 hover:bg-indigo-700 px-3 py-1 rounded text-xs transition-colors">Print</button>
+      </div>`;
+    
+    li.querySelector('.viewFIR').addEventListener('click', ()=> showPrintableFIR(f));
+    li.querySelector('.printFIR').addEventListener('click', ()=> {
+      showPrintableFIR(f);
+      setTimeout(() => window.print(), 100);
+    });
+    efirHistory.appendChild(li);
+  });
+}
+
+function renderOfficers(){
+  officerList.innerHTML = '';
+  (state.officers || []).forEach(o => {
+    const li = document.createElement('li'); li.className = 'p-2 bg-slate-700 rounded'; li.textContent = `${o.name} (${o.role})`; officerList.appendChild(li);
+  });
+}
+
+function renderAll(){
+  renderOverviewStats();
+  renderAlertsQueue();
+  renderTouristTable();
+  renderJourneys();
+  renderEfirHistory();
+  renderOfficers();
+  placeMarkersFromState();
+}
+
+/* -------------------------
+   Dossier modal
+------------------------- */
+const dossierModal = document.getElementById('dossierModal');
+const dossierContent = document.getElementById('dossierContent');
+const dossierClose = document.getElementById('dossierClose');
+
+function openDossier(alertOrTourist){
+  let tourist = null;
+  if (typeof alertOrTourist === 'string') tourist = state.tourists.find(t => t.id === alertOrTourist);
+  else if (alertOrTourist && alertOrTourist.touristId) tourist = state.tourists.find(t => t.id === alertOrTourist.touristId);
+  else tourist = state.tourists.find(t => t.id === (alertOrTourist && alertOrTourist.id));
+  if (!tourist) return alert('Tourist not found');
+  dossierContent.innerHTML = '';
+  dossierContent.innerHTML += `<div class="flex gap-4 items-center"><div class="w-14 h-14 rounded-full bg-slate-700 flex items-center justify-center text-xl">${tourist.name.charAt(0)}</div>
+    <div><div class="font-bold">${tourist.name}</div><div class="text-xs text-gray-400">ID: ${tourist.id}</div><div class="text-xs text-gray-400">Phone: ${tourist.phone||'N/A'}</div></div></div>`;
+  dossierContent.innerHTML += `<div class="mt-4 bg-slate-700 p-3 rounded"><strong>Medical:</strong> N/A</div>`;
+  dossierContent.innerHTML += `<div class="mt-4 bg-slate-700 p-2 rounded"><div id="miniMap" style="height:220px; background:#0f172a; border-radius:6px;"></div></div>`;
+  setTimeout(()=> {
+    try { new mapboxgl.Map({ container: 'miniMap', style:'mapbox://styles/mapbox/dark-v10', center:[tourist.lng,tourist.lat], zoom:13 }); }
+    catch(e){ document.getElementById('miniMap').innerHTML = '<div class="p-3 text-gray-400">Mini map unavailable (token).</div>'; }
+  }, 200);
+  dossierModal.classList.remove('hidden');
+}
+dossierClose.addEventListener('click', ()=> dossierModal.classList.add('hidden'));
+
+/* -------------------------
+   E-FIR handling (mock)
+------------------------- */
+efirForm?.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const id = 'F' + Date.now().toString().slice(-6);
+  const payload = { 
+    id, 
+    touristId: document.getElementById('efirTouristId').value || 'N/A', 
+    touristName: document.getElementById('efirTouristName').value || 'N/A', 
+    incidentType: document.getElementById('efirIncidentType').value || 'General Incident',
+    priority: document.getElementById('efirPriority').value || 'Normal',
+    description: document.getElementById('efirDesc').value || '', 
+    actions: document.getElementById('efirActions').value || '', 
+    location: document.getElementById('efirLocation').value || 'Not specified',
+    officer: document.getElementById('efirOfficer').value || state.currentUser?.id || 'Unknown Officer',
+    date: new Date().toLocaleString(),
+    status: 'Active',
+    isFromPanicAlert: document.getElementById('efirAutoStatus').classList.contains('hidden') ? false : true
+  };
+  
+  state.firs.push(payload); 
+  renderEfirHistory(); 
+  
+  // Clear the auto-populate status
+  const autoStatusBadge = document.getElementById('efirAutoStatus');
+  if (autoStatusBadge) {
+    autoStatusBadge.classList.add('hidden');
+  }
+  
+  showNotification(`E-FIR ${payload.id} saved successfully${payload.isFromPanicAlert ? ' (from panic alert)' : ''}`, 'success');
+});
+
+// Clear form button functionality
+document.getElementById('efirClearBtn')?.addEventListener('click', () => {
+  if (confirm('Are you sure you want to clear all E-FIR form data?')) {
+    clearEFIRForm();
+    showNotification('E-FIR form cleared', 'info');
+  }
+});
+
+function clearEFIRForm() {
+  const fields = [
+    'efirTouristId', 'efirTouristName', 'efirIncidentType', 'efirPriority',
+    'efirDesc', 'efirActions', 'efirLocation', 'efirOfficer'
+  ];
+  
+  fields.forEach(fieldId => {
+    const field = document.getElementById(fieldId);
+    if (field) field.value = '';
+  });
+  
+  // Hide auto-populate status badge
+  const autoStatusBadge = document.getElementById('efirAutoStatus');
+  if (autoStatusBadge) {
+    autoStatusBadge.classList.add('hidden');
+  }
+  
+  // Reset form styling
+  const efirForm = document.getElementById('efirForm');
+  if (efirForm) {
+    efirForm.style.border = '';
+    efirForm.style.boxShadow = '';
+  }
+}
+function showPrintableFIR(f){
+  const panicBadge = f.isFromPanicAlert ? '<span style="background: #dc2626; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">PANIC ALERT FIR</span>' : '';
+  
+  printableFIR.innerHTML = `
+    <div class="p-8 bg-white text-black" id="printableFIR" style="font-family: Arial, sans-serif;">
+      <div style="border-bottom: 3px solid #2563eb; padding-bottom: 10px; margin-bottom: 20px;">
+        <h1 style="font-size: 24px; font-weight: bold; color: #1e40af; margin: 0;">TOURCHAIN E-FIR</h1>
+        <div style="font-size: 14px; color: #666; margin-top: 5px;">Electronic First Information Report</div>
+      </div>
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="font-size: 18px; font-weight: bold; margin: 0;">FIR ID: ${f.id}</h2>
+        ${panicBadge}
+      </div>
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+        <div>
+          <strong>Tourist Information:</strong><br>
+          Name: ${f.touristName}<br>
+          ID: ${f.touristId}<br>
+          
+          <div style="margin-top: 10px;">
+            <strong>Incident Details:</strong><br>
+            Type: ${f.incidentType || 'Not specified'}<br>
+            Priority: ${f.priority || 'Normal'}<br>
+            Location: ${f.location || 'Not specified'}
+          </div>
+        </div>
+        
+        <div>
+          <strong>Case Information:</strong><br>
+          Date & Time: ${f.date}<br>
+          Handling Officer: ${f.officer || 'Not assigned'}<br>
+          Status: ${f.status || 'Active'}<br>
+          Source: ${f.isFromPanicAlert ? 'Auto-generated from Panic Alert' : 'Manual Entry'}
+        </div>
+      </div>
+      
+      <div style="margin-bottom: 20px;">
+        <strong>Incident Description:</strong>
+        <div style="margin-top: 8px; padding: 10px; background: #f5f5f5; border-left: 4px solid #2563eb; white-space: pre-line;">
+${f.description || 'No description provided'}
+        </div>
+      </div>
+      
+      <div style="margin-bottom: 20px;">
+        <strong>Actions Taken:</strong>
+        <div style="margin-top: 8px; padding: 10px; background: #f5f5f5; border-left: 4px solid #059669; white-space: pre-line;">
+${f.actions || 'No actions recorded'}
+        </div>
+      </div>
+      
+      <div style="margin-top: 40px; border-top: 1px solid #ccc; padding-top: 20px;">
+        <div style="display: flex; justify-content: space-between;">
+          <div>
+            <strong>Officer Signature:</strong><br>
+            <div style="margin-top: 20px; border-bottom: 1px solid #333; width: 200px;"></div>
+            <div style="font-size: 12px; margin-top: 5px;">${f.officer || 'Officer Name'}</div>
+          </div>
+          
+          <div>
+            <strong>Date:</strong><br>
+            <div style="margin-top: 20px; border-bottom: 1px solid #333; width: 150px;"></div>
+            <div style="font-size: 12px; margin-top: 5px;">${new Date().toLocaleDateString()}</div>
+          </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px; font-size: 12px; color: #666;">
+          This is a computer-generated document from TourChain Emergency Response System<br>
+          Generated on: ${new Date().toLocaleString()}
+        </div>
+      </div>
+    </div>`;
+  
+  printableFIR.classList.remove('hidden');
+  
+  // Auto-hide after 10 seconds if not printing
+  setTimeout(() => {
+    if (!window.matchMedia('print').matches) {
+      printableFIR.classList.add('hidden');
+    }
+  }, 10000);
+}
+
+/* -------------------------
+   Playback (uses existing journeys in state)
+------------------------- */
+function loadPlayback(jid){
+  const j = state.journeys.find(x=>x.journeyId===jid); if(!j) return alert('Journey not found');
+  try {
+    if(!playbackMap) {
+      playbackMap = L.map('playbackMap').setView([j.path[0][1], j.path[0][0]], 13);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(playbackMap);
+    } else {
+      playbackMap.setView([j.path[0][1], j.path[0][0]], 13);
+    }
+  } catch(e){ playbackMapEl.innerHTML = '<div class="p-3 text-gray-400">Playback map unavailable.</div>'; }
+  timeline.min = 0; timeline.max = Math.max(0, j.path.length-1); timeline.value = 0;
+  timelineLabels.textContent = j.path.map(p=>p[2]||'').join(' | ');
+  if(playbackMarker) playbackMap.removeLayer(playbackMarker);
+  try { 
+    const playbackIcon = L.divIcon({
+      className: 'custom-div-icon',
+      html: `<div style="background-color: #06b6d4; width: 16px; height: 16px; border-radius: 50%; border: 2px solid white;"></div>`,
+      iconSize: [16, 16],
+      iconAnchor: [8, 8]
+    });
+    playbackMarker = L.marker([j.path[0][1], j.path[0][0]], {icon: playbackIcon}).addTo(playbackMap); 
+  } catch(e){}
+}
+document.getElementById('btnOpenPlayback')?.addEventListener('click', ()=> loadPlayback(playbackJourneySelect.value));
+document.getElementById('playbackPlay')?.addEventListener('click', ()=>{
+  const jid = playbackJourneySelect.value; const j = state.journeys.find(x=>x.journeyId===jid); if(!j) return alert('Select journey');
+  let i = parseInt(timeline.value,10) || 0; if(playbackInterval) clearInterval(playbackInterval);
+  playbackInterval = setInterval(()=>{ i++; if(i>=j.path.length){ clearInterval(playbackInterval); return; } timeline.value = i; const p=j.path[i]; try{ playbackMarker.setLatLng([p[1],p[0]]); }catch(e){} }, 800);
+});
+document.getElementById('playbackPause')?.addEventListener('click', ()=> clearInterval(playbackInterval));
+document.getElementById('playbackReset')?.addEventListener('click', ()=> { clearInterval(playbackInterval); timeline.value = 0; });
+
+/* -------------------------
+   QR scanner init (once) - html5-qrcode
+------------------------- */
+function initQRScannerOnce(){
+  if (qrScannerInstance) return;
+  try {
+    qrScannerInstance = new Html5QrcodeScanner('qr-reader', { fps: 10, qrbox: 300 });
+    qrScannerInstance.render(decodedText => {
+      const found = state.tourists.find(t => t.id === decodedText || (t.name && t.name.toLowerCase() === decodedText.toLowerCase()));
+      if (found) {
+        qrResult.innerHTML = `<div class="p-2"><div class="font-semibold">✅ Verified</div><div>${found.name} (${found.id})</div><div class="text-xs text-gray-400">Status: ${found.status}</div></div>`;
+        highlightTouristRow(found.id);
+      } else {
+        qrResult.innerHTML = `<div class="p-2 text-red-400">❌ Tourist not found for: ${decodedText}</div>`;
+      }
+    });
+  } catch (e) {
+    qrResult.innerHTML = '<div class="p-2 text-gray-400">QR scanner initialization failed.</div>';
+  }
+}
+
+function highlightTouristRow(tid) {
+  showTab('tourists');
+  setTimeout(()=> {
+    const rows = Array.from(document.querySelectorAll('#touristTableBody tr'));
+    rows.forEach(r => r.classList.remove('highlight-row'));
+    const row = rows.find(r => r.children[0] && r.children[0].textContent.trim() === tid);
+    if (row) {
+      row.classList.add('highlight-row');
+      row.scrollIntoView({ behavior:'smooth', block:'center' });
+      setTimeout(()=> row.classList.remove('highlight-row'), 3200);
+    }
+  }, 220);
+}
+
+/* -------------------------
+   Tabs handling
+------------------------- */
+const tabButtons = Array.from(document.querySelectorAll('.tab-btn'));
+const tabContents = Array.from(document.querySelectorAll('.tab-content'));
+
+function showTab(name){
+  tabContents.forEach(tc => tc.classList.add('hidden'));
+  const el = document.getElementById('tab-' + name);
+  if (el) el.classList.remove('hidden');
+  // init qr scanner lazy
+  if (name === 'qr') initQRScannerOnce();
+  tabButtons.forEach(b => { if (b.dataset.tab === name) b.classList.add('bg-slate-700'); else b.classList.remove('bg-slate-700'); });
+}
+tabButtons.forEach(b => b.addEventListener('click', ()=> showTab(b.dataset.tab)));
+
+menuBtn.addEventListener('click', ()=> { sidebar.classList.toggle('open'); sidebarBackdrop.classList.toggle('hidden'); });
+sidebarBackdrop.addEventListener('click', ()=> { sidebar.classList.remove('open'); sidebarBackdrop.classList.add('hidden'); });
+sidebarClose.addEventListener('click', ()=> { sidebar.classList.remove('open'); sidebarBackdrop.classList.add('hidden'); });
+
+/* -------------------------
+   Utility & bootstrap
+------------------------- */
+async function updateAllFromBackend() {
+  await loadAllData();
+  renderAll();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // pre-render quick things
+  renderJourneys(); renderEfirHistory(); renderOfficers();
+  touristSearch?.addEventListener('input', renderTouristTable);
+  touristFilter?.addEventListener('change', renderTouristTable);
+
+  // if token exists try auto-login / fetch profile
+  if (state.token) {
+    // attempt to fetch current officer profile (if endpoint exists)
+    fetch(API_BASE + '/api/officers/me', { headers: { 'Authorization': 'Bearer ' + state.token } })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data && data.id) {
+          state.currentUser = data;
+          onLoggedIn();
+        } else {
+          // if can't fetch profile still allow manual login
+          // attempt to load data with token
+          initializeAfterLogin().catch(()=>{});
+        }
+      }).catch(()=>{});
+  }
+});
+
+/* -------------------------
+   Auto E-FIR Population Functions
+------------------------- */
+function autoPopulateEFIR(panicAlert) {
+  // Auto-populate E-FIR form fields based on panic alert data
+  const touristIdField = document.getElementById('efirTouristId');
+  const touristNameField = document.getElementById('efirTouristName');
+  const incidentTypeField = document.getElementById('efirIncidentType');
+  const priorityField = document.getElementById('efirPriority');
+  const descriptionField = document.getElementById('efirDesc');
+  const actionsField = document.getElementById('efirActions');
+  const locationField = document.getElementById('efirLocation');
+  const officerField = document.getElementById('efirOfficer');
+  const autoStatusBadge = document.getElementById('efirAutoStatus');
+  
+  // Populate basic info
+  if (touristIdField) {
+    touristIdField.value = panicAlert.touristId || panicAlert.userId || 'Unknown';
+  }
+  
+  if (touristNameField) {
+    touristNameField.value = panicAlert.touristName || 'Tourist Name Pending';
+  }
+  
+  if (incidentTypeField) {
+    incidentTypeField.value = panicAlert.type === 'AI-Anomaly' ? 
+      'AI-Detected Anomaly Alert' : 'Manual Panic Button Activation';
+  }
+  
+  if (priorityField) {
+    priorityField.value = 'CRITICAL - IMMEDIATE RESPONSE REQUIRED';
+  }
+  
+  if (locationField) {
+    locationField.value = panicAlert.location ? 
+      `Lat: ${panicAlert.location.lat.toFixed(6)}, Lng: ${panicAlert.location.lng.toFixed(6)}` : 
+      'Location coordinates not available';
+  }
+  
+  if (officerField) {
+    officerField.value = `${state.currentUser?.id || 'Current Officer'} (Auto-assigned)`;
+  }
+  
+  if (descriptionField) {
+    const timestamp = new Date(panicAlert.timestamp).toLocaleString();
+    
+    const description = `EMERGENCY INCIDENT REPORT - PANIC ALERT
+    
+========================================
+INCIDENT CLASSIFICATION: ${panicAlert.type === 'AI-Anomaly' ? 'AI-DETECTED ANOMALY' : 'MANUAL PANIC ACTIVATION'}
+PRIORITY LEVEL: CRITICAL
+RESPONSE REQUIRED: IMMEDIATE
+========================================
+
+INCIDENT DETAILS:
+Date & Time: ${timestamp}
+Tourist ID: ${panicAlert.touristId || panicAlert.userId || 'Unknown'}
+Tourist Name: ${panicAlert.touristName || 'Name Pending'}
+Journey ID: ${panicAlert.journeyId || 'Not Available'}
+Current Status: ${panicAlert.status || 'Active'}
+
+LOCATION INFORMATION:
+${panicAlert.location ? 
+  `GPS Coordinates: Latitude ${panicAlert.location.lat}, Longitude ${panicAlert.location.lng}
+Location Accuracy: Real-time GPS tracking
+Last Known Position: ${timestamp}` : 
+  'GPS coordinates unavailable - Tourist may be in area with poor signal coverage'}
+
+INCIDENT DESCRIPTION:
+${panicAlert.type === 'AI-Anomaly' ? 
+  `AUTOMATED ALERT: The AI monitoring system has detected suspicious activity or significant deviation from expected travel patterns. This may indicate:
+- Tourist has deviated from planned route without notification
+- Unusual movement patterns detected
+- Potential distress or emergency situation
+- Technical malfunction requiring verification
+
+The AI system flagged this as requiring immediate human intervention and verification of tourist safety.` : 
+
+  `MANUAL PANIC ACTIVATION: Tourist has manually activated the emergency panic button through the TourChain mobile application. This indicates:
+- Tourist is in immediate distress or danger
+- Emergency assistance is required at current location
+- Situation requires immediate police/medical response
+- Tourist has deliberately called for help
+
+This is a direct request for emergency assistance from the tourist.`}
+
+THREAT ASSESSMENT: HIGH PRIORITY
+VERIFICATION STATUS: PENDING OFFICER CONTACT
+EMERGENCY PROTOCOLS: ACTIVATED`;
+
+    descriptionField.value = description;
+  }
+  
+  if (actionsField) {
+    const actions = `IMMEDIATE RESPONSE ACTIONS LOG
+========================================
+
+ALERT RECEIVED: ${new Date().toLocaleString()}
+HANDLING OFFICER: ${state.currentUser?.id || 'Current Officer'}
+CASE ID: FIR-${Date.now()}
+
+AUTOMATED ACTIONS COMPLETED:
+✓ Panic alert logged in system
+✓ GPS coordinates recorded (if available)
+✓ Emergency response protocol initiated
+✓ Real-time tracking activated
+✓ E-FIR automatically generated
+✓ Officer ${state.currentUser?.id || 'Current Officer'} assigned to case
+
+REQUIRED IMMEDIATE ACTIONS:
+□ Contact tourist via phone/app immediately
+□ Verify tourist safety and current situation
+□ Dispatch emergency response if confirmed threat
+□ Contact local police/medical services if needed
+□ Notify tourist's emergency contacts
+□ Update family/travel companions
+□ Document all communications and findings
+
+ONGOING MONITORING:
+□ Continuous GPS location tracking
+□ Regular check-in attempts every 15 minutes
+□ Coordinate with local emergency services
+□ Update case status as situation develops
+□ Complete incident resolution report
+
+CASE RESOLUTION REQUIREMENTS:
+□ Direct confirmation of tourist safety
+□ Documentation of incident cause/resolution
+□ Update all relevant parties on case closure
+□ File final incident report
+□ Follow-up safety measures implemented
+
+NEXT UPDATE REQUIRED: Within 30 minutes
+ESCALATION TRIGGER: No tourist contact within 1 hour
+
+Officer Signature/ID: ${state.currentUser?.id || 'Current Officer'}
+Timestamp: ${new Date().toLocaleString()}`;
+    
+    actionsField.value = actions;
+  }
+  
+  // Show auto-populate status badge
+  if (autoStatusBadge) {
+    autoStatusBadge.classList.remove('hidden');
+    autoStatusBadge.style.animation = 'pulse 2s infinite';
+  }
+  
+  // Highlight the form to draw attention
+  const efirForm = document.getElementById('efirForm');
+  if (efirForm) {
+    efirForm.style.border = '3px solid #ef4444';
+    efirForm.style.borderRadius = '8px';
+    efirForm.style.boxShadow = '0 0 20px rgba(239, 68, 68, 0.3)';
+    efirForm.style.transition = 'all 0.3s ease';
+    
+    setTimeout(() => {
+      efirForm.style.border = '1px solid #374151';
+      efirForm.style.boxShadow = 'none';
+    }, 8000);
+  }
+  
+  // Scroll to form if not visible
+  setTimeout(() => {
+    efirForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 500);
+}
+
+function showPanicAlertNotification(panicAlert) {
+  // Create and show a prominent notification for new panic alerts
+  const notification = document.createElement('div');
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    padding: 16px 20px;
+    border-radius: 8px;
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+    z-index: 1000;
+    max-width: 400px;
+    animation: slideIn 0.3s ease-out;
+  `;
+  
+  notification.innerHTML = `
+    <div style="display: flex; align-items: start; gap: 12px;">
+      <div style="color: #fca5a5; font-size: 20px;">🚨</div>
+      <div>
+        <div style="font-weight: bold; margin-bottom: 4px;">PANIC ALERT RECEIVED</div>
+        <div style="font-size: 14px; opacity: 0.9;">
+          Tourist: ${panicAlert.touristName || panicAlert.touristId || 'Unknown'}<br>
+          Type: ${panicAlert.type === 'AI-Anomaly' ? 'AI Anomaly Detected' : 'Manual Panic Button'}<br>
+          Time: ${new Date(panicAlert.timestamp).toLocaleString()}
+        </div>
+        <div style="margin-top: 8px;">
+          <button onclick="this.parentElement.parentElement.parentElement.parentElement.remove(); showTab('efir');" 
+                  style="background: rgba(255,255,255,0.2); border: none; padding: 4px 8px; border-radius: 4px; color: white; cursor: pointer; font-size: 12px;">
+            Open E-FIR →
+          </button>
+        </div>
+      </div>
+      <button onclick="this.parentElement.parentElement.remove();" 
+              style="background: none; border: none; color: white; font-size: 18px; cursor: pointer; padding: 0; margin-left: auto;">
+        ×
+      </button>
+    </div>
+  `;
+  
+  // Add CSS animation
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+  `;
+  document.head.appendChild(style);
+  
+  document.body.appendChild(notification);
+  
+  // Auto-remove after 15 seconds
+  setTimeout(() => {
+    if (notification.parentElement) {
+      notification.remove();
+    }
+  }, 15000);
+  
+  // Flash the browser tab title to draw attention
+  let originalTitle = document.title;
+  let flashCount = 0;
+  const flashInterval = setInterval(() => {
+    document.title = flashCount % 2 === 0 ? '🚨 PANIC ALERT - TourChain Admin' : originalTitle;
+    flashCount++;
+    if (flashCount >= 10) {
+      clearInterval(flashInterval);
+      document.title = originalTitle;
+    }
+  }, 1000);
+}
+
+function showNotification(message, type = 'info') {
+  const notification = document.createElement('div');
+  const colors = {
+    success: 'linear-gradient(135deg, #10b981, #059669)',
+    error: 'linear-gradient(135deg, #ef4444, #dc2626)',
+    warning: 'linear-gradient(135deg, #f59e0b, #d97706)',
+    info: 'linear-gradient(135deg, #3b82f6, #2563eb)'
+  };
+  
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: ${colors[type]};
+    color: white;
+    padding: 12px 16px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 999;
+    max-width: 300px;
+    animation: slideIn 0.3s ease-out;
+  `;
+  
+  notification.innerHTML = `
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span>${message}</span>
+      <button onclick="this.parentElement.parentElement.remove();" 
+              style="background: none; border: none; color: white; font-size: 16px; cursor: pointer; padding: 0; margin-left: auto;">
+        ×
+      </button>
+    </div>
+  `;
+  
+  document.body.appendChild(notification);
+  
+  // Auto-remove after 5 seconds
+  setTimeout(() => {
+    if (notification.parentElement) {
+      notification.remove();
+    }
+  }, 5000);
+}
+
+/* -------------------------
+   Development Helper - Test Panic Alert
+   (Remove in production)
+------------------------- */
+function simulatePanicAlert() {
+  const testAlert = {
+    id: 'PA' + Date.now(),
+    touristId: 'T12345',
+    touristName: 'John Doe',
+    userId: 'user_' + Date.now(),
+    journeyId: 'J67890',
+    type: Math.random() > 0.5 ? 'Manual' : 'AI-Anomaly',
+    status: 'Active',
+    location: {
+      lat: 28.6139 + (Math.random() - 0.5) * 0.1,
+      lng: 77.2090 + (Math.random() - 0.5) * 0.1
+    },
+    timestamp: new Date().toISOString(),
+    details: 'Test panic alert for demonstration'
+  };
+
+  // Simulate receiving panic alert via socket
+  console.log('🚨 Simulating panic alert:', testAlert);
+  
+  // Add to alerts
+  state.alerts.unshift(testAlert);
+  renderAlertsQueue();
+  renderOverviewStats();
+  
+  // Show marker on map
+  if (testAlert.location && testAlert.location.lng && testAlert.location.lat) {
+    addOrUpdateMarkerForPanic(testAlert);
+  }
+  
+  // Auto-populate E-FIR
+  autoPopulateEFIR(testAlert);
+  
+  // Show notification
+  showPanicAlertNotification(testAlert);
+}
+
+// Add test button to sidebar (for development)
+document.addEventListener('DOMContentLoaded', () => {
+  const sidebar = document.querySelector('aside nav');
+  if (sidebar && window.location.hostname === 'localhost') {
+    const testBtn = document.createElement('button');
+    testBtn.className = 'tab-btn p-2 text-left rounded hover:bg-slate-700 text-red-400 border border-red-600';
+    testBtn.innerHTML = '🧪 Test Panic Alert';
+    testBtn.onclick = simulatePanicAlert;
+    sidebar.appendChild(testBtn);
+  }
+});
+</script>
+</body>
+</html>

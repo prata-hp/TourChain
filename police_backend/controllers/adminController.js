@@ -76,3 +76,28 @@ exports.getJourneyLiveTrack = async (req, res) => {
         res.status(500).send('Server Error');
     }
 };
+// backend/controllers/adminController.js
+
+// 1. ADD THIS NEW IMPORT
+const EfirReport = require('../models/EfirReport'); 
+// ... existing imports (User, Profile, ActiveJourney, PanicCall, etc.)
+
+// ... existing functions (exports.getDashboardStats, exports.getAllTourists, etc.)
+
+// --- ADD THIS NEW FUNCTION ---
+exports.getEfirReports = async (req, res) => {
+    try {
+        // Fetch all E-FIR reports, sort by newest first (createdAt: -1)
+        const efirReports = await EfirReport.find()
+            .sort({ createdAt: -1 })
+            .populate('tourist', 'phone fullName')
+            .populate('panicCall'); 
+            
+        res.json(efirReports);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send('Server Error');
+    }
+};
+
+// ... existing functions (exports.getPanicCalls, exports.updatePanicCallStatus, etc.)
