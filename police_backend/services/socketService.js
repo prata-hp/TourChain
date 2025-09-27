@@ -8,20 +8,44 @@ const initializeSocket = (io) => {
         });
     });
 
-    const changeStream = PanicCall.watch();
+    // Try to set up change stream, but handle errors gracefully
+    try {
+        const changeStream = PanicCall.watch();
 
-    changeStream.on('change', (change) => {
-        if (change.operationType === 'insert') {
-            const newPanicCall = change.fullDocument;
-            console.log('🚨 New Panic Alert Detected! Pushing to dashboards...');
-            io.emit('new-panic-alert', newPanicCall);
-        }
-    });
+        changeStream.on('change', (change) => {
+            if (change.operationType === 'insert') {
+                const newPanicCall = change.fullDocument;
+                console.log('🚨 New Panic Alert Detected! Pushing to dashboards...');
+                io.emit('new-panic-alert', newPanicCall);
+            }
+        });
 
-    // --- ADD THIS FOR ROBUSTNESS ---
-    changeStream.on('error', (error) => {
-        console.error('❌ Change Stream Error:', error);
-    });
+        changeStream.on('error', (error) => {
+            console.error('❌ Change Stream Error:', error.message);
+            console.log('⚠️  Real-time updates disabled. Consider setting up MongoDB replica set for change streams.');
+        });
+
+        console.log('✅ Real-time panic monitoring initialized');
+    } catch (error) {
+        console.error('❌ Failed to initialize change stream:', error.message);
+        console.log('⚠️  Real-time updates disabled. Using polling fallback for production.');
+        
+        // Fallback: Poll for new panic calls every 10 seconds
+        setInterval(async () => {
+            try {
+                const recentPanics = await PanicCall.find({
+                    createdAt: { $gte: new Date(Date.now() - 15000) }, // Last 15 seconds
+                    status: 'Active'
+                }).sort({ createdAt: -1 }).limit(5);
+                
+                recentPanics.forEach(panic => {
+                    io.emit('new-panic-alert', panic);
+                });
+            } catch (pollError) {
+                // Silent fail for polling
+            }
+        }, 10000);
+    }
 };
 
 module.exports = { initializeSocket };

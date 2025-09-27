@@ -388,7 +388,7 @@
     // -------------------------------------------------------------------------
     // --- 1. CONFIGURATION & STATE MANAGEMENT
     // -------------------------------------------------------------------------
-   const API_URL = "http://localhost:5000/api"; // Your real backend URL for local things
+   const API_URL = "http://localhost:3000/api"; // Your real backend URL for local things
         // const API_URL = "https://tourchain.onrender.com/api";   // for online
     const ADMIN_APP_URL = "http://your-admin-app-url.com/login"; // Admin Redirect URL
     
@@ -764,13 +764,27 @@
 
     async function apiRequest(endpoint, method = "GET", body = null) {
     try {
+        const fullUrl = `${API_URL}${endpoint}`;
+        console.log('Making API request to:', fullUrl);
         const options = { method, headers: { "Content-Type": "application/json" } };
         if (state.currentUser && state.currentUser.token) {
             options.headers['Authorization'] = `Bearer ${state.currentUser.token}`;
         }
-        if (body) options.body = JSON.stringify(body);
-        const res = await fetch(`${API_URL}${endpoint}`, options);
-        if (!res.ok) throw new Error(await res.text() || 'API Error');
+        if (body) {
+            options.body = JSON.stringify(body);
+            console.log('Request body:', options.body);
+        }
+        console.log('Request options:', options);
+        
+        const res = await fetch(fullUrl, options);
+        console.log('Response status:', res.status);
+        console.log('Response ok:', res.ok);
+        
+        if (!res.ok) {
+            const errorText = await res.text();
+            console.error('API Error response:', errorText);
+            throw new Error(errorText || `HTTP ${res.status}`);
+        }
 
         const text = await res.text();
         return text ? JSON.parse(text) : {}; // Safely handles empty responses
@@ -2863,6 +2877,125 @@ async function handleEndJourney() {
             );
         } else {
             alert('Geolocation is not supported by this browser.');
+        }
+    }
+
+    // Authentication Functions
+    async function handleLogin() {
+        const phone = document.getElementById('login-phone').value;
+        const password = document.getElementById('login-password').value;
+        
+        if (!phone || !password) {
+            alert('Please enter both phone number and password.');
+            return;
+        }
+        
+        try {
+            // Show loading state
+            const loginBtn = document.querySelector('button[onclick="handleLogin()"]');
+            const originalText = loginBtn.innerHTML;
+            loginBtn.innerHTML = '<div class="flex items-center justify-center space-x-2"><div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div><span>Signing in...</span></div>';
+            loginBtn.disabled = true;
+            
+            const response = await apiRequest('/auth/login', 'POST', {
+                phone: phone,
+                password: password
+            });
+            
+            // Store user data and token
+            state.currentUser = response.user;
+            state.profile = response.profile;
+            localStorage.setItem('tourchain-user', JSON.stringify(response.user));
+            localStorage.setItem('tourchain-token', response.token);
+            
+            alert('✅ Login successful! Welcome back to TourChain.');
+            showPage('home');
+            
+        } catch (error) {
+            console.error('Login error:', error);
+            alert('❌ Login failed: ' + (error.message || 'Invalid credentials'));
+            
+            // Reset button state
+            const loginBtn = document.querySelector('button[onclick="handleLogin()"]');
+            const t = getT();
+            loginBtn.innerHTML = `<i data-lucide="log-in" class="w-4 h-4 mr-2"></i>${t.login}`;
+            loginBtn.disabled = false;
+            lucide.createIcons();
+        }
+    }
+
+    async function handleRegistration(event) {
+        event.preventDefault();
+        
+        // Get form data using getElementById
+        const fullName = document.getElementById('reg-fullname').value;
+        const phone = document.getElementById('reg-phone').value;
+        const email = document.getElementById('reg-email').value;
+        const age = document.getElementById('reg-age').value;
+        const password = document.getElementById('reg-password').value;
+        const confirmPassword = document.getElementById('reg-confirm-password').value;
+        const emergencyContact = document.getElementById('reg-emergency').value;
+        
+        // Validate form data
+        if (!fullName || !phone || !password || !confirmPassword) {
+            alert('Please fill in all required fields.');
+            return;
+        }
+        
+        if (password !== confirmPassword) {
+            alert('Passwords do not match.');
+            return;
+        }
+        
+        if (password.length < 6) {
+            alert('Password must be at least 6 characters long.');
+            return;
+        }
+        
+        try {
+            // Show loading state
+            const registerBtn = document.getElementById('register-btn-content');
+            const loadingDiv = document.getElementById('register-loading');
+            registerBtn.classList.add('hidden');
+            loadingDiv.classList.remove('hidden');
+            
+            const registrationData = {
+                phone: phone,
+                password: password,
+                fullName: fullName,
+                email: email || undefined,
+                age: age ? parseInt(age) : undefined,
+                emergencyContact: emergencyContact || undefined
+            };
+            
+            console.log('Attempting registration with data:', registrationData);
+            console.log('API URL will be:', API_URL + '/auth/register');
+            const response = await apiRequest('/auth/register', 'POST', registrationData);
+            console.log('Registration response:', response);
+            
+            // Store user data and token
+            state.currentUser = response.user;
+            state.profile = response.profile;
+            localStorage.setItem('tourchain-user', JSON.stringify(response.user));
+            localStorage.setItem('tourchain-token', response.token);
+            
+            const t = getT();
+            alert(`🎉 ${t.registrationSuccess}`);
+            
+            // Redirect to home page
+            showPage('home');
+            
+        } catch (error) {
+            console.error('Registration error details:', error);
+            console.error('Error stack:', error.stack);
+            console.error('Error name:', error.name);
+            alert('❌ Registration failed: ' + (error.message || 'Please try again'));
+            
+            // Reset button state
+            const registerBtn = document.getElementById('register-btn-content');
+            const loadingDiv = document.getElementById('register-loading');
+            registerBtn.classList.remove('hidden');
+            loadingDiv.classList.add('hidden');
         }
     }
 
