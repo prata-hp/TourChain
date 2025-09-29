@@ -869,15 +869,12 @@
         const t = getT();
         appContainer.innerHTML = `
             <div class="relative h-full overflow-hidden">
-                <!-- Animated Background Elements -->
                 <div class="absolute inset-0 opacity-30">
                     <div class="absolute top-20 left-10 w-32 h-32 bg-primary-200 rounded-full animate-float"></div>
                     <div class="absolute top-40 right-16 w-24 h-24 bg-accent-200 rounded-full animate-float" style="animation-delay: 1s"></div>
                     <div class="absolute bottom-32 left-20 w-20 h-20 bg-primary-300 rounded-full animate-float" style="animation-delay: 2s"></div>
                     <div class="absolute bottom-20 right-10 w-16 h-16 bg-accent-300 rounded-full animate-float" style="animation-delay: 0.5s"></div>
                 </div>
-                
-                <!-- Main Content -->
                 <div class="relative flex flex-col items-center justify-center h-full p-8 text-center z-10">
                     <!-- Logo with Advanced Animation -->
                     <div class="relative mb-8 animate-scale-in">
@@ -899,7 +896,6 @@
                         <div class="h-1 w-24 bg-gradient-to-r from-primary-400 to-accent-400 rounded-full mx-auto mb-4 animate-shimmer"></div>
                     </div>
                     
-                    <!-- Tagline -->
                     <p class="text-lg text-surface-600 dark:text-surface-300 mb-8 animate-slide-up max-w-sm leading-relaxed" style="animation-delay: 0.4s">
                         ${t.tagline}
                     </p>
