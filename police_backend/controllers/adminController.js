@@ -1,7 +1,5 @@
-// You need to import the models from the TOURIST backend.
-// This requires careful path management. For local dev, you can use relative paths.
-// In production, you might publish these models as a shared private NPM package.
-const User = require('../models/User'); // Correct path
+
+const User = require('../models/User'); 
 const Profile = require('../models/Profile');
 const ActiveJourney = require('../models/ActiveJourney');
 const PanicCall = require('../models/PanicCall');
@@ -21,7 +19,7 @@ exports.getDashboardStats = async (req, res) => {
 
 exports.getAllTourists = async (req, res) => {
     try {
-        // Find all users with the 'Tourist' role and join their profile data
+        
         const tourists = await Profile.find().populate('user', ['phone', 'createdAt']);
         res.json(tourists);
     } catch (error) {
@@ -32,7 +30,7 @@ exports.getAllTourists = async (req, res) => {
 
 exports.getPanicCalls = async (req, res) => {
     try {
-        // Find all panic calls and sort by most recent
+       
         const panicCalls = await PanicCall.find().sort({ createdAt: -1 }).populate('userId', 'phone');
         res.json(panicCalls);
     } catch (error) {
@@ -42,7 +40,7 @@ exports.getPanicCalls = async (req, res) => {
 };
 
 exports.updatePanicCallStatus = async (req, res) => {
-    const { status } = req.body; // Expects "Acknowledged" or "Resolved"
+    const { status } = req.body; 
 
     if (!['Acknowledged', 'Resolved'].includes(status)) {
         return res.status(400).json({ message: 'Invalid status.' });
@@ -76,18 +74,12 @@ exports.getJourneyLiveTrack = async (req, res) => {
         res.status(500).send('Server Error');
     }
 };
-// backend/controllers/adminController.js
 
-// 1. ADD THIS NEW IMPORT
 const EfirReport = require('../models/EfirReport'); 
-// ... existing imports (User, Profile, ActiveJourney, PanicCall, etc.)
 
-// ... existing functions (exports.getDashboardStats, exports.getAllTourists, etc.)
-
-// --- ADD THIS NEW FUNCTION ---
 exports.getEfirReports = async (req, res) => {
     try {
-        // Fetch all E-FIR reports, sort by newest first (createdAt: -1)
+        
         const efirReports = await EfirReport.find()
             .sort({ createdAt: -1 })
             .populate('tourist', 'phone fullName')
@@ -100,4 +92,3 @@ exports.getEfirReports = async (req, res) => {
     }
 };
 
-// ... existing functions (exports.getPanicCalls, exports.updatePanicCallStatus, etc.)

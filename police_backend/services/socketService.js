@@ -8,7 +8,7 @@ const initializeSocket = (io) => {
         });
     });
 
-    // Try to set up change stream, but handle errors gracefully
+
     try {
         const changeStream = PanicCall.watch();
 
@@ -30,11 +30,11 @@ const initializeSocket = (io) => {
         console.error('❌ Failed to initialize change stream:', error.message);
         console.log('⚠️  Real-time updates disabled. Using polling fallback for production.');
         
-        // Fallback: Poll for new panic calls every 10 seconds
+       
         setInterval(async () => {
             try {
                 const recentPanics = await PanicCall.find({
-                    createdAt: { $gte: new Date(Date.now() - 15000) }, // Last 15 seconds
+                    createdAt: { $gte: new Date(Date.now() - 15000) }, 
                     status: 'Active'
                 }).sort({ createdAt: -1 }).limit(5);
                 
@@ -42,7 +42,7 @@ const initializeSocket = (io) => {
                     io.emit('new-panic-alert', panic);
                 });
             } catch (pollError) {
-                // Silent fail for polling
+                
             }
         }, 10000);
     }
