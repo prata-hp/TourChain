@@ -82,7 +82,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     
-    <!-- Mapbox CSS and JS -->
+    
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
     <style>
@@ -119,7 +119,7 @@
                 inset 0 1px 0 rgba(148,163,184,0.1);
         }
         
-        /* Enhanced Scrollbar */
+        
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { 
             background: rgba(148,163,184,0.1);
@@ -134,7 +134,7 @@
             background: linear-gradient(135deg, #0d9488, #0f766e);
         }
         
-        /* Advanced Animations */
+       
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px) scale(0.98); }
             to { opacity: 1; transform: translateY(0) scale(1); }
@@ -182,7 +182,7 @@
             100% { transform: translateX(100%); }
         }
         
-        /* Gradient Buttons */
+        
         .btn-primary {
             background: linear-gradient(135deg, #14b8a6 0%, #0d9488 50%, #0f766e 100%);
             box-shadow: 
@@ -206,7 +206,7 @@
                 inset 0 1px 0 rgba(255,255,255,0.2);
         }
         
-        /* Glass Morphism Cards */
+        
         .glass-card {
             background: rgba(255,255,255,0.8);
             backdrop-filter: blur(12px);
@@ -224,7 +224,7 @@
                 inset 0 1px 0 rgba(148,163,184,0.1);
         }
         
-        /* Panic Button Animation */
+        
         .panic-button-active {
             background: linear-gradient(135deg, #ef4444, #dc2626, #b91c1c);
             animation: panicPulse 1.5s infinite;
@@ -245,7 +245,7 @@
             }
         }
 
-        /* Map Marker Pulse Animation */
+        
         @keyframes pulse {
             0% { 
                 box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); 
@@ -258,7 +258,7 @@
             }
         }
 
-        /* Destination Marker Styles */
+        
         .destination-marker {
             transition: transform 0.2s ease;
         }
@@ -267,7 +267,7 @@
             transform: scale(1.1);
         }
         
-        /* Tab Button Styling */
+        
         .tab-button {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             background: rgba(148,163,184,0.1);
@@ -281,7 +281,7 @@
                 inset 0 1px 0 rgba(255,255,255,0.2);
         }
         
-        /* Mapbox Enhanced Styling */
+        
         #map {
             border-radius: 1rem;
             border: 2px solid rgba(255,255,255,0.3);
@@ -313,7 +313,7 @@
             border: 1px solid rgba(255,255,255,0.2);
         }
         
-        /* Loading Animation */
+        
         .loading-shimmer {
             position: relative;
             overflow: hidden;
@@ -330,7 +330,7 @@
             animation: shimmer 1.5s infinite;
         }
         
-        /* Hover Effects */
+        
         .hover-lift {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -340,7 +340,7 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.15);
         }
         
-        /* Gradient Text */
+        
         .gradient-text {
             background: linear-gradient(135deg, #14b8a6, #0d9488, #ec39ff);
             -webkit-background-clip: text;
@@ -353,7 +353,7 @@
     <div id="app-container" class="h-screen w-full mx-auto max-w-lg flex flex-col bg-background-light dark:bg-background-dark"></div>
     <div id="bottom-nav-container"></div>
     
-    <!-- Floating Panic Button - Always Visible -->
+    
     <div class="fixed top-6 right-6 z-40 pointer-events-none">
         <div class="max-w-lg mx-auto flex justify-end pointer-events-auto">
             <button
@@ -385,19 +385,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
 
     <script>
-    // -------------------------------------------------------------------------
-    // --- 1. CONFIGURATION & STATE MANAGEMENT
-    // -------------------------------------------------------------------------
-   const API_URL = "http://localhost:5000/api"; // Your real backend URL for local things
-        // const API_URL = "https://tourchain.onrender.com/api";   // for online
-    const ADMIN_APP_URL = "http://your-admin-app-url.com/login"; // Admin Redirect URL
     
-    // Mapbox configuration - using public demo token
-    mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw'; // Public Mapbox demo token
+   const API_URL = "http://localhost:5000/api"; 
+        
+    const ADMIN_APP_URL = "http://your-admin-app-url.com/login"; 
+    
+    
+    mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw'; 
     let map;
     let userLocationMarker;
     
-    // Debug function for console testing
+    
     window.debugMap = function() {
         console.log('=== MAP DEBUG INFO ===');
         console.log('mapboxgl available:', typeof mapboxgl !== 'undefined');
@@ -419,14 +417,12 @@
         isDarkMode: true,
         currentUser: null,
         activeJourney: null,
-        activeJourneyData: null, // Stores QR token and Tx Hash
+        activeJourneyData: null, 
         itineraryDrafts: [],
         profile: null,
     };
 
-    // -------------------------------------------------------------------------
-    // --- 2. MULTI-LANGUAGE SUPPORT
-    // -------------------------------------------------------------------------
+    
     const translations = {
         en: { appName: "TourChain", welcome: "Welcome", tagline: "Your Safety, Our Priority", selectLanguage: "Select Language", login: "Login", signup: "Sign Up", phone: "Phone Number", password: "Password", home: "Home", plan: "Plan", active: "Active Trip", account: "Account", panic: "PANIC", planNewTrip: "Plan New Trip", myTripDrafts: "My Trip Drafts", safetyScore: "Safety Score", startJourney: "Start Planned Journey", endJourney: "End Current Journey", activeJourney: "Active Journey", nextStop: "Next Stop", updateItinerary: "Update Itinerary", shareLocation: "Share Location", profileDetails: "Profile Details", familyMembers: "Family Members", addMember: "Add Member", emergencyContacts: "Emergency Contacts", settings: "Settings", voiceActivation: "Voice Activation", journeyActivation: "Journey Activation", selectDraft: "Select an Itinerary Draft", setDates: "Set Journey Dates", from: "From", to: "To", selectMembers: "Select Members", activateTrip: "Activate Trip", showQrCode: "Show Verification QR Code", qrCodeTitle: "Journey Activated!", qrCodeSubtitle: "Show this QR code to authorities for verification.", txHash: "Blockchain Transaction Hash", close: "Close", createNewTrip: "Create New Trip Plan", notifications: "Notifications", role: "I am a:", register: "Register", createAccount: "Create Account", fullName: "Full Name", email: "Email Address", confirmPassword: "Confirm Password", alreadyHaveAccount: "Already have an account?", signInHere: "Sign in here", createYourAccount: "Create Your Account", joinTourChain: "Join TourChain today", enterFullName: "Enter your full name", enterEmail: "Enter your email address", enterPassword: "Enter your password", reenterPassword: "Re-enter your password", registrationSuccess: "Registration successful! Welcome to TourChain", age: "Age", emergency: "Emergency Contact", enterEmergencyContact: "Emergency contact number", back: "Back", signInContinue: "Sign in to continue", sendOTP: "Send OTP", enterPhoneNumber: "Enter your phone number", agreeTerms: "By continuing, you agree to our Terms & Privacy Policy", phoneNumber: "Phone Number", createNewTrip: "Create New Trip", showQrCode: "Show QR Code", emergencyAlert: "EMERGENCY ALERT", emergencyActivated: "EMERGENCY ACTIVATED", callEmergency: "Call Emergency", callPolice: "Call Police", helpOnWay: "Help is on the way!", stayCalm: "Stay calm and stay safe", locationShared: "Your location has been shared with authorities" },
         hi: { appName: "टूरचेन", welcome: "स्वागत है", tagline: "आपकी सुरक्षा, हमारी प्राथमिकता", selectLanguage: "भाषा चुने", login: "लॉग इन करें", signup: "साइन अप करें", phone: "फोन नंबर", password: "पासवर्ड", home: "होम", plan: "योजना", active: "सक्रिय यात्रा", account: "अकाउंट", panic: "घबड़ाहट", planNewTrip: "नई यात्रा की योजना बनाएं", myTripDrafts: "मेरी यात्रा के ड्राफ्ट", safetyScore: "सुरक्षा स्कोर", startJourney: "नियोजित यात्रा शुरू करें", endJourney: "वर्तमान यात्रा समाप्त करें", activeJourney: "सक्रिय यात्रा", nextStop: "अगला पड़ाव", updateItinerary: "यात्रा कार्यक्रम अपडेट करें", shareLocation: "स्थान साझा करें", profileDetails: "प्रोफ़ाइल विवरण", familyMembers: "परिवार के सदस्य", addMember: "सदस्य जोड़ें", emergencyContacts: "आपातकालीन संपर्क", settings: "सेटिंग्स", voiceActivation: "आवाज सक्रियण", journeyActivation: "यात्रा सक्रियण", selectDraft: "एक यात्रा कार्यक्रम ड्राफ्ट चुनें", setDates: "यात्रा की तिथियां निर्धारित करें", from: "से", to: "तक", selectMembers: "सदस्य चुनें", activateTrip: "यात्रा सक्रिय करें", showQrCode: "सत्यापन QR कोड दिखाएं", qrCodeTitle: "यात्रा सक्रिय!", qrCodeSubtitle: "सत्यापन के लिए यह QR कोड अधिकारियों को दिखाएं।", txHash: "ब्लॉकचेन लेनदेन हैश", close: "बंद करे", createNewTrip: "नई यात्रा योजना बनाएं", notifications: "सूचनाएं", role: "मैं हूँ:" },
@@ -435,37 +431,35 @@
         mni: { appName: "ꯇꯨꯔꯆꯦꯟ", welcome: "ꯇꯔꯥꯝꯅꯥ ꯑꯣꯏꯔꯕꯤꯌꯨ", tagline: "ꯅꯍꯥꯛꯀꯤ ꯁꯦꯐꯇꯤ, ꯑꯩꯈꯣꯌꯒꯤ ꯄ꯭ꯔꯥꯏꯑꯣꯔꯤꯇꯤ", selectLanguage: "ꯂꯣꯟ ꯈꯜꯂꯨ", login: "ꯂꯣꯒ ꯟ", signup: "ꯁꯥꯏꯟ ꯑꯞ", phone: "ꯐꯣꯟ ꯅꯝꯕꯔ", password: "ꯄꯥꯁꯋꯥꯔᱰ", home: "ꯍꯣꯝ", plan: "ꯄ꯭ꯂꯥꯟ", active: "ꯑꯦꯛꯇꯤꯚ ꯇ꯭ꯔꯤꯞ", account: "ꯑꯦꯀꯥꯎꯟꯇ", panic: "ꯄꯦꯅꯤꯛ", planNewTrip: "ꯑꯅꯧꯕꯥ ꯇ꯭ꯔꯤꯞ ꯄ꯭ꯂꯥꯟ ꯇꯧꯕꯤꯌꯨ", myTripDrafts: "ꯑꯩꯒꯤ ꯇ꯭ꯔꯤꯞ ꯗ꯭ꯔꯥꯐꯇꯁꯤꯡ", safetyScore: "ꯁꯦꯐꯇꯤ ꯁ꯭ꯀꯣꯔ", startJourney: "ꯄ꯭ꯂꯥꯟ ꯇꯧꯔꯕꯥ ꯌꯥꯊꯪ ꯍꯧꯕꯤꯌꯨ", endJourney: "ꯑꯦꯛꯇꯤꯚ ꯖꯔꯅꯤ ꯂꯣꯏꯁꯤꯟꯅꯨ", activeJourney: "ꯑꯦꯛꯇꯤꯚ ꯖꯔꯅꯤ", nextStop: "ꯃꯊꯪꯒꯤ ꯂꯦꯞꯐꯝ", updateItinerary: "ꯏꯇꯤꯅꯦꯔꯤ ꯑꯄꯗꯦꯠ ꯇꯧꯕꯤꯌꯨ", shareLocation: "ꯂꯣꯀꯦꯁꯟ ꯁꯦꯌꯔ ꯇꯧꯕꯤꯌꯨ", profileDetails: "ꯄ꯭ꯔꯣꯐꯥꯏꯜ ꯗꯤꯇꯦꯜꯁ", familyMembers: "ꯏꯃꯨꯡ ꯃꯅꯨꯡ", addMember: "ꯃꯤ ꯍꯥꯞꯆꯤꯜꯂꯨ", emergencyContacts: "ꯏꯃꯔꯖꯦꯟꯁꯤ ꯀꯟꯇꯦꯛꯇꯁꯤꯡ", settings: "ꯁꯦꯇꯤꯡꯁ", voiceActivation: "ꯚꯣꯏꯁ ꯑꯦꯛꯇꯤꯚꯦꯁꯟ", journeyActivation: "ꯖꯔꯅꯤ ꯑꯦꯛꯇꯤꯚꯦꯁꯟ", selectDraft: "ꯏꯇꯤꯅꯦꯔꯤ ꯗ꯭ꯔꯥꯐꯇ ꯑꯃꯥ ꯈꯜꯂꯨ", setDates: "ꯖꯔꯅꯤꯒꯤ ꯗꯦꯠꯁꯤꯡ ꯁꯦꯠ ꯇꯧꯕꯤꯌꯨ", from: "ꯗꯒꯤ", to: "ꯐꯥꯎꯕꯥ", selectMembers: "ꯃꯦꯝꯕꯔꯁꯤꯡ ꯈꯜꯂꯨ", activateTrip: "ꯇ꯭ꯔꯤꯞ ꯑꯦꯛꯇꯤꯚꯦꯠ ꯇꯧꯕꯤꯌꯨ", showQrCode: "ꯁꯦꯐꯇꯤ QR ꯀꯣꯗ ꯎꯠꯄꯤꯌꯨ", qrCodeTitle: "ꯖꯔꯅꯤ ꯑꯦꯛꯇꯤꯚꯦꯠ ꯇꯧꯈ꯭ꯔꯦ!", qrCodeSubtitle: "ꯚꯦꯔꯤꯐꯤꯀꯦꯁꯟꯒꯤꯗꯃꯛ ꯑꯣꯊꯣꯔꯤꯇꯤꯁꯤꯡꯗꯥ QR ꯀꯣꯗ ꯑꯁꯤ ꯎꯠꯄꯤꯌꯨ", txHash: "ꯕ꯭ꯂꯣꯛꯆꯦꯟ ꯇ꯭ꯔꯥꯟꯖꯦꯛꯁꯟ ꯍꯦꯁ", close: "ꯊꯤꯡꯖꯤꯜꯂꯨ", createNewTrip: "ꯑꯅꯧꯕꯥ ꯇ꯭ꯔꯤꯞ ꯄ꯭ꯂꯥꯟ ꯁꯦꯃꯃꯨ", notifications: "ꯑꯔꯣꯟꯕꯥ", role: "ꯑꯩ ꯑꯁꯤ:" },
     };
 
-    // -------------------------------------------------------------------------
-    // --- 3. API & UTILITY FUNCTIONS
-    // -------------------------------------------------------------------------
+    
     const appContainer = document.getElementById('app-container');
     const navContainer = document.getElementById('bottom-nav-container');
     const getT = () => translations[state.language] || translations['en'];
 
-    // Safety score calculation function
+    
     async function calculateSafetyScore(itinerary) {
         try {
-            // Create a simulated tourist data based on itinerary
+            
             const destinations = itinerary.destinations || [];
             const currentHour = new Date().getHours();
             
-            // Calculate average safety score based on destinations
+            
             let totalScore = 0;
             let validScores = 0;
 
             for (const destination of destinations) {
                 const destinationName = destination.city.toLowerCase();
                 
-                // Simulate tourist data for each destination
+                
                 const touristData = {
                     current_area: destinationName,
-                    deviation_km: 0, // No deviation for planned routes
-                    inactivity_minutes: 0, // No inactivity for planned routes
+                    deviation_km: 0, 
+                    inactivity_minutes: 0, 
                     current_hour: currentHour
                 };
 
                 try {
-                    // Try local AI service first, then fallback to online
+                    
                     const aiUrls = [
                         'http://localhost:8000/calculate-score/',
                         'https://tourchain-ai.onrender.com/calculate-score/'
@@ -483,7 +477,7 @@
                             });
                             if (response.ok) break;
                         } catch (e) {
-                            continue; // Try next URL
+                            continue; 
                         }
                     }
 
@@ -496,27 +490,27 @@
                     }
                 } catch (error) {
                     console.warn(`Could not calculate safety score for ${destinationName}:`, error);
-                    // Use a default score based on destination type
+                    
                     const defaultScore = getDefaultSafetyScore(destinationName);
                     totalScore += defaultScore;
                     validScores++;
                 }
             }
 
-            // If no destinations or scores, return a default score
+            
             if (validScores === 0) {
-                return 8.0; // Default safe score
+                return 8.0; 
             }
 
-            // Return average score rounded to 1 decimal place
+            
             return Math.round((totalScore / validScores) * 10) / 10;
         } catch (error) {
             console.error('Error calculating safety score:', error);
-            return 8.0; // Default safe score on error
+            return 8.0; 
         }
     }
 
-    // Helper function to get default safety scores based on destination name
+   
     function getDefaultSafetyScore(destinationName) {
         const safePlaces = ['park', 'museum', 'temple', 'monument', 'garden', 'mall', 'restaurant'];
         const moderatePlaces = ['market', 'station', 'airport', 'bus', 'train'];
@@ -531,11 +525,11 @@
         } else if (riskyPlaces.some(place => name.includes(place))) {
             return 6.0;
         } else {
-            return 8.0; // Default for unknown places
+            return 8.0; 
         }
     }
 
-    // Function to update individual draft safety score in the UI
+    
     function updateDraftSafetyScore(draftId, score) {
         const scoreElement = document.querySelector(`[data-draft-id="${draftId}"] .safety-score`);
         if (scoreElement) {
@@ -546,11 +540,9 @@
         }
     }
 
-    // -------------------------------------------------------------------------
-    // --- MAP FUNCTIONS
-    // -------------------------------------------------------------------------
+   
     
-    // Initialize Mapbox map
+    
     function initializeMap() {
         if (!document.getElementById('map')) {
             console.log('Map container not found');
@@ -568,17 +560,17 @@
             map = new mapboxgl.Map({
                 container: 'map',
                 style: 'mapbox://styles/mapbox/streets-v12',
-                center: [88.3639, 22.5726], // Kolkata coordinates as default
+                center: [88.3639, 22.5726], 
                 zoom: 12,
                 attributionControl: false
             });
             
             console.log('Mapbox map created successfully');
 
-            // Add navigation controls
+          
             map.addControl(new mapboxgl.NavigationControl(), 'top-right');
             
-            // Add geolocate control
+           
             const geolocate = new mapboxgl.GeolocateControl({
                 positionOptions: {
                     enableHighAccuracy: true
@@ -589,18 +581,18 @@
             
             map.addControl(geolocate, 'top-right');
             
-            // Get user location on map load
+            
             map.on('load', function() {
                 getUserLocation();
-                addEmergencyServices(); // Add emergency services markers
+                addEmergencyServices(); 
                 
-                // Auto-trigger geolocation after a delay
+                
                 setTimeout(() => {
                     geolocate.trigger();
                 }, 1000);
             });
             
-            // Handle map errors
+            
             map.on('error', function(e) {
                 console.warn('Map error:', e);
                 showMapFallback();
@@ -612,7 +604,7 @@
         }
     }
     
-    // Simple map initialization for testing
+    
     window.testMap = function() {
         const mapContainer = document.getElementById('map');
         if (!mapContainer) {
@@ -627,8 +619,8 @@
             
             map = new mapboxgl.Map({
                 container: 'map',
-                style: 'mapbox://styles/mapbox/streets-v11', // Using v11 for better compatibility
-                center: [-74.5, 40], // New York coordinates for testing
+                style: 'mapbox://styles/mapbox/streets-v11', 
+                center: [-74.5, 40], 
                 zoom: 9
             });
             
@@ -638,7 +630,7 @@
         }
     }
     
-    // Show fallback when map fails to load
+    
     function showMapFallback() {
         const mapContainer = document.getElementById('map');
         if (mapContainer) {
@@ -658,7 +650,7 @@
         }
     }
 
-    // Get user's current location
+    
     function getUserLocation() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
@@ -666,14 +658,14 @@
                     const lat = position.coords.latitude;
                     const lng = position.coords.longitude;
                     
-                    // Center map on user location
+                   
                     if (map) {
                         map.flyTo({
                             center: [lng, lat],
                             zoom: 15
                         });
                         
-                        // Add user location marker
+                        
                         if (userLocationMarker) {
                             userLocationMarker.remove();
                         }
@@ -688,7 +680,7 @@
                 },
                 function(error) {
                     console.warn('Geolocation error:', error);
-                    // Fallback to Kolkata if geolocation fails
+                    
                     if (map) {
                         map.flyTo({
                             center: [88.3639, 22.5726],
@@ -700,16 +692,14 @@
         }
     }
 
-    // Add journey route to map
+    
     function addJourneyRoute(journey) {
         if (!map || !journey) return;
         
-        // This would integrate with your journey tracking system
-        // For now, we'll add markers for planned destinations
+        
         if (journey.itinerary && journey.itinerary.destinations) {
             journey.itinerary.destinations.forEach((destination, index) => {
-                // You would need to geocode the destination names to coordinates
-                // For demo purposes, adding markers around Kolkata area
+               
                 const lng = 88.3639 + (Math.random() - 0.5) * 0.1;
                 const lat = 22.5726 + (Math.random() - 0.5) * 0.1;
                 
@@ -723,21 +713,20 @@
         }
     }
 
-    // Update map for active journey
+    
     function updateMapForActiveJourney() {
         if (!map || !state.activeJourney) return;
         
         addJourneyRoute(state.activeJourney);
         
-        // Add any additional active journey features
-        // Like route tracking, geofencing alerts, etc.
+        
     }
     
-    // Add emergency services markers
+    
     function addEmergencyServices() {
         if (!map) return;
         
-        // Sample emergency services near Kolkata
+        
         const emergencyServices = [
             { name: 'Police Station', type: 'police', coords: [88.3639, 22.5726], phone: '100' },
             { name: 'Hospital', type: 'hospital', coords: [88.3700, 22.5780], phone: '102' },
@@ -787,7 +776,7 @@
         }
 
         const text = await res.text();
-        return text ? JSON.parse(text) : {}; // Safely handles empty responses
+        return text ? JSON.parse(text) : {}; 
 
     } catch (err) {
         console.error('API Request Failed:', err);
@@ -822,10 +811,7 @@
         modal.classList.add('hidden');
     }
 
-    // -------------------------------------------------------------------------
-    // --- 4. PAGE RENDERING FUNCTIONS (No changes in this section)
-    // -------------------------------------------------------------------------
-
+    
     function renderBottomNav() {
         if (!state.currentUser) {
             navContainer.innerHTML = '';
@@ -1045,7 +1031,7 @@
         lucide.createIcons();
     }
 
-    // In index.html
+    
 
 function renderAuthPage() {
     const t = getT();
@@ -1333,7 +1319,7 @@ function renderAuthPage() {
             </div>
         `;
         
-        // Add form submission event listener
+        
         document.getElementById('registration-form').addEventListener('submit', handleRegistration);
         lucide.createIcons();
     }
@@ -1505,10 +1491,10 @@ function renderAuthPage() {
         `;
         lucide.createIcons();
         
-        // Initialize map immediately and also with a backup
+        
         initializeMap();
         
-        // Backup initialization in case first one fails
+        
         setTimeout(() => {
             if (!map) {
                 console.log('Retrying map initialization...');
@@ -1522,15 +1508,15 @@ function renderAuthPage() {
 
     
 
-// In index.html
+
 
 function renderPlanActivationPage() {
     const t = getT();
     const members = state.profile?.familyMembers || [];
 
-    // Step 1: Check if there are any real itinerary drafts loaded from the API.
+    
     if (!state.itineraryDrafts || state.itineraryDrafts.length === 0) {
-        // If no drafts exist, show a helpful message and stop.
+        
         appContainer.innerHTML = `
             <div class="flex flex-col items-center justify-center h-full p-8 text-center">
                 <i data-lucide="clipboard-list" class="w-12 h-12 text-gray-400 mb-4"></i>
@@ -1540,10 +1526,10 @@ function renderPlanActivationPage() {
             </div>
         `;
         lucide.createIcons();
-        return; // Exit the function here.
+        return; 
     }
 
-    // Step 2: If drafts exist, render the activation page.
+    
     appContainer.innerHTML = `
         <div class="flex-grow p-4 overflow-y-auto pb-24">
             <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">${t.journeyActivation}</h2>
@@ -1602,7 +1588,7 @@ function renderPlanActivationPage() {
     lucide.createIcons();
 }
 
-// In your index.html
+
 
 function renderDestinationBlock(id) {
     return `
@@ -1640,7 +1626,7 @@ function addPlaceToUI(destinationId) {
     const placesContainer = document.querySelector(`#destination-${destinationId} .places-container`);
     const newPlaceHTML = addPlaceBlock(destinationId, false);
     placesContainer.insertAdjacentHTML('beforeend', newPlaceHTML);
-    lucide.createIcons(); // Re-render icons to include the new one
+    lucide.createIcons(); 
 }
 
 
@@ -1650,7 +1636,7 @@ function addPlaceToUI(destinationId) {
 
     function renderNewItineraryPlanPage() {
     const t = getT();
-    destinationCount = 1; // Reset count
+    destinationCount = 1; 
     appContainer.innerHTML = `
         <div class="flex-grow p-4 overflow-y-auto pb-20">
             <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">${t.createNewTrip}</h2>
@@ -1688,26 +1674,26 @@ function addPlaceToUI(destinationId) {
 
     async function renderPlanPage() {
         const t = getT();
-        // Fetch drafts every time the page is shown to ensure it's up to date
+       
         try {
             const draftsData = await apiRequest('/itineraries');
             state.itineraryDrafts = draftsData.drafts || [];
         } catch (err) {
             console.error("Could not fetch itineraries from API, using localStorage fallback:", err);
-            // Use localStorage as fallback
+            
             const localDrafts = JSON.parse(localStorage.getItem('tourchain-itineraries') || '[]');
             state.itineraryDrafts = localDrafts;
         }
 
-        // Calculate safety scores for drafts that don't have them
+        
         for (let draft of state.itineraryDrafts) {
             if (!draft.safetyScore) {
-                // Set loading state initially
+                
                 draft.safetyScore = 'loading';
-                // Calculate asynchronously and update later
+                
                 calculateSafetyScore(draft).then(score => {
                     draft.safetyScore = score;
-                    // Update just this draft's display
+                    
                     updateDraftSafetyScore(draft._id, score);
                 });
             }
@@ -1930,10 +1916,10 @@ function addPlaceToUI(destinationId) {
         
         lucide.createIcons();
         
-        // Initialize demo map with loading state
+        
         setTimeout(() => {
             initializeMap();
-            // Hide loading overlay once map loads
+            
             setTimeout(() => {
                 const loading = document.getElementById('map-loading');
                 if (loading) {
@@ -2092,18 +2078,18 @@ function addPlaceToUI(destinationId) {
         `;
         lucide.createIcons();
         
-        // Initialize the journey map after the DOM is ready
+       
         setTimeout(() => initializeJourneyMap(), 100);
     }
 
     
 
-    // In index.html, replace the entire function
+   
 
 async function renderAccountPage() {
     const t = getT();
     
-    // Dynamically create the list of family members with a delete button for each
+   
     const familyMembersHTML = state.profile?.familyMembers.map(m => `
         <div class="flex justify-between items-center bg-gray-50 dark:bg-gray-700 p-2 rounded-lg">
             <p>${m.fullName} (Age: ${m.age})</p>
@@ -2284,21 +2270,21 @@ async function renderAccountPage() {
 
     async function renderEditItineraryPage(itineraryId) {
     try {
-        // 1. Fetch the specific itinerary data from the backend
+        
         const itineraryToEdit = await apiRequest(`/itineraries/${itineraryId}`);
 
-        // 2. Render the "Create New Trip Plan" page
+        
         renderNewItineraryPlanPage();
 
-        // 3. Wait a tiny moment for the HTML to be in the DOM
+        
         await new Promise(resolve => setTimeout(resolve, 0));
 
-        // 4. Populate the form with the fetched data
+        
         document.getElementById('trip-name').value = itineraryToEdit.name;
         document.getElementById('starting-city').value = itineraryToEdit.startingCity;
-        // ... you would also need to loop through destinations and places to create and fill those inputs
+        
 
-        // 5. Change the "Save" button to an "Update" button
+        
         const saveButton = document.querySelector('#itinerary-form button[onclick^="handleSave"]');
         saveButton.innerText = 'Update Itinerary Draft';
         saveButton.onclick = () => handleUpdateItinerary(itineraryId);
@@ -2310,7 +2296,7 @@ async function renderAccountPage() {
 
   async function handleUpdateItinerary(itineraryId) {
     try {
-        // This logic is now complete and correctly gathers all data from the form
+        
         const tripName = document.getElementById('trip-name').value;
         const startingCity = document.getElementById('starting-city').value;
         
@@ -2322,10 +2308,9 @@ async function renderAccountPage() {
             const places = Array.from(placeElements).map(placeEl => ({
                 name: placeEl.querySelector('.place-name-input').value,
                 notes: placeEl.querySelector('.place-notes-input').value
-            })).filter(p => p.name); // Only include places that have a name
-
+            })).filter(p => p.name); 
             return { city, places };
-        }).filter(d => d.city); // Only include destinations that have a city name
+        }).filter(d => d.city); 
 
         const updatedDraftData = {
             name: tripName,
@@ -2333,11 +2318,11 @@ async function renderAccountPage() {
             destinations
         };
 
-        // It sends a PUT request to the specific itinerary's URL
+        
         await apiRequest(`/itineraries/${itineraryId}`, 'PUT', updatedDraftData);
         
         alert("Itinerary updated successfully!");
-        showPage('plan'); // Go back to the list of plans
+        showPage('plan'); 
 
     } catch (err) {
         alert("Failed to update itinerary. Please check the console for details.");
@@ -2345,9 +2330,7 @@ async function renderAccountPage() {
     }
 }
 
-    // -------------------------------------------------------------------------
-    // --- 5. EVENT HANDLERS & ROUTING
-    // -------------------------------------------------------------------------
+    
 
     function setLanguage(langCode) {
         state.language = langCode;
@@ -2355,7 +2338,7 @@ async function renderAccountPage() {
         showPage('auth');
     }
 
-    // In your index.html
+    
 
 
  async function handleAddFamilyMember() {
@@ -2372,17 +2355,16 @@ async function renderAccountPage() {
 
     try {
         const newMemberData = { fullName, age: parseInt(age) };
-        // Step 1: Add the new member
+        
         await apiRequest('/profile/members', 'POST', newMemberData);
         
-        // Step 2: Refresh the profile data from the server
+        
         const updatedProfile = await apiRequest('/profile/me');
 
-        // --- THIS IS THE FIX ---
-        // The API returns the profile object directly, so we assign it directly.
+        
         state.profile = updatedProfile;
         
-        // Step 3: Re-render the account page with the updated list
+        
         renderAccountPage();
         
     } catch (err) {
@@ -2396,10 +2378,10 @@ async function handleRemoveFamilyMember(memberId) {
         try {
             await apiRequest(`/profile/members/${memberId}`, 'DELETE');
             
-            // Optimistically remove the member from the local state
+            
             state.profile.familyMembers = state.profile.familyMembers.filter(m => m._id !== memberId);
             
-            // Re-render the page to reflect the change
+            
             renderAccountPage();
 
         } catch (err) {
@@ -2409,27 +2391,24 @@ async function handleRemoveFamilyMember(memberId) {
     }
 }    
 
-// In index.html
+
 
 async function initializeAppState() {
     try {
-        // Step 1: Fetch all CRITICAL data together. 
-        // If any of these fail, the user cannot proceed and must be logged out.
+        
         const [profileData, draftsData] = await Promise.all([
             apiRequest('/profile/me'),
             apiRequest('/itineraries')
         ]);
 
-        // Assign the successfully fetched data to the state
+        
         state.profile = profileData;
         state.itineraryDrafts = draftsData.drafts || [];
         
-        // Step 2: Fetch NON-CRITICAL data in a separate try...catch.
-        // It's normal for a user to not have an active journey, so a failure
-        // here should not log them out.
+        
         try {
             const journeyData = await apiRequest('/journeys/active');
-            // The backend now correctly returns { journey: null } if none is active.
+           
             if (journeyData && journeyData.journey) {
                 state.activeJourney = journeyData.journey;
                 state.activeJourneyData = {
@@ -2437,34 +2416,32 @@ async function initializeAppState() {
                     txHash: journeyData.journey.blockchainTxHashes.start
                 };
             } else {
-                // This is the normal case for a user without an active trip.
+                
                 state.activeJourney = null;
             }
         } catch (journeyError) {
-            // This will only catch server errors (500), not the "not found" case.
+            
             console.log("Could not check for active journey:", journeyError);
             state.activeJourney = null;
         }
         
-        // Step 3: If all critical data was fetched, show the home page.
+        
         showPage('home');
 
     } catch (error) {
-        // Step 4: This CATCH block will run if the critical Promise.all fails.
-        // This is our guard against invalid/expired tokens (401 errors).
+        
         console.error("Authentication failed or critical error:", error.message);
         
-        // Clear the bad session data
+        
         localStorage.removeItem('tourchain-user');
         state.currentUser = null;
         state.profile = null;
         
-        // Send the user back to the login page
+       
         showPage('auth');
     }
 }
 
-    // Password visibility toggle function
     function togglePassword(inputId, button) {
         const input = document.getElementById(inputId);
         const icon = button.querySelector('i');
@@ -2479,7 +2456,7 @@ async function initializeAppState() {
         lucide.createIcons();
     }
 
-    // Registration handler function
+    
     async function handleActivateTrip() {
     const draftId = document.getElementById('draft-select').value;
     const startDate = document.getElementById('start-date').value;
@@ -2490,12 +2467,12 @@ async function initializeAppState() {
         return;
     }
 
-    // Get the list of currently checked family members
+    
     const selectedMemberElements = document.querySelectorAll('.member-checkbox:checked');
     const memberIds = Array.from(selectedMemberElements).map(el => el.getAttribute('data-member-id'));
 
     try {
-        // Create the request object with the correct property names
+        
         const journeyConfig = {
             draftId: draftId,
             startDate,
@@ -2503,10 +2480,10 @@ async function initializeAppState() {
             memberIds: memberIds
         };
         
-        // Call the API
+        
         const journeyData = await apiRequest('/journeys/start', 'POST', journeyConfig);
 
-        // Store the active journey data in the state
+        
         state.activeJourney = journeyData;
         state.activeJourneyData = {
             qrCodeToken: journeyData.qrCodeToken,
@@ -2524,7 +2501,7 @@ async function initializeAppState() {
     }
 }
 
-    // Journey Map Functions
+    
     let journeyMap = null;
     let journeyMarkers = [];
     let journeyUserLocationMarker = null;
@@ -2536,15 +2513,15 @@ async function initializeAppState() {
             const mapContainer = document.getElementById('journey-map');
             if (!mapContainer) return;
 
-            // Initialize map
+            
             journeyMap = new mapboxgl.Map({
                 container: 'journey-map',
                 style: 'mapbox://styles/mapbox/light-v11',
-                center: [77.5946, 12.9716], // Default to Bangalore
+                center: [77.5946, 12.9716], 
                 zoom: 6
             });
 
-            // Add navigation controls
+            
             journeyMap.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
             journeyMap.on('load', () => {
@@ -2568,7 +2545,7 @@ async function initializeAppState() {
             if (coords) {
                 coordinates.push(coords);
 
-                // Create marker for each destination
+                
                 const el = document.createElement('div');
                 el.className = 'destination-marker';
                 el.style.cssText = `
@@ -2603,7 +2580,7 @@ async function initializeAppState() {
             }
         });
 
-        // Fit map to show all destinations
+        
         if (coordinates.length > 0) {
             const bounds = new mapboxgl.LngLatBounds();
             coordinates.forEach(coord => bounds.extend(coord));
@@ -2612,7 +2589,7 @@ async function initializeAppState() {
     }
 
     function getCityCoordinates(cityName) {
-        // Mapping of common Indian cities to coordinates
+        
         const cityCoords = {
             'delhi': [77.1025, 28.7041],
             'mumbai': [72.8777, 19.0760],
@@ -2646,7 +2623,7 @@ async function initializeAppState() {
                 (position) => {
                     const coords = [position.coords.longitude, position.coords.latitude];
                     
-                    // Add user location marker
+                    
                     const userEl = document.createElement('div');
                     userEl.style.cssText = `
                         width: 20px; height: 20px;
@@ -2677,7 +2654,7 @@ async function initializeAppState() {
                     const coords = [position.coords.longitude, position.coords.latitude];
                     journeyMap.flyTo({ center: coords, zoom: 14 });
                     
-                    // Update user marker position if exists
+                    
                     if (journeyUserLocationMarker) {
                         journeyUserLocationMarker.setLngLat(coords);
                     }
@@ -2689,10 +2666,10 @@ async function initializeAppState() {
         }
     }
     
-// In index.html
+
 
 async function handleEndJourney() {
-    // This check is a good addition to prevent errors if the button is visible somehow.
+    
     if (!state.activeJourney) {
         alert('You do not have an active journey to end.');
         return;
@@ -2700,15 +2677,14 @@ async function handleEndJourney() {
 
     if (confirm("Are you sure you want to end the current journey?")) {
         try {
-            // --- THIS IS THE FIX ---
-            // 1. Capture the response from the API call in a variable.
+            
             const responseData = await apiRequest(`/journeys/${state.activeJourney._id}/end`, 'POST');
             
-            // 2. Clear the active journey from the state.
+            
             state.activeJourney = null;
             state.activeJourneyData = null;
             
-            // Clean up map (your existing code for this is correct)
+            
             if (journeyMap) {
                 journeyMap.remove();
                 journeyMap = null;
@@ -2716,7 +2692,7 @@ async function handleEndJourney() {
             journeyMarkers = [];
             journeyUserLocationMarker = null;
             
-            // 3. Use the data from the response to show a more informative alert.
+            
             const endTxHash = responseData.journey.blockchainTxHashes.end;
             alert(`Journey successfully ended!\nEnd Transaction Hash: ${endTxHash}`);
 
@@ -2732,7 +2708,7 @@ async function handleEndJourney() {
     async function handlePanic() {
         const t = getT();
         
-        // Show confirmation dialog with double-tap protection
+        
         if (confirm("🚨 EMERGENCY ALERT\n\nThis will immediately:\n• Send your location to authorities\n• Alert emergency contacts\n• Notify police in your area\n\nPress OK only if you're in actual danger!")) {
             
             const panicBtn = document.getElementById('panic-button');
@@ -2743,7 +2719,7 @@ async function handleEndJourney() {
             }
             
             try {
-                // Try to get current location
+                
                 let location = null;
                 if (navigator.geolocation) {
                     try {
@@ -2775,7 +2751,7 @@ async function handleEndJourney() {
                     }
                 };
                 
-                // Try to send to backend API first
+                
                 try {
                     if (state.activeJourney) {
                         await apiRequest(`/journeys/${state.activeJourney._id}/panic`, 'POST', panicData);
@@ -2786,14 +2762,14 @@ async function handleEndJourney() {
                     console.log('API request failed, using fallback methods:', apiError);
                 }
                 
-                // Always execute emergency actions regardless of API success
+                
                 await executeEmergencyActions(panicData);
                 
                 alert("🚨 EMERGENCY ALERT SENT!\n\n✅ Authorities have been notified\n✅ Emergency contacts alerted\n✅ Location shared\n\nHelp is on the way! Stay safe!");
                 
             } catch (err) {
                 console.error('Panic handling error:', err);
-                // Even if there's an error, try basic emergency actions
+               
                 await executeEmergencyActions({
                     timestamp: new Date().toISOString(),
                     userName: state.profile?.fullName || 'Unknown User',
@@ -2802,7 +2778,7 @@ async function handleEndJourney() {
                 alert("Emergency alert sent! Basic emergency protocols activated. If you're still in danger, call 112 directly.");
             }
             
-            // Restore button
+           
             if (panicBtn) {
                 panicBtn.disabled = false;
                 panicBtn.innerHTML = '<i data-lucide="shield-alert" class="w-7 h-7"></i>';
@@ -2812,25 +2788,25 @@ async function handleEndJourney() {
     }
     
     async function executeEmergencyActions(panicData) {
-        // Store panic event locally for recovery
+        
         const panicEvents = JSON.parse(localStorage.getItem('tourchain-panic-events') || '[]');
         panicEvents.push(panicData);
         localStorage.setItem('tourchain-panic-events', JSON.stringify(panicEvents));
         
-        // Try to make emergency calls (will open dialer on mobile)
+       
         try {
-            // Show emergency contacts modal
+            
             showEmergencyContactsModal(panicData);
         } catch (err) {
             console.log('Emergency contacts display failed:', err);
         }
         
-        // Vibrate device if supported (mobile)
+        
         if (navigator.vibrate) {
             navigator.vibrate([200, 100, 200, 100, 200]);
         }
         
-        // Flash screen if possible
+        
         try {
             document.body.style.backgroundColor = '#ef4444';
             setTimeout(() => {
@@ -2841,7 +2817,7 @@ async function handleEndJourney() {
         }
     }
     
-    // Safety Check-in Function
+   
     async function handleCheckIn() {
         if (!state.activeJourney) {
             alert('No active journey found.');
@@ -2859,7 +2835,7 @@ async function handleEndJourney() {
                         await apiRequest('/journeys/check-in', 'POST', locationData);
                         alert('✅ Safety check-in successful! Your location has been updated.');
                         
-                        // Update map if available
+                        
                         if (journeyMap && journeyUserLocationMarker) {
                             const coords = [position.coords.longitude, position.coords.latitude];
                             journeyUserLocationMarker.setLngLat(coords);
@@ -2880,8 +2856,7 @@ async function handleEndJourney() {
         }
     }
 
-    // Authentication Functions
-    // In index.html
+   
 async function handleLogin() {
     const phone = document.getElementById('login-phone').value;
     const password = document.getElementById('login-password').value;
@@ -2895,26 +2870,25 @@ async function handleLogin() {
     const originalText = loginBtn.innerHTML;
 
     try {
-        // Show loading state
+        
         loginBtn.innerHTML = '<div class="flex items-center justify-center space-x-2"><div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div><span>Signing in...</span></div>';
         loginBtn.disabled = true;
         
-        // 1. Get the auth data from the login endpoint.
+        
         const authData = await apiRequest('/auth/login', 'POST', { phone, password });
         
-        // 2. The response IS the user object with a token. Set it directly.
+        
         state.currentUser = authData;
         localStorage.setItem('tourchain-user', JSON.stringify(authData));
         
-        // 3. NOW, initialize the rest of the app. This will use the new token
-        //    to fetch the profile, itineraries, etc., and then show the home page.
+        
         await initializeAppState();
         
     } catch (error) {
         console.error('Login error:', error);
         alert('❌ Login failed: ' + (error.message || 'Invalid credentials'));
         
-        // Restore button on failure
+        
         loginBtn.innerHTML = originalText;
         loginBtn.disabled = false;
         lucide.createIcons();
@@ -2924,7 +2898,7 @@ async function handleLogin() {
     async function handleRegistration(event) {
         event.preventDefault();
         
-        // Get form data using getElementById
+        
         const fullName = document.getElementById('reg-fullname').value;
         const phone = document.getElementById('reg-phone').value;
         const email = document.getElementById('reg-email').value;
@@ -2933,7 +2907,7 @@ async function handleLogin() {
         const confirmPassword = document.getElementById('reg-confirm-password').value;
         const emergencyContact = document.getElementById('reg-emergency').value;
         
-        // Validate form data
+        
         if (!fullName || !phone || !password || !confirmPassword) {
             alert('Please fill in all required fields.');
             return;
@@ -2950,7 +2924,7 @@ async function handleLogin() {
         }
         
         try {
-            // Show loading state
+           
             const registerBtn = document.getElementById('register-btn-content');
             const loadingDiv = document.getElementById('register-loading');
             registerBtn.classList.add('hidden');
@@ -2970,7 +2944,7 @@ async function handleLogin() {
             const response = await apiRequest('/auth/register', 'POST', registrationData);
             console.log('Registration response:', response);
             
-            // Store user data and token
+            
             state.currentUser = response.user;
             state.profile = response.profile;
             localStorage.setItem('tourchain-user', JSON.stringify(response.user));
@@ -2979,7 +2953,7 @@ async function handleLogin() {
             const t = getT();
             alert(`🎉 ${t.registrationSuccess}`);
             
-            // Redirect to home page
+           
             showPage('home');
             
         } catch (error) {
@@ -2988,7 +2962,7 @@ async function handleLogin() {
             console.error('Error name:', error.name);
             alert('❌ Registration failed: ' + (error.message || 'Please try again'));
             
-            // Reset button state
+            
             const registerBtn = document.getElementById('register-btn-content');
             const loadingDiv = document.getElementById('register-loading');
             registerBtn.classList.remove('hidden');
@@ -2996,28 +2970,28 @@ async function handleLogin() {
         }
     }
 
-    // Logout Functions
+    
     async function handleLogout() {
         if (confirm("🔐 Are you sure you want to log out?\n\nThis will end your current session and return you to the login screen.")) {
             try {
-                // Try to call logout API if available
+               
                 try {
                     await apiRequest('/auth/logout', 'POST', {});
                 } catch (apiError) {
                     console.log('Logout API not available, proceeding with local logout');
                 }
                 
-                // Clear all user data
+                
                 localStorage.removeItem('tourchain-user');
                 localStorage.removeItem('tourchain-token');
                 
-                // Clear sensitive data but keep cached drafts for demo purposes
+                
                 state.currentUser = null;
                 state.profile = null;
                 state.activeJourney = null;
                 state.activeJourneyData = null;
                 
-                // Clean up map if it exists
+                
                 if (journeyMap) {
                     journeyMap.remove();
                     journeyMap = null;
@@ -3025,7 +2999,7 @@ async function handleLogin() {
                 
                 alert("✅ Logged out successfully! Thank you for using TourChain.");
                 
-                // Redirect to auth page
+                
                 showPage('auth');
                 
             } catch (error) {
@@ -3039,7 +3013,7 @@ async function handleLogin() {
     async function handleClearData() {
         if (confirm("⚠️ Clear All Local Data?\n\nThis will remove:\n• Cached trip plans\n• Saved preferences\n• Offline data\n\nYou will need to reload your data from the server. Continue?")) {
             try {
-                // Clear all localStorage data
+                
                 const keysToRemove = [];
                 for (let i = 0; i < localStorage.length; i++) {
                     const key = localStorage.key(i);
@@ -3052,14 +3026,14 @@ async function handleLogin() {
                     localStorage.removeItem(key);
                 });
                 
-                // Reset application state
+                
                 state.currentUser = null;
                 state.profile = null;
                 state.itineraryDrafts = [];
                 state.activeJourney = null;
                 state.activeJourneyData = null;
                 
-                // Clean up map if it exists
+                
                 if (journeyMap) {
                     journeyMap.remove();
                     journeyMap = null;
@@ -3067,7 +3041,7 @@ async function handleLogin() {
                 
                 alert("✅ All local data cleared successfully!\n\nThe app will now restart with fresh data.");
                 
-                // Restart the app
+                
                 location.reload();
                 
             } catch (error) {
@@ -3121,7 +3095,7 @@ async function handleLogin() {
         document.body.appendChild(modal);
         lucide.createIcons();
         
-        // Auto-remove after 30 seconds
+        
         setTimeout(() => {
             if (modal.parentElement) {
                 modal.remove();
@@ -3131,7 +3105,7 @@ async function handleLogin() {
 
     async function handleCheckIn() {
         try {
-            // Note: In a real app, you would get real GPS data here.
+           
             const mockLocationData = {
                 locations: [
                     { lat: 22.5726, lon: 88.3639, timestamp: new Date().toISOString() }
@@ -3146,8 +3120,7 @@ async function handleLogin() {
 
     async function handleSaveItinerary() {
     try {
-        // --- THIS IS THE FIX ---
-        // The IDs now correctly match the HTML input fields.
+        
         const tripName = document.getElementById('trip-name').value;
         const startingCity = document.getElementById('starting-city').value;
 
@@ -3177,22 +3150,22 @@ async function handleLogin() {
             startingCity,
             destinations,
             createdAt: new Date().toISOString(),
-            safetyScore: null // Will be calculated later
+            safetyScore: null 
         };
 
-        // Try to save via API first, fall back to localStorage if it fails
+        
         try {
             await apiRequest('/itineraries', 'POST', newDraftData);
             alert(`Itinerary Draft "${tripName}" saved successfully!`);
         } catch (apiError) {
             console.log('API save failed, using localStorage fallback:', apiError);
             
-            // Save to localStorage as fallback
+            
             const existingDrafts = JSON.parse(localStorage.getItem('tourchain-itineraries') || '[]');
             existingDrafts.push(newDraftData);
             localStorage.setItem('tourchain-itineraries', JSON.stringify(existingDrafts));
             
-            // Update app state
+            
             state.itineraryDrafts = existingDrafts;
             
             alert(`Itinerary Draft "${tripName}" saved locally!`);
@@ -3221,7 +3194,7 @@ async function handleLogin() {
     };
 
     function showPage(pageId) {
-        // Clean up map if switching away from home page
+        
         if (state.currentPage === 'home' && pageId !== 'home' && map) {
             map.remove();
             map = null;
@@ -3240,21 +3213,16 @@ async function handleLogin() {
         renderBottomNav();
     }
 
-    // -------------------------------------------------------------------------
-    // --- 6. APP INITIALIZATION
-    // -------------------------------------------------------------------------
     function init() {
     const savedLang = localStorage.getItem('tourchain-lang');
     if (savedLang) state.language = savedLang;
 
     const savedUser = localStorage.getItem('tourchain-user');
     
-    // This check now prevents the crash
     if (savedUser && savedUser !== 'undefined') {
         state.currentUser = JSON.parse(savedUser);
         initializeAppState();
     } else {
-        // If no user or bad data, clear it and start fresh
         localStorage.removeItem('tourchain-user');
         showPage('splash');
         setTimeout(() => showPage('languageSelect'), 2000);
