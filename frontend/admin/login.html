@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Admin Login - TourChain</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="card">
+    <h1>Admin Login</h1>
+    <form id="login-form">
+      <label>Email<input id="email" type="email" required /></label>
+      <label>Password<input id="password" type="password" required /></label>
+      <button type="submit">Login</button>
+    </form>
+    <p id="msg" class="muted"></p>
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    const form = document.getElementById('login-form');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      try {
+        await adminLogin(email, password); // defined in app.js
+        window.location = 'dashboard.html';
+      } catch (err) {
+        document.getElementById('msg').textContent = err.message || 'Login failed';
+      }
+    });
+  </script>
+</body>
+</html>

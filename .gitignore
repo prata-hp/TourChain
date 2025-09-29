@@ -1,0 +1,14 @@
+# Node.js
+node_modules
+.env
+.env.local
+.env.*.local
+
+# Hardhat artifacts & cache
+cache
+artifacts
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

@@ -1,0 +1,149 @@
+2025-09-07 01:28:36 [INFO]: 🚀 Server running on port 5000
+2025-09-07 01:28:36 [INFO]: 🚀 Server running on port 5000
+2025-09-07 01:28:36 [INFO]: 🚀 Server running on port 5000
+2025-09-07 01:28:36 [INFO]: 🚀 Server running on port 5000
+2025-09-07 01:32:42 [INFO]: 🚀 Server running on port 5000
+2025-09-07 01:32:42 [INFO]: 🚀 Server running on port 5000
+2025-09-07 01:32:42 [INFO]: 🚀 Server running on port 5000
+2025-09-07 01:32:42 [INFO]: 🚀 Server running on port 5000
+2025-09-07 01:32:45 [INFO]: 🚀 Server running on port 5000
+2025-09-07 01:32:45 [INFO]: 🚀 Server running on port 5000
+2025-09-07 01:32:45 [INFO]: 🚀 Server running on port 5000
+2025-09-07 01:32:45 [INFO]: 🚀 Server running on port 5000
+2025-09-07 01:33:57 [INFO]: 🚀 Server running on port 5000
+2025-09-07 01:33:57 [INFO]: 🚀 Server running on port 5000
+2025-09-07 01:33:57 [INFO]: 🚀 Server running on port 5000
+2025-09-07 01:33:57 [INFO]: 🚀 Server running on port 5000
+2025-09-07 01:34:00 [INFO]: 🚀 Server running on port 5000
+2025-09-07 01:34:00 [INFO]: 🚀 Server running on port 5000
+2025-09-07 01:34:00 [INFO]: 🚀 Server running on port 5000
+2025-09-07 01:34:00 [INFO]: 🚀 Server running on port 5000
+2025-09-07 01:35:20 [INFO]: 🚀 Server running on port 5000
+2025-09-07 01:35:20 [INFO]: 🚀 Server running on port 5000
+2025-09-07 01:35:20 [INFO]: 🚀 Server running on port 5000
+2025-09-07 01:35:20 [INFO]: 🚀 Server running on port 5000
+2025-09-07 01:44:04 [ERROR]: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+2025-09-07 01:45:35 [ERROR]: ❌ Could not start journey (id=<TOURIST_ID>): Cast to ObjectId failed for value "<TOURIST_ID>" (type string) at path "_id" for model "Tourist"
+2025-09-07 01:46:37 [ERROR]: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+2025-09-07 01:51:53 [ERROR]: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+2025-09-07 01:53:55 [INFO]: 🚀 Server running on port 5000
+2025-09-07 02:04:55 [ERROR]: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+2025-09-07 14:10:40 [INFO]: 🚀 Server running on port 5000
+2025-09-07 14:19:35 [INFO]: 🚀 Server running on port 5000
+2025-09-07 14:19:35 [INFO]: 🚀 Server running on port 5000
+2025-09-07 14:19:35 [INFO]: 🚀 Server running on port 5000
+2025-09-07 14:19:35 [INFO]: 🚀 Server running on port 5000
+2025-09-07 14:19:42 [INFO]: 🚀 Server running on port 5000
+2025-09-07 14:19:42 [INFO]: 🚀 Server running on port 5000
+2025-09-07 14:19:42 [INFO]: 🚀 Server running on port 5000
+2025-09-07 14:19:42 [INFO]: 🚀 Server running on port 5000
+2025-09-07 14:19:44 [INFO]: 🚀 Server running on port 5000
+2025-09-07 14:19:44 [INFO]: 🚀 Server running on port 5000
+2025-09-07 14:19:44 [INFO]: 🚀 Server running on port 5000
+2025-09-07 14:19:44 [INFO]: 🚀 Server running on port 5000
+2025-09-07 14:30:26 [INFO]: 🚀 Server running on port 5000
+2025-09-07 14:30:26 [INFO]: 🚀 Server running on port 5000
+2025-09-07 14:30:26 [INFO]: 🚀 Server running on port 5000
+2025-09-07 14:30:26 [INFO]: 🚀 Server running on port 5000
+2025-09-07 14:31:47 [INFO]: 🚀 Server running on port 5000
+2025-09-07 14:31:47 [INFO]: 🚀 Server running on port 5000
+2025-09-07 14:31:47 [INFO]: 🚀 Server running on port 5000
+2025-09-07 14:31:47 [INFO]: 🚀 Server running on port 5000
+2025-09-07 22:40:02 [INFO]: 🚀 Server running on port 5000
+2025-09-07 22:40:02 [INFO]: 🚀 Server running on port 5000
+2025-09-07 22:40:02 [INFO]: 🚀 Server running on port 5000
+2025-09-07 22:40:02 [INFO]: 🚀 Server running on port 5000
+2025-09-07 23:55:51 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:56:13 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:56:19 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:56:42 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:57:09 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:58:28 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:58:29 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:58:30 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:58:30 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:58:30 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:58:31 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:58:31 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:58:31 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:58:31 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:58:32 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:58:32 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:58:32 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-07 23:58:33 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-08 00:49:40 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-08 00:49:41 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-08 00:58:52 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-08 08:16:52 [INFO]: 🚀 Server running on port 5000
+2025-09-08 08:24:54 [INFO]: 🚀 Server running on port 5000
+2025-09-08 08:24:55 [INFO]: 🚀 Server running on port 5000
+2025-09-08 08:38:56 [INFO]: 🚀 Server running on port 5000
+2025-09-08 08:41:01 [INFO]: 🚀 Server running on port 5000
+2025-09-08 08:41:24 [INFO]: 🚀 Server running on port 5000
+2025-09-08 17:02:31 [INFO]: 🚀 Server running on port 5000
+2025-09-08 18:03:34 [INFO]: 🚀 Server running on port 5000
+2025-09-08 18:05:33 [INFO]: 🚀 Server running on port 5000
+2025-09-08 18:06:04 [INFO]: 🚀 Server running on port 5000
+2025-09-08 21:19:45 [INFO]: 🚀 Server running on port 5000
+2025-09-08 21:33:24 [INFO]: 🚀 Server running on port 5000
+2025-09-08 22:00:20 [ERROR]: ❌ Registration failed: Cannot destructure property 'name' of 'req.body' as it is undefined.
+2025-09-08 22:12:29 [INFO]: 🚀 Server running on port 5000
+2025-09-08 22:14:54 [INFO]: 🚀 Server running on port 5000
+2025-09-08 22:14:56 [INFO]: 🚀 Server running on port 5000
+2025-09-08 22:17:57 [INFO]: 🚀 Server running on port 5000
+2025-09-08 22:19:02 [INFO]: 🚀 Server running on port 5000
+2025-09-08 22:19:05 [INFO]: 🚀 Server running on port 5000
+2025-09-08 22:19:11 [INFO]: 🚀 Server running on port 5000
+2025-09-08 22:21:30 [INFO]: 🚀 Server running on port 5000
+2025-09-08 22:25:11 [INFO]: ✅ Tourist registered: 68bf0a6f1ea5e4acd7d0524a, email=hanumant1234@gmail.com
+2025-09-08 22:25:50 [INFO]: 📄 Tourist profile fetched: 68bf0a6f1ea5e4acd7d0524a
+2025-09-08 22:26:37 [ERROR]: ❌ Could not start journey (id=68bf0a6f1ea5e4acd7d0524a): invalid BytesLike value (argument="value", value="f98c52615393188b6578927ef22bb4cf9f147b0fbf2f0842a358306b52052ce5", code=INVALID_ARGUMENT, version=6.15.0)
+2025-09-08 23:27:28 [INFO]: ✅ Tourist registered: 68bf19081ea5e4acd7d0524e, email=pk0865885@gmail.com
+2025-09-08 23:27:44 [INFO]: 📄 Tourist profile fetched: 68bf19081ea5e4acd7d0524e
+2025-09-08 23:38:43 [INFO]: 🚀 Server running on port 5000
+2025-09-08 23:38:58 [INFO]: 🚀 Server running on port 5000
+2025-09-08 23:38:59 [INFO]: 🚀 Server running on port 5000
+2025-09-08 23:39:00 [INFO]: 🚀 Server running on port 5000
+2025-09-08 23:39:03 [INFO]: 🚀 Server running on port 5000
+2025-09-08 23:39:10 [INFO]: 🚀 Server running on port 5000
+2025-09-08 23:50:48 [INFO]: 🚀 Server running on port 5000
+2025-09-09 00:26:47 [INFO]: 🚀 Server running on port 5000
+2025-09-09 00:26:52 [INFO]: 🚀 Server running on port 5000
+2025-09-09 00:36:48 [INFO]: ✅ Tourist registered: 68bf29487acf13ac211e360b, email=pk0865885@gmail.com
+2025-09-09 00:36:51 [INFO]: 📄 Tourist profile fetched: 68bf29487acf13ac211e360b
+2025-09-09 00:37:04 [INFO]: 🚀 Journey started for tourist=68bf29487acf13ac211e360b, txHash=0xe1a62ecdd5aa5d0f07293988ddc51e58b7ce993e8fed3cc74ea7e570f692c582, block=3
+2025-09-09 00:50:18 [INFO]: ✅ Tourist registered: 68bf2c727acf13ac211e3612, email=pk0865885@gmail.com
+2025-09-09 00:50:22 [INFO]: 📄 Tourist profile fetched: 68bf2c727acf13ac211e3612
+2025-09-09 00:50:31 [INFO]: 🚀 Journey started for tourist=68bf2c727acf13ac211e3612, txHash=0xf68afada0c54a21d31ed860d14335104a7598647e8ffc15689d9a7f912c79903, block=4
+2025-09-09 00:57:16 [INFO]: ✅ Tourist registered: 68bf2e147acf13ac211e3619, email=pk0865885@gmail.com
+2025-09-09 00:57:18 [INFO]: 📄 Tourist profile fetched: 68bf2e147acf13ac211e3619
+2025-09-09 01:01:39 [INFO]: ✅ Tourist registered: 68bf2f1b7acf13ac211e361c, email=hanu4@gmail.com
+2025-09-09 01:01:43 [INFO]: 📄 Tourist profile fetched: 68bf2f1b7acf13ac211e361c
+2025-09-09 01:01:54 [INFO]: 🚀 Journey started for tourist=68bf2f1b7acf13ac211e361c, txHash=0xa92411ccc6faa9415f215648bf93fcf664163207695238e044631883c3643bb8, block=5
+2025-09-09 01:01:54 [INFO]: 📄 Tourist profile fetched: 68bf2f1b7acf13ac211e361c
+2025-09-09 01:04:22 [WARN]: ⚠️ Panic trigger failed - missing touristId or location
+2025-09-09 01:10:01 [WARN]: ⚠️ Login failed - admin not found: email=yoxari2691@quamox.com
+2025-09-09 02:11:06 [INFO]: ✅ Tourist registered: 68bf3f627acf13ac211e3625, email=hanumantpratap1234@gmail.com
+2025-09-09 02:11:17 [INFO]: 📄 Tourist profile fetched: 68bf3f627acf13ac211e3625
+2025-09-09 02:11:45 [INFO]: 🚀 Journey started for tourist=68bf3f627acf13ac211e3625, txHash=0xe85b5af6de66a2bb3d4e8f97d5fa8573c5ede27dbc2004677139db56f2ffb3b4, block=6
+2025-09-09 02:11:45 [INFO]: 📄 Tourist profile fetched: 68bf3f627acf13ac211e3625
+2025-09-09 02:12:09 [INFO]: 🚀 Journey started for tourist=68bf3f627acf13ac211e3625, txHash=0x4730a98ff3834a15921d93ec6c1bcd57677167e7284456f313023c57a3f12dd9, block=7
+2025-09-09 02:12:09 [INFO]: 📄 Tourist profile fetched: 68bf3f627acf13ac211e3625
+2025-09-09 02:25:36 [INFO]: ✅ Tourist registered: 68bf42c87acf13ac211e3632, email=pk0865885@gmail.com
+2025-09-09 02:25:42 [INFO]: 📄 Tourist profile fetched: 68bf42c87acf13ac211e3632
+2025-09-09 02:26:04 [INFO]: 🚀 Journey started for tourist=68bf42c87acf13ac211e3632, txHash=0x3da614ce9fc808b9c57f7616e9f5d7ee28380c910f1474a99d181a1316824b43, block=8
+2025-09-09 02:26:04 [INFO]: 📄 Tourist profile fetched: 68bf42c87acf13ac211e3632
+2025-09-09 16:12:57 [INFO]: 🚀 Journey started for tourist=68bf42c87acf13ac211e3632, txHash=0xbab62220fdc8140096d597fb9f370747e082cca129a620a4c0d9da55200d8238, block=9
+2025-09-09 16:12:57 [INFO]: 📄 Tourist profile fetched: 68bf42c87acf13ac211e3632
+2025-09-09 16:58:09 [INFO]: ✅ Tourist registered: 68c00f497acf13ac211e363f, email=anugi@gmail.com
+2025-09-09 16:58:17 [INFO]: 📄 Tourist profile fetched: 68c00f497acf13ac211e363f
+2025-09-09 16:58:29 [INFO]: 🚀 Journey started for tourist=68c00f497acf13ac211e363f, txHash=0x8e5808a211fa0a5c9f1be57a57a4df4667f7310dddc951d933e92bbc393bf98f, block=10
+2025-09-09 16:58:29 [INFO]: 📄 Tourist profile fetched: 68c00f497acf13ac211e363f
+2025-09-10 01:28:44 [INFO]: ✅ Tourist registered: 68c086f47acf13ac211e3647, email=anugi@gmail.com
+2025-09-10 01:29:06 [INFO]: 📄 Tourist profile fetched: 68c086f47acf13ac211e3647
+2025-09-10 01:29:34 [INFO]: 🚀 Journey started for tourist=68c086f47acf13ac211e3647, txHash=0xd41d1156ce4f80e259873c9a078ba804a71cc7627d4f6b3bd200f3314b934de2, block=11
+2025-09-10 01:29:34 [INFO]: 📄 Tourist profile fetched: 68c086f47acf13ac211e3647
+2025-09-11 02:32:46 [INFO]: ✅ Tourist registered: 68c1e7767acf13ac211e364f, email=pk0865885@gmail.com
+2025-09-11 02:32:49 [INFO]: 📄 Tourist profile fetched: 68c1e7767acf13ac211e364f
+2025-09-11 02:32:56 [INFO]: 🚀 Journey started for tourist=68c1e7767acf13ac211e364f, txHash=0xe5e7995fc222980c9cb39619ca45cea66ab224aaff9a6a103fd8758a6a8533ca, block=12
+2025-09-11 02:32:56 [INFO]: 📄 Tourist profile fetched: 68c1e7767acf13ac211e364f
