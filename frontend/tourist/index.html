@@ -918,8 +918,6 @@
                             </div>
                         </button>
                     </div>
-                    
-                    <!-- Feature Highlights -->
                     <div class="mt-12 grid grid-cols-3 gap-4 w-full max-w-md animate-fade-in" style="animation-delay: 0.8s">
                         <div class="text-center">
                             <div class="w-12 h-12 bg-gradient-to-br from-primary-100 to-primary-200 rounded-xl mx-auto mb-2 flex items-center justify-center">
@@ -950,14 +948,13 @@
         const t = getT();
          appContainer.innerHTML = `
             <div class="relative h-full overflow-hidden">
-                <!-- Background Elements -->
                 <div class="absolute inset-0 opacity-20">
                     <div class="absolute top-16 right-8 w-24 h-24 bg-primary-200 rounded-full animate-float"></div>
                     <div class="absolute bottom-24 left-12 w-32 h-32 bg-accent-200 rounded-full animate-float" style="animation-delay: 1s"></div>
                 </div>
                 
                 <div class="relative flex flex-col items-center justify-center h-full p-8 z-10">
-                    <!-- Header -->
+        
                     <div class="text-center mb-8 animate-slide-down">
                         <div class="w-16 h-16 bg-gradient-to-br from-primary-400 to-accent-400 rounded-2xl mx-auto mb-4 flex items-center justify-center">
                             <span class="text-2xl">🌐</span>
@@ -966,7 +963,6 @@
                         <p class="text-sm text-surface-500 dark:text-surface-400">Choose your preferred language</p>
                     </div>
                     
-                    <!-- Language Options -->
                     <div class="space-y-3 w-full max-w-sm animate-scale-in" style="animation-delay: 0.2s">
                         <button onclick="setLanguage('en')" class="group w-full glass-card text-lg font-semibold py-4 px-6 rounded-2xl text-primary-700 dark:text-primary-300 hover-lift transition-all duration-300 border border-primary-200 dark:border-primary-800">
                             <div class="flex items-center justify-between">
@@ -1009,8 +1005,7 @@
                             </div>
                         </button>
                     </div>
-                    
-                    <!-- Back Button -->
+                
                     <button onclick="showPage('splash')" class="mt-8 text-surface-500 dark:text-surface-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors animate-fade-in" style="animation-delay: 0.4s">
                         <div class="flex items-center space-x-2">
                             <i data-lucide="arrow-left" class="w-4 h-4"></i>
