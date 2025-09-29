@@ -1130,7 +1130,6 @@ function renderAuthPage() {
         const t = getT();
         appContainer.innerHTML = `
             <div class="relative h-full overflow-hidden">
-                <!-- Background Elements -->
                 <div class="absolute inset-0 opacity-10">
                     <div class="absolute top-16 right-8 w-24 h-24 bg-primary-300 rounded-full animate-float"></div>
                     <div class="absolute bottom-40 left-12 w-32 h-32 bg-accent-300 rounded-full animate-float" style="animation-delay: 1.5s"></div>
@@ -1138,7 +1137,6 @@ function renderAuthPage() {
                 </div>
                 
                 <div class="relative flex flex-col h-full p-6 z-10">
-                    <!-- Header -->
                     <div class="text-center mb-8 animate-slide-down">
                         <div class="w-20 h-20 bg-gradient-to-br from-accent-500 to-primary-500 rounded-3xl mx-auto mb-6 flex items-center justify-center shadow-lg">
                             <i data-lucide="user-plus" class="w-8 h-8 text-white"></i>
@@ -1147,12 +1145,11 @@ function renderAuthPage() {
                         <p class="text-surface-600 dark:text-surface-400">${t.joinTourChain}</p>
                     </div>
                     
-                    <!-- Registration Form -->
                     <div class="flex-1 overflow-y-auto">
                         <div class="space-y-6 animate-scale-in" style="animation-delay: 0.2s">
                             <div class="glass-card p-6 rounded-3xl border border-primary-200 dark:border-primary-800">
                                 <form id="registration-form" class="space-y-5">
-                                    <!-- Full Name -->
+                    
                                     <div>
                                         <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3">${t.fullName}</label>
                                         <div class="relative">
