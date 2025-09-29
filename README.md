@@ -1,119 +1,108 @@
-🌍 TourChain – Smart Tourist Safety & Incident Response System
+<h1 align="center">🌍 TourChain</h1>
+<h3 align="center">Smart Tourist Safety & Incident Response System</h3>
 
+<hr/>
 
-📝 Overview
+<h2>📝 Overview</h2>
+<p>
+TourChain is a <b>Smart Tourist Safety Monitoring & Incident Response System</b> built for enhancing the security of tourists using <b>AI, Blockchain, IoT, and Geo-Fencing technologies</b>.
+It enables authorities to monitor, respond, and protect visitors in real time, while ensuring <b>privacy, transparency, and secure digital identity management</b>.
+</p>
 
-TourChain is a Smart Tourist Safety Monitoring & Incident Response System built for enhancing the security of tourists using AI, Blockchain, IoT, and Geo-Fencing technologies.
-It enables authorities to monitor, respond, and protect visitors in real time, while ensuring privacy, transparency, and secure digital identity management.
+<p>
+By integrating <b>digital tourist IDs, AI-based anomaly detection, geo-fencing alerts, and panic response systems</b>, TourChain aims to <b>revolutionize travel safety</b> in high-risk and remote areas.
+</p>
 
-By integrating digital tourist IDs, AI-based anomaly detection, geo-fencing alerts, and panic response systems, TourChain aims to revolutionize travel safety in high-risk and remote areas.
+<hr/>
 
+<h2>🔥 Features</h2>
+<ol>
+  <li>🆔 <b>Digital Tourist ID</b>: Blockchain-based, tamper-proof digital IDs with KYC and trip details.</li>
+  <li>📍 <b>Geo-Fencing Alerts</b>: Real-time notifications when tourists enter unsafe or restricted zones.</li>
+  <li>🆘 <b>Panic Button & SOS</b>: Instant live location sharing with police, family, and emergency contacts.</li>
+  <li>🤖 <b>AI-Powered Safety Monitoring</b>: Detects unusual travel patterns, sudden drop-offs, or prolonged inactivity.</li>
+  <li>📊 <b>Police & Tourism Dashboard</b>: Heatmaps, tourist clusters, ID verification, and automated e-FIR generation.</li>
+  <li>⌚ <b>IoT Integration</b>: Optional smart bands for continuous location/health signals in high-risk zones.</li>
+  <li>🌐 <b>Multilingual Support</b>: App available in 10+ Indian languages + English, with voice/text emergency access.</li>
+  <li>🔒 <b>Data Privacy & Security</b>: End-to-end encryption with blockchain-backed secure records.</li>
+</ol>
 
+<hr/>
 
-🔥 Features
+<h2>🛠 Technologies Used</h2>
 
-1. 🆔 Digital Tourist ID: Blockchain-based, tamper-proof digital IDs with KYC and trip details.
+<h3>Frontend</h3>
+<ul>
+  <li>🌐 HTML, Tailwind CSS, React.js, Netlify</li>
+</ul>
 
-2. 📍 Geo-Fencing Alerts: Real-time notifications when tourists enter unsafe or restricted zones.
+<h3>Backend</h3>
+<ul>
+  <li>⚙ Node.js, Express.js</li>
+  <li>🗄 MongoDB, Mongoose, AWS</li>
+  <li>🔑 JSON Web Tokens (JWT), bcrypt.js</li>
+  <li>📡 WebSockets (socket.io), MQTT (IoT)</li>
+  <li>⛓ Blockchain: Solidity, Hardhat, Ethers.js, Metamask, Ethereum Testnet</li>
+</ul>
 
-3. 🆘 Panic Button & SOS: Instant live location sharing with police, family, and emergency contacts.
+<h3>AI/ML Engine</h3>
+<ul>
+  <li>🚀 FastAPI, Pydantic</li>
+  <li>📊 Scikit-learn, Numpy, Joblib</li>
+  <li>🤖 TensorFlow, LSTM Autoencoder for anomaly detection</li>
+  <li>🗺 Geofencing APIs: Google Maps, Mapbox</li>
+</ul>
 
-4. 🤖 AI-Powered Safety Monitoring: Detects unusual travel patterns, sudden drop-offs, or prolonged inactivity.
+<hr/>
 
-5. 📊 Police & Tourism Dashboard: Heatmaps, tourist clusters, ID verification, and automated e-FIR generation.
+<h2>🚀 Installation</h2>
 
-6. ⌚ IoT Integration: Optional smart bands for continuous location/health signals in high-risk zones.
-
-7. 🌐 Multilingual Support: App available in 10+ Indian languages + English, with voice/text emergency access.
-
-8. 🔒 Data Privacy & Security: End-to-end encryption with blockchain-backed secure records.
-
-
-🛠 Technologies Used
-
-Frontend
-
-1. 🌐 HTML, Tailwind CSS, React.js, Netlify
-
-Backend
-
-1. ⚙️ Node.js, Express.js
-
-2. 🗄 MongoDB, Mongoose, AWS
-
-3. 🔑 JSON Web Tokens (JWT), bcrypt.js
-
-4. 📡 WebSockets (socket.io), MQTT (IoT)
-
-5. ⛓ Blockchain: Solidity, Hardhat, Ethers.js, Metamask, Ethereum Testnet
-
-AI/ML Engine
-
-1. 🚀 FastAPI, Pydantic
-
-2. 📊 Scikit-learn, Numpy, Joblib
-
-3. 🤖 TensorFlow, LSTM Autoencoder for anomaly detection
-
-4. 🗺 Geofencing APIs: Google Maps, Mapbox
-
-
-
-🚀 Installation
-
-Clone the repository:
-
+<pre>
+# Clone the repository
 git clone https://github.com/prata-hp/TourChain.git
 
-
-Navigate to the project folder:
-
+# Navigate to the project folder
 cd TourChain
 
-
-Install dependencies:
-
+# Install dependencies
 npm install        # For Node.js backend
 pip install -r requirements.txt  # For AI/ML engine
 
-
-Start the application:
-
+# Start the application
 npm start          # For frontend
 python backend/server.py  # For AI/ML + API services
+</pre>
 
+<hr/>
 
+<h2>🎯 Usage</h2>
+<ol>
+  <li>🆔 Tourist Registration – Generate a blockchain-secured Digital Tourist ID.</li>
+  <li>🗺 Trip Creation – Enter itinerary and checkpoints.</li>
+  <li>📍 Geo-Fencing Alerts – Get notified when entering unsafe zones.</li>
+  <li>🆘 Emergency SOS – Panic button triggers alerts to police and family.</li>
+  <li>📊 Authority Dashboard – Monitor clusters, risk maps, and respond to incidents in real time.</li>
+</ol>
 
-🎯 Usage
+<hr/>
 
-1. 🆔 Tourist Registration – Generate a blockchain-secured Digital Tourist ID.
+<h2>🔐 Security Measures</h2>
+<ol>
+  <li>⛓ Blockchain-based ID immutability & tamper-proof records.</li>
+  <li>🔑 Multi-factor authentication for ID verification.</li>
+  <li>🔒 End-to-end encrypted communication.</li>
+  <li>🛡 AI anomaly detection for proactive safety monitoring.</li>
+</ol>
 
-2. 🗺 Trip Creation – Enter itinerary and checkpoints.
+<hr/>
 
-3. 📍 Geo-Fencing Alerts – Get notified when entering unsafe zones.
+<h2>📂 File Structure</h2>
 
-4. 🆘 Emergency SOS – Panic button triggers alerts to police and family.
-
-5. 📊 Authority Dashboard – Monitor clusters, risk maps, and respond to incidents in real time.
-
-
-🔐 Security Measures
-
-1. ⛓ Blockchain-based ID immutability & tamper-proof records.
-
-2. 🔑 Multi-factor authentication for ID verification.
-
-3. 🔒 End-to-end encrypted communication.
-
-4. 🛡 AI anomaly detection for proactive safety monitoring.
-
-
-📂 File Structure
-
+<pre>
 TourChain/
     ├── backend/
     │   ├── ai_engines/
-    │   │   ├── _pycache_/
+    │   │   ├── __pycache__/
     │   │   ├── anomaly_detector.py
     │   │   ├── main.py
     │   │   ├── requirements.txt
@@ -242,3 +231,4 @@ TourChain/
     │
     ├── .gitignore
     └── package-lock.json
+</pre>
