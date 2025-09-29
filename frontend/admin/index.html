@@ -5,17 +5,15 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>TourChain Police/Admin Dashboard — Full</title>
 
-  <!-- Tailwind CSS -->
+  
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Leaflet OpenStreetMap (no API key needed) -->
+  
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <!-- html5-qrcode -->
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
-  <!-- socket.io client (assumes socket.io server on same origin) -->
   <script src="/socket.io/socket.io.js"></script>
 
   <style>
@@ -34,7 +32,6 @@
     }
     @media print { body * { visibility: hidden; } #printableFIR, #printableFIR * { visibility: visible; } #printableFIR { position: absolute; top:0; left:0; width:100%; } }
     
-    /* Panic Alert Animations */
     @keyframes pulse {
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.7; transform: scale(1.05); }
@@ -45,7 +42,6 @@
       to { transform: translateX(0); opacity: 1; }
     }
     
-    /* Enhanced form styling for panic alerts */
     .panic-alert-form {
       animation: borderPulse 3s infinite;
     }
@@ -290,19 +286,11 @@
   </div>
 
 <script>
-/* -------------------------
-   Frontend integrated with backend (SIH8.html)
-   - Uses relative /api/* endpoints (same origin)
-   - Stores JWT in localStorage 'token'
-   - Connects to socket.io at same origin
-   - Mapbox markers use backend lat/lng
-------------------------- */
 
-const API_BASE = "http://localhost:5001"; // empty = same origin; set to 'http://localhost:5000' if backend on different port
 
-// Using Leaflet (OpenStreetMap) - no API key needed
+const API_BASE = "http://localhost:5001"; 
 
-// App state
+
 const state = {
   token: localStorage.getItem('token') || null,
   currentUser: null,
@@ -313,7 +301,6 @@ const state = {
   officers: []
 };
 
-// DOM refs
 const loginForm = document.getElementById('login-form');
 const loginView = document.getElementById('loginView');
 const appContent = document.getElementById('appContent');
@@ -358,16 +345,12 @@ let playbackMap = null;
 let playbackMarker = null;
 let playbackInterval = null;
 
-/* -------------------------
-   Helper: auth headers
-------------------------- */
+
 function authHeaders() {
   return state.token ? { 'Authorization': 'Bearer ' + state.token } : {};
 }
 
-/* -------------------------
-   Network helpers
-------------------------- */
+
 async function apiGet(path) {
   const res = await fetch(API_BASE + path, { headers: { ...authHeaders(), 'Content-Type':'application/json' } });
   if (res.status === 401) { handleUnauthorized(); throw new Error('Unauthorized'); }
@@ -379,9 +362,7 @@ async function apiPost(path, body) {
   return res.json();
 }
 
-/* -------------------------
-   Login
-------------------------- */
+
 loginForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const id = document.getElementById('loginOfficerId').value.trim();
@@ -397,7 +378,6 @@ loginForm.addEventListener('submit', async (e) => {
       return alert(err.message || 'Login failed');
     }
     const data = await resp.json();
-    // expected: { token, officer }
     state.token = data.token;
     localStorage.setItem('token', state.token);
     state.currentUser = data.officer || { id };
@@ -433,10 +413,7 @@ function onLoggedIn() {
   if ((state.currentUser.role || 'officer') === 'admin') document.getElementById('officerTabBtn').classList.remove('hidden');
   initializeAfterLogin();
 }
-
-/* -------------------------
-   Logout
-------------------------- */
+   
 logoutBtn.addEventListener('click', () => {
   localStorage.removeItem('token');
   state.token = null;
@@ -448,9 +425,7 @@ logoutBtn.addEventListener('click', () => {
   if (socket) socket.disconnect();
 });
 
-/* -------------------------
-   Initialize after login
-------------------------- */
+
 async function initializeAfterLogin() {
   await loadAllData();
   connectSocket();
@@ -458,14 +433,10 @@ async function initializeAfterLogin() {
   renderAll();
 }
 
-/* -------------------------
-   Load data from backend
-------------------------- */
+
 async function loadAllData() {
   try {
     const stats = await apiGet('/api/admin/stats');
-    // stats expected to include counts and maybe other fields
-    // but we'll fetch explicit endpoints below
   } catch (e) {
     console.warn('stats fetch failed', e);
   }
@@ -485,35 +456,25 @@ async function loadAllData() {
     const journeys = await apiGet('/api/admin/journeys'); // optional endpoint listing journeys
     if (Array.isArray(journeys)) state.journeys = journeys;
   } catch (e) {
-    // ignore
   }
 }
 
-/* -------------------------
-   Socket.io (real-time)
-------------------------- */
 function connectSocket() {
   try {
-    // connect to same origin; if token required on server, server must accept it via auth
-    socket = io(); // or io(API_BASE) if different origin
+    socket = io(); 
     socket.on('connect', ()=> console.log('socket connected', socket.id));
     socket.on('disconnect', ()=> console.log('socket disconnected'));
     socket.on('new-panic-alert', (payload) => {
-      // payload should be panic alert object
       console.log('new-panic-alert', payload);
-      // add to state and render
       state.alerts.unshift(payload);
       renderAlertsQueue();
       renderOverviewStats();
-      // show marker on map if coords present
       if (payload.location && payload.location.lng && payload.location.lat) {
         addOrUpdateMarkerForPanic(payload);
       }
       
-      // Auto-populate E-FIR form for panic alerts
       autoPopulateEFIR(payload);
       
-      // Show notification for new panic alert
       showPanicAlertNotification(payload);
     });
   } catch (e) {
@@ -521,21 +482,18 @@ function connectSocket() {
   }
 }
 
-/* -------------------------
-   Leaflet map + markers (using backend coords)
-------------------------- */
 function initMapbox(){
   if (mainMap) return;
   try {
-    // Initialize Leaflet map with OpenStreetMap tiles
+    
     mainMap = L.map('mainMap').setView([23.5937, 78.9629], 4);
     
-    // Add OpenStreetMap tiles
+    
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
     }).addTo(mainMap);
     
-    // Place markers immediately
+    
     placeMarkersFromState();
   } catch(e) {
     document.getElementById('mainMap').innerHTML = '<div class="p-4 text-gray-400">Map unavailable. Markers may not render.</div>';
@@ -544,16 +502,16 @@ function initMapbox(){
 
 function placeMarkersFromState(){
   if (!mainMap) return;
-  // remove existing
+  
   Object.values(mapMarkers).forEach(m=> mainMap.removeLayer(m));
   mapMarkers = {};
   state.tourists.forEach(t => {
     if (typeof t.lng !== 'number' || typeof t.lat !== 'number') return;
     
-    // Create custom icon based on status
-    let iconColor = '#10b981'; // safe - green
-    if (t.status === 'panic') iconColor = '#ef4444'; // panic - red
-    else if (t.status === 'anomaly') iconColor = '#f97316'; // anomaly - orange
+    
+    let iconColor = '#10b981'; 
+    if (t.status === 'panic') iconColor = '#ef4444'; 
+    else if (t.status === 'anomaly') iconColor = '#f97316'; 
     
     const customIcon = L.divIcon({
       className: 'custom-div-icon',
@@ -574,10 +532,10 @@ function placeMarkersFromState(){
 }
 
 function addOrUpdateMarkerForPanic(alert) {
-  // if tourist id known, update existing marker to panic style
+  
   const tid = alert.touristId;
   if (tid && mapMarkers[tid]) {
-    // Remove existing marker and create new panic marker
+    
     mainMap.removeLayer(mapMarkers[tid]);
     
     const panicIcon = L.divIcon({
@@ -596,7 +554,7 @@ function addOrUpdateMarkerForPanic(alert) {
       mapMarkers[tid] = marker;
     }
   } else if (alert.location && alert.location.lng && alert.location.lat && mainMap) {
-    // Create new panic marker at alert location
+    
     const panicIcon = L.divIcon({
       className: 'custom-div-icon',
       html: `<div style="background-color: #ef4444; width: 14px; height: 14px; border-radius: 50%; box-shadow: 0 0 0 4px #ef444420;"></div>`,
@@ -612,9 +570,8 @@ function addOrUpdateMarkerForPanic(alert) {
   }
 }
 
-/* -------------------------
-   Renderers
-------------------------- */
+
+   
 function renderOverviewStats(){
   statTourists.textContent = state.tourists.length;
   statJourneys.textContent = state.journeys.length;
@@ -641,7 +598,7 @@ function renderAlertsQueue(){
     </div>`;
     li.querySelector('.viewBtn').addEventListener('click', ()=> openDossier(a));
     li.querySelector('.ackBtn').addEventListener('click', async ()=> {
-      // attempt to update via API (if exists), otherwise mock
+      
       try {
         await fetch(API_BASE + '/api/admin/panic-calls/' + a.id + '/status', {
           method: 'PUT', headers: { 'Content-Type':'application/json', ...authHeaders() }, body: JSON.stringify({ status: 'Acknowledged' })
@@ -744,9 +701,6 @@ function renderAll(){
   placeMarkersFromState();
 }
 
-/* -------------------------
-   Dossier modal
-------------------------- */
 const dossierModal = document.getElementById('dossierModal');
 const dossierContent = document.getElementById('dossierContent');
 const dossierClose = document.getElementById('dossierClose');
@@ -770,9 +724,7 @@ function openDossier(alertOrTourist){
 }
 dossierClose.addEventListener('click', ()=> dossierModal.classList.add('hidden'));
 
-/* -------------------------
-   E-FIR handling (mock)
-------------------------- */
+
 efirForm?.addEventListener('submit', (e) => {
   e.preventDefault();
   const id = 'F' + Date.now().toString().slice(-6);
@@ -794,7 +746,7 @@ efirForm?.addEventListener('submit', (e) => {
   state.firs.push(payload); 
   renderEfirHistory(); 
   
-  // Clear the auto-populate status
+  
   const autoStatusBadge = document.getElementById('efirAutoStatus');
   if (autoStatusBadge) {
     autoStatusBadge.classList.add('hidden');
@@ -803,7 +755,6 @@ efirForm?.addEventListener('submit', (e) => {
   showNotification(`E-FIR ${payload.id} saved successfully${payload.isFromPanicAlert ? ' (from panic alert)' : ''}`, 'success');
 });
 
-// Clear form button functionality
 document.getElementById('efirClearBtn')?.addEventListener('click', () => {
   if (confirm('Are you sure you want to clear all E-FIR form data?')) {
     clearEFIRForm();
@@ -822,13 +773,13 @@ function clearEFIRForm() {
     if (field) field.value = '';
   });
   
-  // Hide auto-populate status badge
+  
   const autoStatusBadge = document.getElementById('efirAutoStatus');
   if (autoStatusBadge) {
     autoStatusBadge.classList.add('hidden');
   }
   
-  // Reset form styling
+
   const efirForm = document.getElementById('efirForm');
   if (efirForm) {
     efirForm.style.border = '';
@@ -911,7 +862,6 @@ ${f.actions || 'No actions recorded'}
   
   printableFIR.classList.remove('hidden');
   
-  // Auto-hide after 10 seconds if not printing
   setTimeout(() => {
     if (!window.matchMedia('print').matches) {
       printableFIR.classList.add('hidden');
@@ -919,9 +869,7 @@ ${f.actions || 'No actions recorded'}
   }, 10000);
 }
 
-/* -------------------------
-   Playback (uses existing journeys in state)
-------------------------- */
+
 function loadPlayback(jid){
   const j = state.journeys.find(x=>x.journeyId===jid); if(!j) return alert('Journey not found');
   try {
@@ -956,9 +904,7 @@ document.getElementById('playbackPlay')?.addEventListener('click', ()=>{
 document.getElementById('playbackPause')?.addEventListener('click', ()=> clearInterval(playbackInterval));
 document.getElementById('playbackReset')?.addEventListener('click', ()=> { clearInterval(playbackInterval); timeline.value = 0; });
 
-/* -------------------------
-   QR scanner init (once) - html5-qrcode
-------------------------- */
+
 function initQRScannerOnce(){
   if (qrScannerInstance) return;
   try {
@@ -991,9 +937,6 @@ function highlightTouristRow(tid) {
   }, 220);
 }
 
-/* -------------------------
-   Tabs handling
-------------------------- */
 const tabButtons = Array.from(document.querySelectorAll('.tab-btn'));
 const tabContents = Array.from(document.querySelectorAll('.tab-content'));
 
@@ -1001,33 +944,31 @@ function showTab(name){
   tabContents.forEach(tc => tc.classList.add('hidden'));
   const el = document.getElementById('tab-' + name);
   if (el) el.classList.remove('hidden');
-  // init qr scanner lazy
+  
   if (name === 'qr') initQRScannerOnce();
   tabButtons.forEach(b => { if (b.dataset.tab === name) b.classList.add('bg-slate-700'); else b.classList.remove('bg-slate-700'); });
-}
+}handling
 tabButtons.forEach(b => b.addEventListener('click', ()=> showTab(b.dataset.tab)));
 
 menuBtn.addEventListener('click', ()=> { sidebar.classList.toggle('open'); sidebarBackdrop.classList.toggle('hidden'); });
 sidebarBackdrop.addEventListener('click', ()=> { sidebar.classList.remove('open'); sidebarBackdrop.classList.add('hidden'); });
 sidebarClose.addEventListener('click', ()=> { sidebar.classList.remove('open'); sidebarBackdrop.classList.add('hidden'); });
 
-/* -------------------------
-   Utility & bootstrap
-------------------------- */
+
 async function updateAllFromBackend() {
   await loadAllData();
   renderAll();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // pre-render quick things
+  
   renderJourneys(); renderEfirHistory(); renderOfficers();
   touristSearch?.addEventListener('input', renderTouristTable);
   touristFilter?.addEventListener('change', renderTouristTable);
 
-  // if token exists try auto-login / fetch profile
+  
   if (state.token) {
-    // attempt to fetch current officer profile (if endpoint exists)
+    
     fetch(API_BASE + '/api/officers/me', { headers: { 'Authorization': 'Bearer ' + state.token } })
       .then(r => r.ok ? r.json() : null)
       .then(data => {
@@ -1035,19 +976,15 @@ document.addEventListener('DOMContentLoaded', () => {
           state.currentUser = data;
           onLoggedIn();
         } else {
-          // if can't fetch profile still allow manual login
-          // attempt to load data with token
+          
           initializeAfterLogin().catch(()=>{});
         }
       }).catch(()=>{});
   }
 });
 
-/* -------------------------
-   Auto E-FIR Population Functions
-------------------------- */
 function autoPopulateEFIR(panicAlert) {
-  // Auto-populate E-FIR form fields based on panic alert data
+  
   const touristIdField = document.getElementById('efirTouristId');
   const touristNameField = document.getElementById('efirTouristName');
   const incidentTypeField = document.getElementById('efirIncidentType');
@@ -1058,7 +995,7 @@ function autoPopulateEFIR(panicAlert) {
   const officerField = document.getElementById('efirOfficer');
   const autoStatusBadge = document.getElementById('efirAutoStatus');
   
-  // Populate basic info
+  
   if (touristIdField) {
     touristIdField.value = panicAlert.touristId || panicAlert.userId || 'Unknown';
   }
@@ -1184,13 +1121,13 @@ Timestamp: ${new Date().toLocaleString()}`;
     actionsField.value = actions;
   }
   
-  // Show auto-populate status badge
+  
   if (autoStatusBadge) {
     autoStatusBadge.classList.remove('hidden');
     autoStatusBadge.style.animation = 'pulse 2s infinite';
   }
   
-  // Highlight the form to draw attention
+  
   const efirForm = document.getElementById('efirForm');
   if (efirForm) {
     efirForm.style.border = '3px solid #ef4444';
@@ -1204,14 +1141,14 @@ Timestamp: ${new Date().toLocaleString()}`;
     }, 8000);
   }
   
-  // Scroll to form if not visible
+  
   setTimeout(() => {
     efirForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, 500);
 }
 
 function showPanicAlertNotification(panicAlert) {
-  // Create and show a prominent notification for new panic alerts
+  
   const notification = document.createElement('div');
   notification.style.cssText = `
     position: fixed;
@@ -1251,7 +1188,7 @@ function showPanicAlertNotification(panicAlert) {
     </div>
   `;
   
-  // Add CSS animation
+  
   const style = document.createElement('style');
   style.textContent = `
     @keyframes slideIn {
@@ -1263,14 +1200,14 @@ function showPanicAlertNotification(panicAlert) {
   
   document.body.appendChild(notification);
   
-  // Auto-remove after 15 seconds
+  
   setTimeout(() => {
     if (notification.parentElement) {
       notification.remove();
     }
   }, 15000);
   
-  // Flash the browser tab title to draw attention
+  
   let originalTitle = document.title;
   let flashCount = 0;
   const flashInterval = setInterval(() => {
@@ -1318,7 +1255,7 @@ function showNotification(message, type = 'info') {
   
   document.body.appendChild(notification);
   
-  // Auto-remove after 5 seconds
+  
   setTimeout(() => {
     if (notification.parentElement) {
       notification.remove();
@@ -1326,10 +1263,6 @@ function showNotification(message, type = 'info') {
   }, 5000);
 }
 
-/* -------------------------
-   Development Helper - Test Panic Alert
-   (Remove in production)
-------------------------- */
 function simulatePanicAlert() {
   const testAlert = {
     id: 'PA' + Date.now(),
@@ -1347,27 +1280,27 @@ function simulatePanicAlert() {
     details: 'Test panic alert for demonstration'
   };
 
-  // Simulate receiving panic alert via socket
+  
   console.log('🚨 Simulating panic alert:', testAlert);
   
-  // Add to alerts
+  
   state.alerts.unshift(testAlert);
   renderAlertsQueue();
   renderOverviewStats();
   
-  // Show marker on map
+  
   if (testAlert.location && testAlert.location.lng && testAlert.location.lat) {
     addOrUpdateMarkerForPanic(testAlert);
   }
   
-  // Auto-populate E-FIR
+  
   autoPopulateEFIR(testAlert);
   
-  // Show notification
+  
   showPanicAlertNotification(testAlert);
 }
 
-// Add test button to sidebar (for development)
+
 document.addEventListener('DOMContentLoaded', () => {
   const sidebar = document.querySelector('aside nav');
   if (sidebar && window.location.hostname === 'localhost') {
