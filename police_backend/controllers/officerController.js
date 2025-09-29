@@ -25,7 +25,7 @@ exports.loginOfficer = async (req, res) => {
     }
 };
 
-// (Optional) Secure way to add new officers to the system
+
 exports.registerOfficer = async (req, res) => {
     const { officerId, password, station, role } = req.body;
     try {
