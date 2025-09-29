@@ -1695,7 +1695,6 @@ function addPlaceToUI(destinationId) {
 
         appContainer.innerHTML = `
             <div class="relative flex-grow overflow-hidden">
-                <!-- Background Elements -->
                 <div class="absolute inset-0 opacity-10">
                     <div class="absolute top-16 right-8 w-24 h-24 bg-primary-300 rounded-full animate-float"></div>
                     <div class="absolute bottom-32 left-12 w-32 h-32 bg-accent-300 rounded-full animate-float" style="animation-delay: 1.5s"></div>
@@ -1711,7 +1710,7 @@ function addPlaceToUI(destinationId) {
                         <p class="text-sm text-surface-500 dark:text-surface-400">Plan your next adventure</p>
                     </div>
 
-                    <!-- Create New Trip Button -->
+                    
                     <button onclick="showPage('newItinerary')" class="w-full bg-gradient-to-r from-accent-500 to-primary-600 hover:from-accent-600 hover:to-primary-700 text-white font-semibold py-4 px-6 rounded-2xl mb-8 flex items-center justify-center transition-all duration-300 transform hover:scale-105 hover:shadow-lg animate-scale-in" style="animation-delay: 0.1s">
                         <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mr-3">
                             <i data-lucide="plus" class="w-5 h-5"></i>
