@@ -1214,8 +1214,7 @@ function renderAuthPage() {
                                                 hover:border-primary-300 dark:hover:border-primary-600">
                                         </div>
                                     </div>
-
-                                    <!-- Password -->
+                                    
                                     <div>
                                         <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3">${t.password}</label>
                                         <div class="relative">
@@ -1233,7 +1232,6 @@ function renderAuthPage() {
                                         </div>
                                     </div>
 
-                                    <!-- Confirm Password -->
                                     <div>
                                         <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3">${t.confirmPassword}</label>
                                         <div class="relative">
@@ -1251,7 +1249,6 @@ function renderAuthPage() {
                                         </div>
                                     </div>
                                     
-                                    <!-- Register Button -->
                                     <button type="submit" class="w-full bg-gradient-to-r from-accent-600 to-primary-600 hover:from-accent-700 hover:to-primary-700 
                                         text-white font-semibold py-4 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg
                                         focus:outline-none focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-800 disabled:opacity-50 disabled:cursor-not-allowed">
@@ -1279,8 +1276,7 @@ function renderAuthPage() {
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Back Button -->
+                
                     <button onclick="showPage('languageSelect')" class="flex items-center justify-center space-x-3 text-surface-500 dark:text-surface-400 
                         hover:text-primary-600 dark:hover:text-primary-400 py-4 transition-all duration-300 group animate-fade-in" style="animation-delay: 0.6s">
                         <div class="w-10 h-10 bg-surface-100 dark:bg-surface-800 rounded-xl flex items-center justify-center 
@@ -1308,13 +1304,12 @@ function renderAuthPage() {
 
         appContainer.innerHTML = `
             <div class="flex flex-col h-full overflow-y-auto pb-20 relative">
-                <!-- Animated Background Elements -->
                 <div class="absolute inset-0 opacity-20 pointer-events-none">
                     <div class="absolute top-10 right-10 w-20 h-20 bg-primary-200 rounded-full animate-float"></div>
                     <div class="absolute bottom-40 left-8 w-16 h-16 bg-accent-200 rounded-full animate-float" style="animation-delay: 1s"></div>
                 </div>
 
-                <!-- Header with Glass Effect -->
+                
                 <header class="relative p-4 flex justify-between items-center glass-card sticky top-0 z-20 border-b border-white/10">
                     <div class="flex items-center space-x-3">
                         <div class="w-8 h-8 bg-gradient-to-br from-primary-400 to-primary-600 rounded-lg flex items-center justify-center">
@@ -1327,13 +1322,11 @@ function renderAuthPage() {
                         <div class="absolute -top-1 -right-1 w-3 h-3 bg-accent-400 rounded-full animate-pulse"></div>
                     </button>
                 </header>
-
-                <!-- Enhanced Map Container -->
+                
                 <div class="relative w-full h-72 p-4">
                     <div class="relative h-full">
                         <div id="map" class="w-full h-full rounded-2xl shadow-2xl"></div>
                         
-                        <!-- Status Overlay -->
                         ${isActive
                             ? `<div class="absolute top-4 left-4 glass-card px-3 py-2 rounded-full animate-pulse-glow">
                                    <div class="flex items-center space-x-2">
@@ -1349,7 +1342,6 @@ function renderAuthPage() {
                                </div>`
                         }
                         
-                        <!-- Map Controls -->
                         <div class="absolute top-4 right-4 space-y-2">
                             <button onclick="getUserLocation()" class="w-10 h-10 glass-card rounded-xl flex items-center justify-center hover-lift transition-all duration-300">
                                 <i data-lucide="crosshair" class="w-4 h-4 text-primary-600"></i>
@@ -1358,9 +1350,8 @@ function renderAuthPage() {
                     </div>
                 </div>
 
-                <!-- Action & Info Cards -->
                 <div class="p-4 flex-grow space-y-4 relative z-10">
-                    <!-- Main Action Button -->
+                    
                     <div class="animate-scale-in" style="animation-delay: 0.2s">
                         ${isActive
                             ? `<button onclick="handleEndJourney()" class="w-full bg-gradient-to-r from-orange-400 to-red-500 text-white font-bold py-4 px-6 rounded-2xl text-lg hover-lift shadow-2xl transform transition-all duration-300 animate-pulse-glow">
@@ -1378,7 +1369,6 @@ function renderAuthPage() {
                         }
                     </div>
 
-                    <!-- Journey Status Card -->
                     <div class="animate-slide-up" style="animation-delay: 0.3s">
                         ${isActive
                             ? `<div class="glass-card p-5 rounded-2xl border-l-4 border-primary-400 hover-lift transition-all duration-300">
@@ -1408,7 +1398,6 @@ function renderAuthPage() {
                         }
                     </div>
 
-                    <!-- Weather Alert Card -->
                     <div class="animate-slide-up" style="animation-delay: 0.4s">
                         <div class="glass-card p-4 rounded-2xl border-l-4 border-yellow-400 hover-lift transition-all duration-300">
                             <div class="flex items-start space-x-3">
@@ -1428,7 +1417,6 @@ function renderAuthPage() {
                         </div>
                     </div>
 
-                    <!-- Emergency Services Card -->
                     <div class="animate-slide-up" style="animation-delay: 0.5s">
                         <div class="glass-card p-4 rounded-2xl hover-lift transition-all duration-300">
                             <div class="flex items-center justify-between mb-3">
@@ -1695,7 +1683,6 @@ function addPlaceToUI(destinationId) {
                         ${t.createNewTrip}
                     </button>
 
-                    <!-- Drafts List -->
                     <div class="space-y-4 animate-fade-in" style="animation-delay: 0.2s">
                         ${state.itineraryDrafts.length > 0 ? state.itineraryDrafts.map((draft, index) => {
                             let safetyScore, scoreColor, scoreBgColor, scoreIcon;
@@ -1741,7 +1728,6 @@ function addPlaceToUI(destinationId) {
                                             </div>
                                         </div>
                                         
-                                        <!-- Destinations Preview -->
                                         <div class="flex flex-wrap gap-2 mb-4">
                                             ${draft.destinations.slice(0, 3).map(dest => `
                                                 <div class="px-3 py-1 bg-surface-100 dark:bg-surface-800 rounded-full text-xs text-surface-600 dark:text-surface-400">
@@ -1752,7 +1738,6 @@ function addPlaceToUI(destinationId) {
                                         </div>
                                     </div>
                                     
-                                    <!-- Safety Score & Actions -->
                                     <div class="flex flex-col items-end space-y-3">
                                         <div class="text-center">
                                             <div class="w-16 h-16 ${scoreBgColor} rounded-2xl flex flex-col items-center justify-center mb-2">
