@@ -1263,8 +1263,7 @@ function renderAuthPage() {
                                     </button>
                                 </form>
                             </div>
-                            
-                            <!-- Sign in Link -->
+                        
                             <div class="text-center animate-fade-in" style="animation-delay: 0.4s">
                                 <div class="bg-gradient-to-r from-primary-50 to-accent-50 dark:from-primary-950 dark:to-accent-950 
                                     p-4 rounded-2xl border border-primary-200 dark:border-primary-800">
@@ -1666,7 +1665,7 @@ function addPlaceToUI(destinationId) {
                 </div>
                 
                 <div class="relative p-6 overflow-y-auto h-full z-10">
-                    <!-- Header -->
+                    
                     <div class="text-center mb-8 animate-slide-down">
                         <div class="w-16 h-16 bg-gradient-to-br from-primary-400 to-accent-400 rounded-2xl mx-auto mb-4 flex items-center justify-center">
                             <i data-lucide="map" class="w-8 h-8 text-white"></i>
@@ -1781,7 +1780,7 @@ function addPlaceToUI(destinationId) {
         
         appContainer.innerHTML = `
             <div class="flex flex-col h-full relative overflow-hidden">
-                <!-- Header with Glass Effect -->
+                
                 <header class="relative p-4 flex justify-between items-center glass-card border-b border-white/10 backdrop-blur-md z-10">
                     <div class="flex items-center space-x-3">
                         <div class="w-10 h-10 bg-gradient-to-br from-primary-400 to-accent-400 rounded-xl flex items-center justify-center">
@@ -1797,12 +1796,10 @@ function addPlaceToUI(destinationId) {
                     </button>
                 </header>
 
-                <!-- Map Container with Enhanced Styling -->
                 <div class="relative flex-1 p-4">
                     <div class="relative h-full">
                         <div id="map" class="w-full h-full rounded-2xl shadow-2xl"></div>
                         
-                        <!-- Floating Status Badge -->
                         <div class="absolute top-4 left-4 glass-card px-4 py-2 rounded-full animate-pulse-glow">
                             <div class="flex items-center space-x-2">
                                 <div class="w-2 h-2 bg-primary-400 rounded-full animate-pulse"></div>
@@ -1812,14 +1809,12 @@ function addPlaceToUI(destinationId) {
                             </div>
                         </div>
                         
-                        <!-- Map Controls Overlay -->
                         <div class="absolute top-4 right-4 space-y-2">
                             <button class="w-10 h-10 glass-card rounded-xl flex items-center justify-center hover-lift transition-all duration-300" onclick="getUserLocation()">
                                 <i data-lucide="crosshair" class="w-5 h-5 text-primary-600"></i>
                             </button>
                         </div>
                         
-                        <!-- Loading Overlay -->
                         <div id="map-loading" class="absolute inset-0 glass-card rounded-2xl flex items-center justify-center">
                             <div class="text-center animate-fade-in">
                                 <div class="w-16 h-16 bg-gradient-to-br from-primary-400 to-accent-400 rounded-2xl mx-auto mb-4 flex items-center justify-center animate-bounce-soft">
@@ -1834,7 +1829,6 @@ function addPlaceToUI(destinationId) {
                     </div>
                 </div>
 
-                <!-- Feature Cards -->
                 <div class="p-4 space-y-4">
                     <div class="grid grid-cols-2 gap-3">
                         <div class="glass-card p-4 rounded-2xl hover-lift transition-all duration-300">
@@ -1854,7 +1848,6 @@ function addPlaceToUI(destinationId) {
                         </div>
                     </div>
                     
-                    <!-- CTA Button -->
                     <button onclick="showPage('languageSelect')" class="w-full btn-primary text-white font-semibold py-4 px-6 rounded-2xl text-sm shadow-lg hover-lift transform transition-all duration-300">
                         <div class="flex items-center justify-center space-x-2">
                             <span>Experience Full TourChain</span>
@@ -1863,7 +1856,6 @@ function addPlaceToUI(destinationId) {
                     </button>
                 </div>
                 
-                <!-- Gradient Background Effects -->
                 <div class="absolute top-0 left-0 w-32 h-32 bg-primary-200 rounded-full blur-3xl opacity-20 animate-float"></div>
                 <div class="absolute bottom-0 right-0 w-40 h-40 bg-accent-200 rounded-full blur-3xl opacity-20 animate-float" style="animation-delay: 1.5s"></div>
             </div>
@@ -1898,14 +1890,14 @@ function addPlaceToUI(destinationId) {
 
         appContainer.innerHTML = `
             <div class="relative flex-grow overflow-hidden">
-                <!-- Background Elements -->
+            
                 <div class="absolute inset-0 opacity-10">
                     <div class="absolute top-20 right-8 w-28 h-28 bg-primary-300 rounded-full animate-float"></div>
                     <div class="absolute bottom-40 left-12 w-20 h-20 bg-accent-300 rounded-full animate-float" style="animation-delay: 1s"></div>
                 </div>
                 
                 <div class="relative p-6 overflow-y-auto h-full z-10">
-                    <!-- Header -->
+                
                     <div class="text-center mb-6 animate-slide-down">
                         <div class="w-16 h-16 bg-gradient-to-br from-primary-400 to-accent-400 rounded-2xl mx-auto mb-4 flex items-center justify-center">
                             <i data-lucide="compass" class="w-8 h-8 text-white"></i>
@@ -1914,7 +1906,6 @@ function addPlaceToUI(destinationId) {
                         <p class="text-sm text-surface-500 dark:text-surface-400">Track your current adventure</p>
                     </div>
 
-                    <!-- Interactive Map Container -->
                     <div class="glass-card p-4 rounded-3xl border border-primary-200 dark:border-primary-800 mb-6 animate-scale-in" style="animation-delay: 0.05s">
                         <div class="flex items-center space-x-3 mb-4">
                             <div class="w-10 h-10 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-800 rounded-xl flex items-center justify-center">
@@ -1931,10 +1922,10 @@ function addPlaceToUI(destinationId) {
                         </div>
                     </div>
 
-                    <!-- Journey Info Card -->
+                    
                     <div class="glass-card p-6 rounded-3xl border border-primary-200 dark:border-primary-800 mb-6 animate-scale-in" style="animation-delay: 0.1s">
                         <div class="space-y-6">
-                            <!-- Trip Name -->
+                        
                             <div class="space-y-2">
                                 <div class="flex items-center space-x-2">
                                     <div class="w-8 h-8 bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-900 dark:to-primary-800 rounded-lg flex items-center justify-center">
@@ -1944,8 +1935,7 @@ function addPlaceToUI(destinationId) {
                                 </div>
                                 <h3 class="text-xl font-bold text-surface-800 dark:text-surface-200 ml-10">${journey.itinerary?.draftName || journey.itinerary?.name || 'Active Journey'}</h3>
                             </div>
-                            
-                            <!-- Route -->
+                    
                             <div class="space-y-2">
                                 <div class="flex items-center space-x-2">
                                     <div class="w-8 h-8 bg-gradient-to-br from-accent-100 to-accent-200 dark:from-accent-900 dark:to-accent-800 rounded-lg flex items-center justify-center">
@@ -1966,8 +1956,7 @@ function addPlaceToUI(destinationId) {
                                     </div>
                                 </div>
                             </div>
-                            
-                            <!-- Travelers -->
+                        
                             <div class="space-y-2">
                                 <div class="flex items-center space-x-2">
                                     <div class="w-8 h-8 bg-gradient-to-br from-primary-100 to-accent-100 dark:from-primary-900 dark:to-accent-900 rounded-lg flex items-center justify-center">
@@ -1980,9 +1969,8 @@ function addPlaceToUI(destinationId) {
                         </div>
                     </div>
 
-                    <!-- Action Buttons -->
                     <div class="space-y-4">
-                        <!-- QR Code Button -->
+                        
                         <button onclick="showQrModal(state.activeJourneyData)" class="w-full bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-700 hover:to-accent-700 text-white font-semibold py-4 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center justify-center animate-scale-in" style="animation-delay: 0.2s">
                             <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mr-3">
                                 <i data-lucide="scan-line" class="w-6 h-6"></i>
@@ -1993,7 +1981,6 @@ function addPlaceToUI(destinationId) {
                             </div>
                         </button>
 
-                        <!-- Safety Check-in Button -->
                         <button onclick="handleCheckIn()" class="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-4 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center justify-center animate-scale-in" style="animation-delay: 0.3s">
                             <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mr-3">
                                 <i data-lucide="heart-handshake" class="w-6 h-6"></i>
@@ -2004,7 +1991,6 @@ function addPlaceToUI(destinationId) {
                             </div>
                         </button>
 
-                        <!-- End Journey Button -->
                         <button onclick="handleEndJourney()" class="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-4 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center justify-center animate-scale-in" style="animation-delay: 0.4s">
                             <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mr-3">
                                 <i data-lucide="square" class="w-6 h-6"></i>
@@ -2015,8 +2001,7 @@ function addPlaceToUI(destinationId) {
                             </div>
                         </button>
                     </div>
-
-                    <!-- Status Card -->
+    
                     <div class="mt-6 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950 p-4 rounded-2xl border border-green-200 dark:border-green-800 animate-fade-in" style="animation-delay: 0.5s">
                         <div class="flex items-center space-x-3">
                             <div class="w-10 h-10 bg-green-100 dark:bg-green-900 rounded-xl flex items-center justify-center">
@@ -2062,7 +2047,7 @@ async function renderAccountPage() {
             </div>
             
             <div class="relative p-6 overflow-y-auto h-full pb-24 z-10">
-                <!-- Header -->
+            
                 <div class="text-center mb-8 animate-slide-down">
                     <div class="w-16 h-16 bg-gradient-to-br from-primary-400 to-accent-400 rounded-2xl mx-auto mb-4 flex items-center justify-center">
                         <i data-lucide="user-circle" class="w-8 h-8 text-white"></i>
@@ -2072,7 +2057,7 @@ async function renderAccountPage() {
                 </div>
                 
                 <div class="space-y-6">
-                    <!-- Profile Details Card -->
+                    
                     <div class="glass-card p-6 rounded-3xl border border-primary-200 dark:border-primary-800 animate-scale-in" style="animation-delay: 0.1s">
                         <div class="flex items-center space-x-4 mb-4">
                             <div class="w-12 h-12 bg-gradient-to-br from-primary-100 to-accent-100 dark:from-primary-900 dark:to-accent-900 rounded-2xl flex items-center justify-center">
@@ -2101,8 +2086,7 @@ async function renderAccountPage() {
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Family Members Card -->
+                
                     <div class="glass-card p-6 rounded-3xl border border-primary-200 dark:border-primary-800 animate-scale-in" style="animation-delay: 0.2s">
                         <div class="flex items-center space-x-4 mb-6">
                             <div class="w-12 h-12 bg-gradient-to-br from-accent-100 to-primary-100 dark:from-accent-900 dark:to-primary-900 rounded-2xl flex items-center justify-center">
@@ -2112,7 +2096,6 @@ async function renderAccountPage() {
                         </div>
                         
                         <div class="ml-16 space-y-4">
-                            <!-- Family Members List -->
                             <div class="space-y-3">
                                 ${state.profile?.familyMembers && state.profile.familyMembers.length > 0 ? 
                                     state.profile.familyMembers.map(m => `
@@ -2140,7 +2123,6 @@ async function renderAccountPage() {
                                 }
                             </div>
                             
-                            <!-- Add New Member Section -->
                             <div class="pt-4 border-t border-surface-200 dark:border-surface-700">
                                 <h4 class="font-semibold text-surface-700 dark:text-surface-300 mb-4 flex items-center">
                                     <i data-lucide="user-plus" class="w-4 h-4 mr-2"></i>
@@ -2167,8 +2149,7 @@ async function renderAccountPage() {
                             </div>
                         </div>
                     </div>
-
-                    <!-- Logout Section -->
+                    
                     <div class="glass-card p-6 rounded-3xl border border-red-200 dark:border-red-800 animate-scale-in" style="animation-delay: 0.4s">
                         <div class="flex items-center space-x-4 mb-4">
                             <div class="w-12 h-12 bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900 dark:to-red-800 rounded-2xl flex items-center justify-center">
@@ -2181,7 +2162,7 @@ async function renderAccountPage() {
                         </div>
                         
                         <div class="space-y-3">
-                            <!-- Logout Button -->
+                        
                             <button onclick="handleLogout()" class="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-4 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center justify-center group">
                                 <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
                                     <i data-lucide="log-out" class="w-5 h-5"></i>
@@ -2191,8 +2172,7 @@ async function renderAccountPage() {
                                     <div class="text-xs opacity-90">Sign out of your account</div>
                                 </div>
                             </button>
-
-                            <!-- Clear Data Button -->
+        
                             <button onclick="handleClearData()" class="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold py-3 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center justify-center group">
                                 <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
                                     <i data-lucide="trash-2" class="w-4 h-4"></i>
@@ -2204,7 +2184,7 @@ async function renderAccountPage() {
                             </button>
                         </div>
 
-                        <!-- Security Notice -->
+                        
                         <div class="mt-4 p-3 bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800 rounded-xl">
                             <div class="flex items-start space-x-2">
                                 <i data-lucide="shield-alert" class="w-4 h-4 text-yellow-600 dark:text-yellow-400 mt-0.5 flex-shrink-0"></i>
