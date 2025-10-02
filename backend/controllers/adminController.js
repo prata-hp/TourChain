@@ -2,10 +2,6 @@ const User = require('../models/User');
 const ActiveJourney = require('../models/ActiveJourney');
 const PanicCall = require('../models/PanicCall');
 
-/**
- * @desc    Get key statistics for the admin dashboard
- * @route   GET /api/admin/stats
- */
 exports.getDashboardStats = async (req, res) => {
     try {
         const totalTourists = await User.countDocuments({ role: 'Tourist' });
@@ -22,14 +18,8 @@ exports.getDashboardStats = async (req, res) => {
         res.status(500).send('Server Error');
     }
 };
-
-/**
- * @desc    Get a list of all tourists
- * @route   GET /api/admin/tourists
- */
 exports.getAllTourists = async (req, res) => {
     try {
-        // Find all users with the 'Tourist' role and join their profile data
         const tourists = await Profile.find().populate('user', ['phone', 'createdAt']);
         res.json(tourists);
     } catch (error) {
@@ -37,14 +27,8 @@ exports.getAllTourists = async (req, res) => {
         res.status(500).send('Server Error');
     }
 };
-
-/**
- * @desc    Get all panic calls (active and resolved)
- * @route   GET /api/admin/panic-calls
- */
 exports.getPanicCalls = async (req, res) => {
     try {
-        // Find all panic calls and sort by most recent
         const panicCalls = await PanicCall.find().sort({ createdAt: -1 }).populate('userId', 'phone');
         res.json(panicCalls);
     } catch (error) {
@@ -52,14 +36,8 @@ exports.getPanicCalls = async (req, res) => {
         res.status(500).send('Server Error');
     }
 };
-
-/**
- * @desc    Update a panic call's status
- * @route   PUT /api/admin/panic-calls/:id/status
- */
 exports.updatePanicCallStatus = async (req, res) => {
-    const { status } = req.body; // Expects "Acknowledged" or "Resolved"
-
+    const { status } = req.body; 
     if (!['Acknowledged', 'Resolved'].includes(status)) {
         return res.status(400).json({ message: 'Invalid status.' });
     }
