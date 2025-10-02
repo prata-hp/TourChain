@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 const profileSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
-    fullName: { type: String }, // This line is now corrected
-    email: { type: String, unique: true, sparse: true }, // sparse allows multiple null emails
-    age: { type: Number }, // User's age
+    fullName: { type: String }, 
+    email: { type: String, unique: true, sparse: true },
+    age: { type: Number }, 
     idType: String,
     idNumberHash: String,
     medical: { bloodType: String, allergies: [String], conditions: [String] },

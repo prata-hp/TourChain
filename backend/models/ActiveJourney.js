@@ -5,9 +5,6 @@ const activeJourneySchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     itinerary: { type: Object, required: true },
     
-    // --- THIS IS THE FIX ---
-    // Change the type from an array of ObjectIDs to an array of generic Objects.
-    // This allows you to store the "snapshots" your controller is creating.
     members: [Object], 
 
     startDate: { type: Date, required: true },
