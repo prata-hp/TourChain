@@ -2,22 +2,16 @@ const axios = require('axios');
 
 const API_BASE_URL = 'http://localhost:5000/api';
 const TEST_USER = { phone: '9999999999', password: 'password123' };
-
-// --- DATA FOR TESTING ---
-
-// A smooth, normal path. The AI should NOT flag this.
 const NORMAL_GPS_TRAIL = [
     [22.5448, 88.3426], [22.5449, 88.3427], [22.5450, 88.3428], [22.5451, 88.3429], [22.5452, 88.3430],
     [22.5453, 88.3431], [22.5454, 88.3432], [22.5455, 88.3433], [22.5456, 88.3434], [22.5457, 88.3435],
     [22.5458, 88.3436], [22.5459, 88.3437], [22.5460, 88.3438], [22.5461, 88.3439], [22.5462, 88.3440],
     [22.5463, 88.3441], [22.5464, 88.3442], [22.5465, 88.3443], [22.5466, 88.3444], [22.5467, 88.3445]
 ];
-
-// This path has a sudden, large jump in the middle. The AI SHOULD flag this.
 const ANOMALOUS_GPS_TRAIL = [
     [22.5448, 88.3426], [22.5449, 88.3427], [22.5450, 88.3428], [22.5451, 88.3429], [22.5452, 88.3430],
     [22.5453, 88.3431], [22.5454, 88.3432], [22.5455, 88.3433], [22.5456, 88.3434], [22.5457, 88.3435],
-    [22.6458, 88.4436], // <-- The large, anomalous jump
+    [22.6458, 88.4436], 
     [22.6459, 88.4437], [22.6460, 88.4438], [22.6461, 88.4439], [22.6462, 88.4440],
     [22.6463, 88.4441], [22.6464, 88.4442], [22.6465, 88.4443], [22.6466, 88.4444], [22.6467, 88.4445]
 ];
@@ -25,17 +19,10 @@ const ANOMALOUS_GPS_TRAIL = [
 async function runAiTest() {
     console.log('--- Starting AI Anomaly Detection Test ---');
     try {
-        // 1. Log in to get auth token
         const loginRes = await axios.post(`${API_BASE_URL}/auth/login`, TEST_USER);
         const token = loginRes.data.token;
-
-        // 2. Send the GPS data to the check-in endpoint
         console.log('\n[1/2] Sending GPS data to backend for analysis...');
-
-        // *** CHOOSE WHICH TRAIL TO TEST ***
         const gpsDataToSend = ANOMALOUS_GPS_TRAIL;
-        // const gpsDataToSend = NORMAL_GPS_TRAIL;
-
         const checkInRes = await axios.post(
             `${API_BASE_URL}/journeys/check-in`,
             { locations: gpsDataToSend },
