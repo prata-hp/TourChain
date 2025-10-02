@@ -8,12 +8,6 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, RepeatVector, TimeDistributed
 from sklearn.preprocessing import MinMaxScaler
 import matplotlib.pyplot as plt
-
-# --- Part 1, 2, 3 ---
-# (Aager code-er ei part gulo ekdom same thakbe)
-# --- generate_data(), data generation, scaling, model building ---
-# --- (Copy from your previous file) ---
-
 def generate_data(n_samples, timesteps):
     normal_data = []
     for _ in range(n_samples):
@@ -49,21 +43,16 @@ model = Sequential([
 ])
 model.compile(optimizer='adam', loss='mae')
 
-# --- Part 4: Model Training ---
 print("Starting model training...")
 history = model.fit(train_data_scaled, train_data_scaled, epochs=20, batch_size=32, validation_split=0.1, verbose=1)
 print("Model training finished.")
 
-# --- NOTUN PART: Model, Scaler, aar Threshold save kora ---
-# 1. Model Save
 model.save('tourist_anomaly_model.h5')
 print("✅ Model saved to 'tourist_anomaly_model.h5'")
 
-# 2. Scaler Save
 joblib.dump(scaler, 'scaler.gz')
 print("✅ Scaler saved to 'scaler.gz'")
 
-# 3. Threshold Save
 train_reconstructions = model.predict(train_data_scaled)
 train_loss = tf.keras.losses.mae(train_reconstructions, train_data_scaled)
 threshold = np.mean(train_loss) + 2 * np.std(train_loss)
