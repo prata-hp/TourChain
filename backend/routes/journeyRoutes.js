@@ -13,11 +13,7 @@ router.use(protect);
 
 router.post('/start', startJourney);
 router.get('/active', getActiveJourney);
-
-// --- THIS IS THE FIX ---
-// Change the route from '/active/check-in' to just '/check-in'
-router.post('/check-in', handleGpsCheckIn); // POST /api/journeys/check-in
-
+router.post('/check-in', handleGpsCheckIn); 
 router.post('/:journeyId/panic', triggerPanic);
 router.post('/:journeyId/end', endJourney);
 
